@@ -33,6 +33,9 @@ async function bootstrap() {
 
   app.use(helmet());
 
-  await app.listen(HTTP_PORT);
+    const port = +HTTP_PORT || 8000;
+    await app.listen(port, () => {
+        console.log(`🚀 Server listening ${port} `);
+    });
 }
 bootstrap();
