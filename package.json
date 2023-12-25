@@ -24,6 +24,7 @@
     "@nestjs/mapped-types": "*",
     "@nestjs/microservices": "10.2.10",
     "@nestjs/platform-express": "^10.2.10",
+    "@nestjs/typeorm": "^10.0.1",
     "class-transformer": "^0.5.1",
     "helmet": "^7.1.0",
     "nestjs-cls": "^3.6.0",
