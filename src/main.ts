@@ -1,5 +1,4 @@
-import { logger } from '@1win/cdp-backend-tools';
-import { ValidationPipe } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import helmet from 'helmet';
@@ -11,12 +10,7 @@ async function bootstrap() {
   const config = new ConfigService();
   const csl = ClsServiceManager.getClsService();
 
-  const app = await NestFactory.create(AppModule, {
-    logger: new logger.LoggerService(csl, {
-      logLevel: config.get('LOG_LEVEL'),
-      logPretty: config.get('LOG_PRETTY')?.toLowerCase().startsWith('true'),
-    }),
-  });
+  const app = await NestFactory.create(AppModule);
 
   app.useGlobalPipes(
     new ValidationPipe({
