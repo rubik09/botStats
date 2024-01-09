@@ -6,6 +6,10 @@ import { BotModule } from './bot/bot.module';
 import config from './configuration/config';
 import { HealthModule } from './health/health.module';
 import { UpdatesModule } from './updates/updates.module';
+import { AdminsModule } from './admins/admins.module';
+import { SessionsModule } from './sessions/sessions.module';
+import { StatsModule } from './stats/stats.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -16,6 +20,10 @@ import { UpdatesModule } from './updates/updates.module';
     HealthModule,
     UpdatesModule,
     BotModule,
+    AdminsModule,
+    SessionsModule,
+    StatsModule,
+    UsersModule,
   ],
 })
 export class AppModule implements NestModule {
