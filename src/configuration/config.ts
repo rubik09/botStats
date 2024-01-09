@@ -6,7 +6,19 @@ import * as dotenv from 'dotenv';
 
 dotenv.config();
 
-const {MYSQL_PASSWORD, DB_HOST, MYSQL_PORT, MYSQL_USER, MYSQL_DATABASE, DB_TYPE} = process.env;
+const {
+    MYSQL_PASSWORD,
+    DB_HOST,
+    MYSQL_PORT,
+    MYSQL_USER,
+    MYSQL_DATABASE,
+    DB_TYPE,
+    HTTP_PORT,
+    LOG_LEVEL,
+    SECRET_JWT,
+    BOT_TOKEN,
+    WEBHOOK_HOST
+} = process.env;
 
 const DataSourceOption: DataSourceOptions = {
     type: DB_TYPE,
@@ -18,8 +30,6 @@ const DataSourceOption: DataSourceOptions = {
     synchronize: false,
 };
 new DataSource(DataSourceOption);
-
-const {HTTP_PORT, LOG_LEVEL, SECRET_JWT, BOT_TOKEN, WEBHOOK_HOST} = process.env;
 
 export default (): any =>
     ({
