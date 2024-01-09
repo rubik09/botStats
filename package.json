@@ -24,11 +24,16 @@
     "@nestjs/mapped-types": "*",
     "@nestjs/microservices": "10.2.10",
     "@nestjs/platform-express": "^10.2.10",
+    "@nestjs/typeorm": "^10.0.1",
     "class-transformer": "^0.5.1",
+    "googleapis": "^130.0.0",
     "helmet": "^7.1.0",
     "nestjs-cls": "^3.6.0",
     "node-telegram-bot-api": "^0.64.0",
-    "rxjs": "^7.8.1"
+    "pg": "^8.11.3",
+    "rxjs": "^7.8.1",
+    "telegram": "^2.19.10",
+    "typeorm-naming-strategies": "^4.1.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.2.1",
