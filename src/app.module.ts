@@ -9,7 +9,6 @@ import {AdminsModule} from './admins/admins.module';
 import {SessionsModule} from './sessions/sessions.module';
 import {StatsModule} from './stats/stats.module';
 import {UsersModule} from './users/users.module';
-import {DataSourceOption} from "../db/typeOrm.config";
 import {TypeOrmModule} from '@nestjs/typeorm';
 
 @Module({
@@ -25,7 +24,7 @@ import {TypeOrmModule} from '@nestjs/typeorm';
         SessionsModule,
         StatsModule,
         UsersModule,
-        TypeOrmModule.forRoot(DataSourceOption),
+        TypeOrmModule.forRoot(config().POSTGRES_DB_SETTINGS),
     ],
 })
 export class AppModule implements NestModule {
