@@ -39,8 +39,8 @@ export class SessionsEntity {
     phone_number: string;
 
     @CreateDateColumn({type: 'timestamp without time zone'})
-    createdAt: Date;
+    created_at: Date;
 
     @UpdateDateColumn({type: 'timestamp without time zone'})
-    updatedAt: Date;
+    updated_at: Date;
 }

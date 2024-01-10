@@ -19,8 +19,8 @@ export class StatsEntity {
     users_count: number;
 
     @CreateDateColumn({type: 'timestamp without time zone'})
-    createdAt: Date;
+    created_at: Date;
 
     @UpdateDateColumn({type: 'timestamp without time zone'})
-    updatedAt: Date;
+    updated_at: Date;
 }
