@@ -1,8 +1,6 @@
 import {IsPhoneNumber, IsString, Length} from "class-validator";
 
 export class SaveMainInfoDto {
-    @IsString()
-    @Length(7, 15)
     @IsPhoneNumber()
     readonly phone_number: string;
 
