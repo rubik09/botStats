@@ -1,9 +1,9 @@
-import {IsString, Length} from "class-validator";
+import {IsInt, IsString, Length} from "class-validator";
 
 export class AddSessionInfoDto {
-    @IsString()
+    @IsInt()
     @Length(5, 11)
-    readonly api_id: string;
+    api_id: number;
 
     @IsString()
     readonly api_hash: string;

@@ -1,10 +1,10 @@
-import {IsNumber, IsString, Length} from "class-validator";
+import {IsInt, IsNumber, Length} from "class-validator";
 
 export class CreateStatsDto {
     @IsNumber()
     readonly incoming_messages_count: number;
 
-    @IsString()
+    @IsInt()
     @Length(5, 11)
-    readonly api_id_client: string;
+    readonly api_id_client: number;
 }
