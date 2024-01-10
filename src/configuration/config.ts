@@ -12,13 +12,14 @@ const {
     MYSQL_PORT,
     MYSQL_USER,
     MYSQL_DATABASE,
-    DB_TYPE,
     HTTP_PORT,
     LOG_LEVEL,
     SECRET_JWT,
     BOT_TOKEN,
     WEBHOOK_HOST
 } = process.env;
+
+const DB_TYPE = process.env.DB_TYPE as 'postgres';
 
 const DataSourceOption: DataSourceOptions = {
     type: DB_TYPE,

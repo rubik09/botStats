@@ -1,13 +1,14 @@
-import {IsString, Length, IsPhoneNumber} from 'class-validator';
+import {IsString, Length} from 'class-validator';
+import {SessionsEntity} from "../entity/sessions.entity";
 
 export class UpdateSessionDto {
     @IsString()
-    readonly keywords: string;
+    readonly keywords: SessionsEntity['keywords'];
 
     @IsString()
-    readonly region: string;
+    readonly region: SessionsEntity['region'];
 
     @IsString()
     @Length(5, 32)
-    readonly username: string;
+    readonly username: SessionsEntity['username'];
 }

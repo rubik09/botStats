@@ -3,15 +3,24 @@ import {
     Entity,
     PrimaryGeneratedColumn,
 } from 'typeorm';
+import {bigintTransformer} from "../../utils/bigintTransformer";
 
 @Entity({name: 'users'})
 export class UsersEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({type: 'varchar', length: 255})
-    user_id: string;
+    @Column({
+        unique: true,
+        type: 'bigint',
+        transformer: bigintTransformer,
+    })
+    userId: number;
 
-    @Column({type: 'varchar', length: 255})
-    api_id_client: string;
+    @Column({
+        unique: true,
+        type: 'bigint',
+        transformer: bigintTransformer,
+    })
+    apiIdClient: number;
 }

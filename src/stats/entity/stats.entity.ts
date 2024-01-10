@@ -3,24 +3,29 @@ import {
     Entity,
     PrimaryGeneratedColumn, UpdateDateColumn,
 } from 'typeorm';
+import {bigintTransformer} from "../../utils/bigintTransformer";
 
 @Entity({name: 'stats'})
 export class StatsEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({type: 'varchar', length: 255})
-    api_id_client: string;
+    @Column({
+        unique: true,
+        type: 'bigint',
+        transformer: bigintTransformer,
+    })
+    apiIdClient: number;
 
     @Column({default: 0})
-    incoming_messages_count: number;
+    incomingMessagesCount: number;
 
     @Column({default: 0})
-    users_count: number;
+    usersCount: number;
 
-    @CreateDateColumn({type: 'timestamp without time zone'})
-    created_at: Date;
+    @CreateDateColumn({type: 'timestamp without time zone', default: () => "CURRENT_TIMESTAMP", nullable: false})
+    createdAt: Date;
 
-    @UpdateDateColumn({type: 'timestamp without time zone'})
-    updated_at: Date;
+    @UpdateDateColumn({type: 'timestamp without time zone', onUpdate: "CURRENT_TIMESTAMP", nullable: true})
+    updatedAt: Date;
 }

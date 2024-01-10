@@ -5,6 +5,7 @@ import {
     CreateDateColumn,
     UpdateDateColumn,
 } from 'typeorm';
+import {bigintTransformer} from "../../utils/bigintTransformer";
 
 @Entity({name: 'sessions'})
 export class SessionsEntity {
@@ -12,7 +13,7 @@ export class SessionsEntity {
     id: number;
 
     @Column({type: 'longtext', default: ''})
-    log_session: string;
+    logSession: string;
 
     @Column({type: 'longtext', default: ''})
     keywords: string;
@@ -23,24 +24,33 @@ export class SessionsEntity {
     @Column({default: 1})
     status: boolean;
 
-    @Column({type: 'varchar', length: 255, unique: true, default: ''})
-    api_id: string;
+    @Column({
+        unique: true,
+        type: 'bigint',
+        default: '',
+        transformer: bigintTransformer,
+    })
+    apiId: number;
 
     @Column({type: 'varchar', length: 255, unique: true, default: ''})
-    api_hash: string;
+    apiHash: string;
 
-    @Column({type: 'varchar', length: 40, unique: true})
-    user_id: string;
+    @Column({
+        unique: true,
+        type: 'bigint',
+        transformer: bigintTransformer,
+    })
+    userId: number;
 
     @Column({type: 'varchar', length: 40, unique: true})
     username: string;
 
     @Column({type: 'varchar', length: 40, unique: true})
-    phone_number: string;
+    phoneNumber: string;
 
-    @CreateDateColumn({type: 'timestamp without time zone'})
-    created_at: Date;
+    @CreateDateColumn({type: 'timestamp without time zone', default: () => "CURRENT_TIMESTAMP", nullable: false})
+    createdAt: Date;
 
-    @UpdateDateColumn({type: 'timestamp without time zone'})
-    updated_at: Date;
+    @UpdateDateColumn({type: 'timestamp without time zone', onUpdate: "CURRENT_TIMESTAMP", nullable: true})
+    updatedAt: Date;
 }

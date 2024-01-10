@@ -1,13 +1,12 @@
-import { IsInt, IsString, Length } from 'class-validator';
+import {IsInt, Length} from 'class-validator';
+import {UsersEntity} from '../entity/users.entity';
 
 export class AddUserDTO {
-
-    @IsString()
+    @IsInt()
     @Length(5, 11)
-    user_id: string;
+    user_id: UsersEntity['userId'];
 
-    @IsString()
-    @Length(5, 255)
-    api_id_client: string;
-
+    @IsInt()
+    @Length(5, 11)
+    api_id_client: UsersEntity['apiIdClient'];
 }
