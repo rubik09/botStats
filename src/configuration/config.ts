@@ -19,10 +19,8 @@ const {
     WEBHOOK_HOST
 } = process.env;
 
-const DB_TYPE = process.env.DB_TYPE as 'postgres';
-
 const DataSourceOption: DataSourceOptions = {
-    type: DB_TYPE,
+    type: 'postgres',
     host: DB_HOST,
     port: +MYSQL_PORT,
     username: MYSQL_USER,

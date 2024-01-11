@@ -8,7 +8,7 @@ import {
 import {bigintTransformer} from "../../utils/bigintTransformer";
 
 @Entity({name: 'sessions'})
-export class SessionsEntity {
+export class Sessions {
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -32,7 +32,7 @@ export class SessionsEntity {
     })
     apiId: number;
 
-    @Column({type: 'varchar', length: 255, unique: true, default: ''})
+    @Column({type: 'varchar', length: 40, unique: true, default: ''})
     apiHash: string;
 
     @Column({
@@ -48,7 +48,7 @@ export class SessionsEntity {
     @Column({type: 'varchar', length: 40, unique: true})
     phoneNumber: string;
 
-    @CreateDateColumn({type: 'timestamp without time zone', default: () => "CURRENT_TIMESTAMP", nullable: false})
+    @CreateDateColumn({type: 'timestamp without time zone'})
     createdAt: Date;
 
     @UpdateDateColumn({type: 'timestamp without time zone', onUpdate: "CURRENT_TIMESTAMP", nullable: true})

@@ -1,10 +1,10 @@
 import {IsNumber} from "class-validator";
-import { StatsEntity } from '../entity/stats.entity';
+import {Stats} from '../entity/stats';
 
 export class UpdateStatsDto {
     @IsNumber()
-    readonly incoming_messages_count: StatsEntity['incomingMessagesCount'];
+    readonly incoming_messages_count: Stats['incomingMessagesCount'];
 
     @IsNumber()
-    readonly users_count: StatsEntity['usersCount'];
+    readonly users_count: Stats['usersCount'];
 }

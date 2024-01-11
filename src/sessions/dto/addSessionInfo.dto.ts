@@ -1,11 +1,11 @@
 import {IsInt, IsString, Length} from "class-validator";
-import {SessionsEntity} from "../entity/sessions.entity";
+import {Sessions} from "../entity/sessions";
 
 export class AddSessionInfoDto {
     @IsInt()
     @Length(5, 11)
-    api_id: SessionsEntity['apiId'];
+    api_id: Sessions['apiId'];
 
     @IsString()
-    readonly api_hash: SessionsEntity['apiHash'];
+    readonly api_hash: Sessions['apiHash'];
 }

@@ -6,7 +6,7 @@ import {
 import {bigintTransformer} from "../../utils/bigintTransformer";
 
 @Entity({name: 'stats'})
-export class StatsEntity {
+export class Stats {
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -23,7 +23,7 @@ export class StatsEntity {
     @Column({default: 0})
     usersCount: number;
 
-    @CreateDateColumn({type: 'timestamp without time zone', default: () => "CURRENT_TIMESTAMP", nullable: false})
+    @CreateDateColumn({type: 'timestamp without time zone'})
     createdAt: Date;
 
     @UpdateDateColumn({type: 'timestamp without time zone', onUpdate: "CURRENT_TIMESTAMP", nullable: true})
