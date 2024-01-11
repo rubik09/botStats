@@ -21,7 +21,7 @@ export class Sessions {
     @Column({type: 'varchar', length: 40})
     region: string;
 
-    @Column({default: 1})
+    @Column({default: true})
     status: boolean;
 
     @Column({
