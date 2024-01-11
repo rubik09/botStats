@@ -11,7 +11,6 @@ export class Stats {
     id: number;
 
     @Column({
-        unique: true,
         type: 'bigint',
         transformer: bigintTransformer,
     })

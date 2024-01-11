@@ -11,14 +11,12 @@ export class Users {
     id: number;
 
     @Column({
-        unique: true,
         type: 'bigint',
         transformer: bigintTransformer,
     })
     userId: number;
 
     @Column({
-        unique: true,
         type: 'bigint',
         transformer: bigintTransformer,
     })

@@ -1,12 +1,8 @@
-import {IsInt, Length} from 'class-validator';
-import {Users} from '../entity/users';
+import {PickType} from '@nestjs/mapped-types';
+import {UserDto} from "./user.dto";
 
-export class AddUserDTO {
-    @IsInt()
-    @Length(5, 11)
-    userId: Users['userId'];
-
-    @IsInt()
-    @Length(5, 11)
-    apiIdClient: Users['apiIdClient'];
+export class AddUserDTO extends PickType(UserDto, [
+    'userId',
+    'apiIdClient',
+]) {
 }

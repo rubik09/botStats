@@ -1,14 +1,9 @@
-import {IsString, Length} from 'class-validator';
-import {Sessions} from "../entity/sessions";
+import {PickType} from '@nestjs/mapped-types';
+import {SessionDto} from "./session.dto";
 
-export class UpdateSessionDto {
-    @IsString()
-    keywords: Sessions['keywords'];
-
-    @IsString()
-    region: Sessions['region'];
-
-    @IsString()
-    @Length(5, 32)
-    username: Sessions['username'];
+export class UpdateSessionDto extends PickType(SessionDto, [
+    'keywords',
+    'region',
+    'username',
+]) {
 }
