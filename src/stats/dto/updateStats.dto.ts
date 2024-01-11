@@ -3,8 +3,8 @@ import {Stats} from '../entity/stats';
 
 export class UpdateStatsDto {
     @IsNumber()
-    readonly incoming_messages_count: Stats['incomingMessagesCount'];
+    incomingMessagesCount: Stats['incomingMessagesCount'];
 
     @IsNumber()
-    readonly users_count: Stats['usersCount'];
+    usersCount: Stats['usersCount'];
 }

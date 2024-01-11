@@ -12,10 +12,10 @@ export class Sessions {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({type: 'longtext', default: ''})
+    @Column({type: 'varchar', default: ''})
     logSession: string;
 
-    @Column({type: 'longtext', default: ''})
+    @Column({type: 'varchar', default: ''})
     keywords: string;
 
     @Column({type: 'varchar', length: 40})
@@ -27,7 +27,7 @@ export class Sessions {
     @Column({
         unique: true,
         type: 'bigint',
-        default: '',
+        default: null,
         transformer: bigintTransformer,
     })
     apiId: number;
@@ -51,6 +51,6 @@ export class Sessions {
     @CreateDateColumn({type: 'timestamp without time zone'})
     createdAt: Date;
 
-    @UpdateDateColumn({type: 'timestamp without time zone', onUpdate: "CURRENT_TIMESTAMP", nullable: true})
+    @UpdateDateColumn({type: 'timestamp without time zone'})
     updatedAt: Date;
 }

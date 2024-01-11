@@ -6,9 +6,9 @@ export class UpdateSessionDto {
     keywords: Sessions['keywords'];
 
     @IsString()
-    readonly region: Sessions['region'];
+    region: Sessions['region'];
 
     @IsString()
     @Length(5, 32)
-    readonly username: Sessions['username'];
+    username: Sessions['username'];
 }

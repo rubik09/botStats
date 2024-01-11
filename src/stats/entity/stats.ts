@@ -26,6 +26,6 @@ export class Stats {
     @CreateDateColumn({type: 'timestamp without time zone'})
     createdAt: Date;
 
-    @UpdateDateColumn({type: 'timestamp without time zone', onUpdate: "CURRENT_TIMESTAMP", nullable: true})
+    @UpdateDateColumn({type: 'timestamp without time zone'})
     updatedAt: Date;
 }

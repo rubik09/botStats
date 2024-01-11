@@ -3,9 +3,9 @@ import {Stats} from "../entity/stats";
 
 export class CreateStatsDto {
     @IsNumber()
-    readonly incoming_messages_count: Stats['incomingMessagesCount'];
+    incomingMessagesCount: Stats['incomingMessagesCount'];
 
     @IsInt()
     @Length(5, 11)
-    readonly api_id_client: Stats['apiIdClient'];
+    apiIdClient: Stats['apiIdClient'];
 }

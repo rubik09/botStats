@@ -4,9 +4,9 @@ import {Users} from '../entity/users';
 export class AddUserDTO {
     @IsInt()
     @Length(5, 11)
-    user_id: Users['userId'];
+    userId: Users['userId'];
 
     @IsInt()
     @Length(5, 11)
-    api_id_client: Users['apiIdClient'];
+    apiIdClient: Users['apiIdClient'];
 }
