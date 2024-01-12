@@ -4,6 +4,7 @@ import {Repository} from "typeorm";
 import {Users} from "./entity/users";
 import {AddUserDto} from "./dto/addUser.dto";
 import {FindUserDto} from "./dto/findUser.dto";
+import {Sessions} from "../sessions/entity/sessions";
 
 @Injectable()
 export class UsersRepository {
@@ -24,7 +25,7 @@ export class UsersRepository {
         return await this.usersRepository.save(newUser);
     }
 
-    async getCountUsers(apiIdClient: number): Promise<number> {
+    async getCountUsers(apiIdClient: Sessions['apiIdClient']): Promise<number> {
         return await this.usersRepository.count({where: {apiIdClient}});
     }
 

@@ -13,23 +13,23 @@ export class SessionsRepository {
     ) {
     }
 
-    async updateStatus(status: boolean, userId: number): Promise<void> {
+    async updateStatus(status: Sessions['status'], userId: Sessions['userId']): Promise<void> {
         await this.sessionsRepository.update({userId}, {status});
     }
 
-    async getStatusById(id: number): Promise<Sessions> {
+    async getStatusById(id: Sessions['id']): Promise<Sessions> {
         return await this.sessionsRepository.findOne({where: {id}, select: ['status']});
     }
 
-    async checkByPhone(phoneNumber: string): Promise<Sessions> {
+    async checkByPhone(phoneNumber: Sessions['phoneNumber']): Promise<Sessions> {
         return await this.sessionsRepository.findOne({where: {phoneNumber}});
     }
 
-    async checkByUserId(userId: number): Promise<Sessions> {
+    async checkByUserId(userId: Sessions['userId']): Promise<Sessions> {
         return await this.sessionsRepository.findOne({where: {userId}});
     }
 
-    async checkByUsername(username: string): Promise<Sessions> {
+    async checkByUsername(username: Sessions['username']): Promise<Sessions> {
         return await this.sessionsRepository.findOne({where: {username}});
     }
 
@@ -42,61 +42,61 @@ export class SessionsRepository {
         await this.sessionsRepository.save(newSession);
     }
 
-    async updateLogSession(logSession: string, userId: number): Promise<void> {
+    async updateLogSession(logSession: Sessions['logSession'], userId: Sessions['userId']): Promise<void> {
         await this.sessionsRepository.update({userId}, {logSession});
     }
 
-    async updateSessionInfo(userId: number, updateSessionDto: UpdateSessionDto): Promise<void> {
+    async updateSessionInfo(userId: Sessions['userId'], updateSessionDto: UpdateSessionDto): Promise<void> {
         await this.sessionsRepository.update({userId}, updateSessionDto);
     }
 
-    async updateKeywordsToSession(keywords: string, userId: number): Promise<void> {
+    async updateKeywordsToSession(keywords: Sessions['keywords'], userId: Sessions['userId']): Promise<void> {
         await this.sessionsRepository.update({userId}, {keywords});
     }
 
-    async updateKeywordsToSessionByApiId(keywords: string, apiId: number): Promise<void> {
+    async updateKeywordsToSessionByApiId(keywords: Sessions['keywords'], apiId: Sessions['apiId']): Promise<void> {
         await this.sessionsRepository.update({apiId}, {keywords});
     }
 
-    async changeStatus(id: number, status: boolean): Promise<void> {
+    async changeStatus(id: Sessions['id'], status: Sessions['status']): Promise<void> {
         await this.sessionsRepository.update({id}, {status});
     }
 
-    async getKeywordsFromSession(apiId: number): Promise<Sessions> {
+    async getKeywordsFromSession(apiId: Sessions['apiId']): Promise<Sessions> {
         return await this.sessionsRepository.findOne({where: {apiId}, select: ['keywords']});
     }
 
-    async getUsernameFromSession(apiId: number): Promise<Sessions> {
+    async getUsernameFromSession(apiId: Sessions['apiId']): Promise<Sessions> {
         return await this.sessionsRepository.findOne({where: {apiId}, select: ['username']});
     }
 
-    async getMainInfoById(id: number): Promise<Pick<Sessions, 'apiId' | 'apiHash' | 'logSession' | 'userId'>> {
+    async getMainInfoById(id: Sessions['id']): Promise<Pick<Sessions, 'apiId' | 'apiHash' | 'logSession' | 'userId'>> {
         return this.sessionsRepository.findOne({
             where: {id},
             select: ['apiId', 'apiHash', 'logSession', 'userId'],
         });
     }
 
-    async getMainInfoByUserId(userId: number): Promise<Pick<Sessions, 'apiId' | 'apiHash' | 'logSession' | 'userId'>> {
+    async getMainInfoByUserId(userId: Sessions['userId']): Promise<Pick<Sessions, 'apiId' | 'apiHash' | 'logSession' | 'userId'>> {
         return await this.sessionsRepository.findOne({
             where: {userId},
             select: ['apiId', 'apiHash', 'logSession', 'userId'],
         });
     }
 
-    async deleteSession(id: number): Promise<void> {
+    async deleteSession(id: Sessions['id']): Promise<void> {
         await this.sessionsRepository.delete(id);
     }
 
-    async getPhoneById(userId: number): Promise<Sessions> {
+    async getPhoneById(userId: Sessions['userId']): Promise<Sessions> {
         return await this.sessionsRepository.findOne({where: {userId}, select: ['phoneNumber'],});
     }
 
-    async getSessionById(id: number): Promise<Sessions | undefined> {
+    async getSessionById(id: Sessions['id']): Promise<Sessions | undefined> {
         return await this.sessionsRepository.findOne({where: {id}});
     }
 
-    async updateSessionById(id: number, updateSessionDto: UpdateSessionDto): Promise<void> {
+    async updateSessionById(id: Sessions['id'], updateSessionDto: UpdateSessionDto): Promise<void> {
         await this.sessionsRepository.update({id}, updateSessionDto);
     }
 

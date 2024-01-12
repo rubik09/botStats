@@ -21,19 +21,19 @@ export class StatsRepository {
         await this.statsRepository.update({apiIdClient: updateStatDto.apiIdClient}, updateStatDto);
     }
 
-    async updateIncomingMessagesCountToSessionByApiId(apiIdClient: number): Promise<void> {
+    async updateIncomingMessagesCountToSessionByApiId(apiIdClient: Stats['apiIdClient']): Promise<void> {
         await this.statsRepository.increment({apiIdClient}, 'incoming_messages_count', 1);
     }
 
-    async getStatsByApiId(apiIdClient: number): Promise<Stats> {
+    async getStatsByApiId(apiIdClient: Stats['apiIdClient']): Promise<Stats> {
         return await this.statsRepository.findOne({where: {apiIdClient}});
     }
 
-    async getClientStats(apiIdClient: number): Promise<Stats> {
+    async getClientStats(apiIdClient: Stats['apiIdClient']): Promise<Stats> {
         return await this.statsRepository.findOne({where: {apiIdClient}});
     }
 
-    async getCountStats(apiIdClient: number): Promise<Stats> {
+    async getCountStats(apiIdClient: Stats['apiIdClient']): Promise<Stats> {
         return await this.statsRepository.findOne({where: {apiIdClient}, select: ['usersCount']});
     }
 }

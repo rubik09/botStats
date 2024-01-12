@@ -11,13 +11,13 @@ export class AdminsRepository {
     ) {
     }
 
-    async findOneByEmail(email: string): Promise<Admins> {
+    async findOneByEmail(email: Admins['email']): Promise<Admins> {
         return await this.adminsRepository.findOne({
             where: {email},
         });
     }
 
-    async findOneById(id: number): Promise<Admins> {
+    async findOneById(id: Admins['id']): Promise<Admins> {
         return await this.adminsRepository.findOne({
             where: {id},
         });
