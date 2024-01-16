@@ -4,6 +4,7 @@ import {Repository} from 'typeorm';
 import {Sessions} from "./entity/sessions";
 import {SaveMainInfoDto} from "./dto/saveMainInfo.dto";
 import {UpdateSessionDto} from "./dto/updateSession.dto";
+import {UpdateSessionInfoDto} from "./dto/updateSessionInfo.dto";
 
 @Injectable()
 export class SessionsRepository {
@@ -46,8 +47,8 @@ export class SessionsRepository {
         await this.sessionsRepository.update({userId}, {logSession});
     }
 
-    async updateSessionInfo(userId: Sessions['userId'], updateSessionDto: UpdateSessionDto): Promise<void> {
-        await this.sessionsRepository.update({userId}, updateSessionDto);
+    async updateSessionInfo(userId: Sessions['userId'], updateSessionInfoDto: UpdateSessionInfoDto): Promise<void> {
+        await this.sessionsRepository.update({userId}, updateSessionInfoDto);
     }
 
     async updateKeywordsToSession(keywords: Sessions['keywords'], userId: Sessions['userId']): Promise<void> {
@@ -96,11 +97,11 @@ export class SessionsRepository {
         return await this.sessionsRepository.findOne({where: {id}});
     }
 
-    async updateSessionById(id: Sessions['id'], updateSessionDto: UpdateSessionDto): Promise<void> {
+    async updateSessionById(id: Sessions['id'], updateSessionDto: UpdateSessionDto) {
         await this.sessionsRepository.update({id}, updateSessionDto);
     }
 
-    async getStatus(): Promise<Sessions> {
-        return await this.sessionsRepository.findOne({where: {status: true}});
+    async getStatus(): Promise<Sessions[]> {
+        return await this.sessionsRepository.find({where: {status: true}});
     }
 }

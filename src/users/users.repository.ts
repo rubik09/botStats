@@ -25,7 +25,7 @@ export class UsersRepository {
         return await this.usersRepository.save(newUser);
     }
 
-    async getCountUsers(apiIdClient: Sessions['apiIdClient']): Promise<number> {
+    async getCountUsers(apiIdClient: Sessions['apiId']): Promise<number> {
         return await this.usersRepository.count({where: {apiIdClient}});
     }
 

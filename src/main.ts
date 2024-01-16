@@ -10,7 +10,9 @@ async function bootstrap() {
     const config = new ConfigService();
     const csl = ClsServiceManager.getClsService();
 
-    const app = await NestFactory.create(AppModule);
+    const app = await NestFactory.create(AppModule, {
+        logger: console,
+    });
 
     app.useGlobalPipes(
         new ValidationPipe({

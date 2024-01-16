@@ -9,5 +9,6 @@ import {SessionsRepository} from "./sessions.repository";
   imports: [TypeOrmModule.forFeature([Sessions])],
   controllers: [SessionsController],
   providers: [SessionsService, SessionsRepository],
+  exports: [SessionsRepository],
 })
 export class SessionsModule {}
