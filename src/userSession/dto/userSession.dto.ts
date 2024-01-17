@@ -11,9 +11,6 @@ export class UserSessionDto {
     @IsString()
     keywords: UserSession['keywords'];
 
-    @IsString()
-    region: UserSession['region'];
-
     @IsBoolean()
     status: UserSession['status'];
 
@@ -27,11 +24,4 @@ export class UserSessionDto {
     @IsInt()
     @Length(5, 11)
     userId: UserSession['userId'];
-
-    @IsString()
-    @Length(5, 32)
-    username: UserSession['username'];
-
-    @IsPhoneNumber()
-    phoneNumber: UserSession['phoneNumber'];
 }
