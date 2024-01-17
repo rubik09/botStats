@@ -4,22 +4,26 @@ import {
     PrimaryGeneratedColumn,
     CreateDateColumn,
     UpdateDateColumn,
+    OneToOne,
+    JoinColumn,
 } from 'typeorm';
 import {bigintTransformer} from "../../utils/bigintTransformer";
+import {PersonalInfo} from "../../personalInfo/entity/personalInfo";
 
 @Entity({name: 'sessions'})
 export class UserSession {
     @PrimaryGeneratedColumn()
     id: number;
 
+    @OneToOne(() => PersonalInfo, (personalInfo) => personalInfo.id, { cascade: true, eager: true })
+    @JoinColumn()
+    personalInfo: PersonalInfo['id'];
+
     @Column({type: 'varchar', default: ''})
     logSession: string;
 
     @Column({type: 'varchar', default: ''})
     keywords: string;
-
-    @Column({type: 'varchar', length: 40})
-    region: string;
 
     @Column({default: true})
     status: boolean;
@@ -41,12 +45,6 @@ export class UserSession {
         transformer: bigintTransformer,
     })
     userId: number;
-
-    @Column({type: 'varchar', length: 40, unique: true})
-    username: string;
-
-    @Column({type: 'varchar', length: 40, unique: true})
-    phoneNumber: string;
 
     @CreateDateColumn({type: 'timestamp without time zone'})
     createdAt: Date;
