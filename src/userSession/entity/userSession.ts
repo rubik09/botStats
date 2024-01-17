@@ -8,7 +8,7 @@ import {
 import {bigintTransformer} from "../../utils/bigintTransformer";
 
 @Entity({name: 'sessions'})
-export class Sessions {
+export class UserSession {
     @PrimaryGeneratedColumn()
     id: number;
 

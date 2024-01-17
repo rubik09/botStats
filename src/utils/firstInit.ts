@@ -1,8 +1,8 @@
-// import sessions from '../models/sessions';
+// import userSession from '../models/userSession';
 import telegramInit from './telegramInit';
 
 async function firstInit() {
-    // const allSessions = await sessions.getSessions();
+    // const allSessions = await userSession.getSessions();
     const allSessions: any[] = [];
 
 

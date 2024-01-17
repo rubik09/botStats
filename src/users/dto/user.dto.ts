@@ -1,10 +1,10 @@
 import {IsInt, Length} from 'class-validator';
 import {Users} from '../entity/users';
-import {Sessions} from "../../sessions/entity/sessions";
+import {UserSession} from "../../userSession/entity/userSession";
 
 export class UserDto {
     @IsInt()
-    id: Sessions['id'];
+    id: UserSession['id'];
 
     @IsInt()
     @Length(5, 11)
