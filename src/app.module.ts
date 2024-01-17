@@ -11,6 +11,7 @@ import {StatsModule} from './stats/stats.module';
 import {UsersModule} from './users/users.module';
 import {TypeOrmModule} from '@nestjs/typeorm';
 import { PersonalInfoModule } from './personalInfo/personalInfo.module';
+import { TelegramConnectModule } from './telegramConnect/telegramConnect.module';
 
 @Module({
     imports: [
@@ -27,6 +28,7 @@ import { PersonalInfoModule } from './personalInfo/personalInfo.module';
         UsersModule,
         TypeOrmModule.forRoot(config().POSTGRES_DB_SETTINGS),
         PersonalInfoModule,
+        TelegramConnectModule,
     ],
 })
 export class AppModule implements NestModule {
