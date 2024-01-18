@@ -26,7 +26,7 @@ export default (): any =>
         API_VERSION: '/v1',
         SERVICE_NAME: pack.name,
         HTTP_PORT: Number(HTTP_PORT),
-        LOG_LEVEL: LOG_LEVEL || logger.LogLevels.INFO,
+        LOG_LEVEL: LOG_LEVEL,
         SECRET_JWT: SECRET_JWT,
         BOT_TOKEN: BOT_TOKEN,
         WEBHOOK_HOST: WEBHOOK_HOST,
