@@ -1,10 +1,7 @@
-import {PickType} from '@nestjs/mapped-types';
+import {PartialType, PickType} from '@nestjs/mapped-types';
 import {TelegramConnectDto} from "./telegramConnect.dto";
 
-export class UpdateTelegramConnectDto extends PickType(TelegramConnectDto, [
-    'id',
-    'keywords',
-    'status',
-]) {
+export class UpdateTelegramConnectDto extends PartialType(PickType(TelegramConnectDto, ['keywords', 'status',]),
+) {
 }
 

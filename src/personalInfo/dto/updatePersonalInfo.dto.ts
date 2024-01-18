@@ -1,10 +1,6 @@
-import {PickType} from '@nestjs/mapped-types';
+import {PartialType, PickType} from '@nestjs/mapped-types';
 import {PersonalInfoDto} from "./personalInfo.dto";
 
-export class UpdatePersonalInfoDto extends PickType(PersonalInfoDto, [
-    'id',
-    'region',
-    'username',
-    'phoneNumber'
-]) {
+export class UpdatePersonalInfoDto extends PartialType(PickType(PersonalInfoDto, ['region', 'username', 'phoneNumber']),
+) {
 }
