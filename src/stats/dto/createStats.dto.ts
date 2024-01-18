@@ -1,7 +1,7 @@
 import {PickType} from '@nestjs/mapped-types';
-import {StatDto} from "./stat.dto";
+import {StatsDto} from "./stats.dto";
 
-export class CreateStatDto extends PickType(StatDto, [
+export class CreateStatsDto extends PickType(StatsDto, [
     'incomingMessagesCount',
     'apiIdClient',
 ]) {

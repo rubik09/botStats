@@ -6,7 +6,7 @@ import {
 import {bigintTransformer} from "../../utils/bigintTransformer";
 
 @Entity({name: 'users'})
-export class UsersEntity {
+export class Users {
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -14,7 +14,7 @@ export class UsersEntity {
         type: 'bigint',
         transformer: bigintTransformer,
     })
-    userId: number;
+    telegramId: number;
 
     @Column({
         type: 'bigint',
