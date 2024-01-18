@@ -6,7 +6,7 @@ import {
 import {bigintTransformer} from "../../utils/bigintTransformer";
 
 @Entity({name: 'stats'})
-export class Stats {
+export class StatsEntity {
     @PrimaryGeneratedColumn()
     id: number;
 

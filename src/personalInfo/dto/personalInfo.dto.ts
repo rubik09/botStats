@@ -1,17 +1,17 @@
 import {IsInt, IsPhoneNumber, IsString, Length,} from "class-validator";
-import {PersonalInfo} from "../entity/personalInfo";
+import {PersonalInfoEntity} from "../entity/personalInfo.entity";
 
 export class PersonalInfoDto {
     @IsInt()
-    id: PersonalInfo['id'];
+    id: PersonalInfoEntity['id'];
 
     @IsString()
-    region: PersonalInfo['region'];
+    region: PersonalInfoEntity['region'];
 
     @IsString()
     @Length(5, 32)
-    username: PersonalInfo['username'];
+    username: PersonalInfoEntity['username'];
 
     @IsPhoneNumber()
-    phoneNumber: PersonalInfo['phoneNumber'];
+    phoneNumber: PersonalInfoEntity['phoneNumber'];
 }

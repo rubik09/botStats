@@ -1,27 +1,27 @@
-import {IsInt, IsPhoneNumber, IsString, Length, IsBoolean} from "class-validator";
-import {UserSession} from "../entity/userSession";
+import {IsInt, IsString, Length, IsBoolean} from "class-validator";
+import {UserSessionEntity} from "../entity/userSession.entity";
 
 export class UserSessionDto {
     @IsInt()
-    id: UserSession['id'];
+    id: UserSessionEntity['id'];
 
     @IsString()
-    logSession: UserSession['logSession'];
+    logSession: UserSessionEntity['logSession'];
 
     @IsString()
-    keywords: UserSession['keywords'];
+    keywords: UserSessionEntity['keywords'];
 
     @IsBoolean()
-    status: UserSession['status'];
+    status: UserSessionEntity['status'];
 
     @IsInt()
     @Length(5, 11)
-    apiId: UserSession['apiId'];
+    apiId: UserSessionEntity['apiId'];
 
     @IsString()
-    apiHash: UserSession['apiHash'];
+    apiHash: UserSessionEntity['apiHash'];
 
     @IsInt()
     @Length(5, 11)
-    userId: UserSession['userId'];
+    userId: UserSessionEntity['userId'];
 }

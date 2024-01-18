@@ -1,18 +1,18 @@
 import {IsInt, IsNumber, Length} from "class-validator";
-import {Stats} from "../entity/stats";
-import {UserSession} from "../../userSession/entity/userSession";
+import {StatsEntity} from "../entity/stats.entity";
+import {UserSessionEntity} from "../../userSession/entity/userSession.entity";
 
 export class StatDto {
     @IsInt()
-    id: UserSession['id'];
+    id: UserSessionEntity['id'];
 
     @IsInt()
     @Length(5, 11)
-    apiIdClient: Stats['apiIdClient'];
+    apiIdClient: StatsEntity['apiIdClient'];
 
     @IsNumber()
-    incomingMessagesCount: Stats['incomingMessagesCount'];
+    incomingMessagesCount: StatsEntity['incomingMessagesCount'];
 
     @IsNumber()
-    usersCount: Stats['usersCount'];
+    usersCount: StatsEntity['usersCount'];
 }
