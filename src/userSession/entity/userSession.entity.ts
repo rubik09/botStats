@@ -10,6 +10,11 @@ import {
 import {bigintTransformer} from "../../utils/bigintTransformer";
 import {PersonalInfo} from "../../personalInfo/entity/personalInfo.entity";
 
+enum userSessionStatus {
+    Active = 'active',
+    Disabled = 'disabled',
+}
+
 @Entity({name: 'sessions'})
 export class UserSession {
     @PrimaryGeneratedColumn()
@@ -25,8 +30,12 @@ export class UserSession {
     @Column({type: 'varchar', default: ''})
     keywords: string;
 
-    @Column({default: true})
-    status: boolean;
+    @Column({
+        type: "enum",
+        enum: userSessionStatus,
+        default: userSessionStatus.Active
+    })
+    status: userSessionStatus;
 
     @Column({
         unique: true,
