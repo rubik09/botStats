@@ -11,8 +11,8 @@ import {bigintTransformer} from "../../utils/bigintTransformer";
 import {PersonalInfo} from "../../personalInfo/entity/personalInfo.entity";
 
 enum userSessionStatus {
-    Active = 'active',
-    Disabled = 'disabled',
+    ACTIVE = 'active',
+    DISABLED = 'disabled',
 }
 
 @Entity({name: 'sessions'})
@@ -33,7 +33,7 @@ export class UserSession {
     @Column({
         type: "enum",
         enum: userSessionStatus,
-        default: userSessionStatus.Active
+        default: userSessionStatus.ACTIVE
     })
     status: userSessionStatus;
 
