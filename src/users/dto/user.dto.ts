@@ -1,14 +1,14 @@
 import {IsInt, Length} from 'class-validator';
-import {Users} from '../entity/users';
-import {Sessions} from "../../sessions/entity/sessions";
+import {Users} from '../entity/users.entity';
+import {UserSession} from "../../userSession/entity/userSession.entity";
 
 export class UserDto {
     @IsInt()
-    id: Sessions['id'];
+    id: UserSession['id'];
 
     @IsInt()
     @Length(5, 11)
-    userId: Users['userId'];
+    telegramId: Users['telegramId'];
 
     @IsInt()
     @Length(5, 11)

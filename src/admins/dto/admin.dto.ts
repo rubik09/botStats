@@ -1,5 +1,5 @@
 import {IsEmail, IsInt, IsString, Length} from "class-validator";
-import {Admins} from "../entity/admins";
+import {Admins} from "../entity/admins.entity";
 
 export class AdminDto {
     @IsInt()
