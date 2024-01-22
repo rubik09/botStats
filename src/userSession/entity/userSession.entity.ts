@@ -10,7 +10,7 @@ import {
 import {bigintTransformer} from "../../utils/bigintTransformer";
 import {PersonalInfo} from "../../personalInfo/entity/personalInfo.entity";
 
-enum userSessionStatus {
+export enum userSessionStatus {
     ACTIVE = 'active',
     DISABLED = 'disabled',
 }

@@ -1,5 +1,5 @@
-import {IsInt, IsString, Length, IsBoolean} from "class-validator";
-import {UserSession} from "../../userSession/entity/userSession.entity";
+import {IsInt, IsString, Length, IsEnum} from "class-validator";
+import {UserSession, userSessionStatus} from "../../userSession/entity/userSession.entity";
 
 export class TelegramConnectDto {
     @IsInt()
@@ -11,7 +11,7 @@ export class TelegramConnectDto {
     @IsString()
     keywords: UserSession['keywords'];
 
-    @IsBoolean()
+    @IsEnum(userSessionStatus)
     status: UserSession['status'];
 
     @IsInt()

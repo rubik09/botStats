@@ -1,5 +1,5 @@
-import {IsInt, IsString, Length, IsBoolean} from "class-validator";
-import {UserSession} from "../entity/userSession.entity";
+import {IsInt, IsString, Length, IsEnum} from "class-validator";
+import {UserSession, userSessionStatus} from "../entity/userSession.entity";
 
 export class UserSessionDto {
     @IsInt()
@@ -11,7 +11,7 @@ export class UserSessionDto {
     @IsString()
     keywords: UserSession['keywords'];
 
-    @IsBoolean()
+    @IsEnum(userSessionStatus)
     status: UserSession['status'];
 
     @IsInt()
