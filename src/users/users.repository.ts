@@ -22,8 +22,7 @@ export class UsersRepository {
     }
 
     async createUser(createUserDto: CreateUserDto): Promise<Users> {
-        const newUser = this.usersRepository.create(createUserDto);
-        return await this.usersRepository.save(newUser);
+        return await this.usersRepository.save(createUserDto);
     }
 
     async getCountUsersById(apiIdClient: Users['apiIdClient']): Promise<number> {

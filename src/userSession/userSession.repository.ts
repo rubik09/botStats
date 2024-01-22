@@ -27,8 +27,7 @@ export class UserSessionRepository {
     }
 
     async createUserSession(createUserSessionInfoDto: CreateUserSessionInfoDto): Promise<void> {
-        const newSession = this.userSessionRepository.create(createUserSessionInfoDto);
-        await this.userSessionRepository.save(newSession);
+        await this.userSessionRepository.save(createUserSessionInfoDto);
     }
 
     async updateLogSession(logSession: UserSession['logSession'], telegramId: UserSession['telegramId']): Promise<void> {

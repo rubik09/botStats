@@ -16,8 +16,7 @@ export class AdminsRepository {
     }
 
     async createAdmin(createAdminDto: CreateAdminDto): Promise<Admins> {
-        const admin = this.adminsRepository.create(createAdminDto);
-        return await this.adminsRepository.save(admin);
+        return await this.adminsRepository.save(createAdminDto);
     }
 
     async findOneByEmail(email: Admins['email']): Promise<Admins> {

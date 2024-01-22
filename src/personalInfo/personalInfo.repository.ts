@@ -15,8 +15,7 @@ export class personalInfoRepository {
     }
 
     async createPersonalInfo(createPersonalInfoDto: CreatePersonalInfoDto): Promise<void> {
-        const newPersonalInfo = this.personalInfoRepository.create(createPersonalInfoDto);
-        await this.personalInfoRepository.save(newPersonalInfo);
+        await this.personalInfoRepository.save(createPersonalInfoDto);
     }
 
     async updatePersonalInfo(id: PersonalInfo['id'], updatePersonalInfoDto: UpdatePersonalInfoDto): Promise<void> {
