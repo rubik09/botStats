@@ -8,8 +8,8 @@ import {UserSessionModule} from './userSession/userSession.module';
 import {StatsModule} from './stats/stats.module';
 import {UsersModule} from './users/users.module';
 import {TypeOrmModule} from '@nestjs/typeorm';
-import { PersonalInfoModule } from './personalInfo/personalInfo.module';
-import { TelegramConnectModule } from './telegramConnect/telegramConnect.module';
+import {PersonalInfoModule} from './personalInfo/personalInfo.module';
+import {TelegramConnectModule} from './telegramConnect/telegramConnect.module';
 
 @Module({
     imports: [
@@ -22,6 +22,9 @@ import { TelegramConnectModule } from './telegramConnect/telegramConnect.module'
         UserSessionModule,
         StatsModule,
         UsersModule,
+        PersonalInfoModule,
+        UserSessionModule,
+        TelegramConnectModule,
         TypeOrmModule.forRootAsync({
             useFactory: async (configService: ConfigService) => configService.get('POSTGRES_DB_SETTINGS'),
             inject: [ConfigService],
