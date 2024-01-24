@@ -5,15 +5,6 @@ import {PersonalInfo} from "./entity/personalInfo.entity";
 import {CreatePersonalInfoDto} from "./dto/createPersonalInfo.dto";
 import {UpdatePersonalInfoDto} from "./dto/updatePersonalInfo.dto";
 import {DeletePersonalInfoDto} from "./dto/deletePersonalInfo.dto";
-import {DeleteResult, UpdateResult} from "../utils/config";
-
-interface PersonalInfoUpdateResult extends UpdateResult {
-    raw: PersonalInfo,
-}
-
-interface PersonalInfoDeleteResult extends DeleteResult {
-    raw: PersonalInfo,
-}
 
 @Injectable()
 export class personalInfoRepository {
@@ -27,8 +18,9 @@ export class personalInfoRepository {
         return await this.personalInfoRepository.save(createPersonalInfoDto);
     }
 
-    async updatePersonalInfo(id: PersonalInfo['id'], updatePersonalInfoDto: UpdatePersonalInfoDto): Promise<PersonalInfoUpdateResult> {
-        return await this.personalInfoRepository.update({id}, updatePersonalInfoDto);
+    async updatePersonalInfo(id: PersonalInfo['id'], updatePersonalInfoDto: UpdatePersonalInfoDto): Promise<number> {
+        const {affected} = await this.personalInfoRepository.update({id}, updatePersonalInfoDto);
+        return affected;
     }
 
 
@@ -52,7 +44,8 @@ export class personalInfoRepository {
         return await this.personalInfoRepository.findOne({where: {id}, select: ['phoneNumber'],});
     }
 
-    async deletePersonalInfoById(deletePersonalInfoDto: DeletePersonalInfoDto): Promise<PersonalInfoDeleteResult> {
-        return await this.personalInfoRepository.delete(deletePersonalInfoDto);
+    async deletePersonalInfoById(deletePersonalInfoDto: DeletePersonalInfoDto): Promise<number> {
+        const {affected} = await this.personalInfoRepository.delete(deletePersonalInfoDto);
+        return affected;
     }
 }

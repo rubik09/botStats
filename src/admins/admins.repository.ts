@@ -6,15 +6,6 @@ import {CreateAdminDto} from "./dto/createAdmin.dto";
 import {DeleteAdminDto} from "./dto/deleteAdmin.dto";
 import {UserSession} from "../userSession/entity/userSession.entity";
 import {UpdateAdminDto} from "./dto/updateAdmin.dto";
-import {DeleteResult, UpdateResult} from "../utils/config";
-
-interface AdminsUpdateResult extends UpdateResult {
-    raw: Admins,
-}
-
-interface AdminsDeleteResult extends DeleteResult {
-    raw: Admins,
-}
 
 @Injectable()
 export class AdminsRepository {
@@ -40,11 +31,13 @@ export class AdminsRepository {
         });
     }
 
-    async deleteAdminById(deleteAdminDto: DeleteAdminDto): Promise<AdminsDeleteResult> {
-        return await this.adminsRepository.delete(deleteAdminDto);
+    async deleteAdminById(deleteAdminDto: DeleteAdminDto): Promise<number> {
+        const {affected} = await this.adminsRepository.delete(deleteAdminDto);
+        return affected;
     }
 
-    async updateAdmin(id: UserSession['id'], updateAdminDto: UpdateAdminDto): Promise<AdminsUpdateResult> {
-        return await this.adminsRepository.update({id}, updateAdminDto);
+    async updateAdmin(id: UserSession['id'], updateAdminDto: UpdateAdminDto): Promise<number> {
+        const {affected} = await this.adminsRepository.update({id}, updateAdminDto);
+        return affected;
     }
 }
