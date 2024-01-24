@@ -20,7 +20,7 @@ export class UserSessionRepository {
     }
 
     async getStatusById(id: UserSession['id']): Promise<UserSession> {
-        return await this.userSessionRepository.findOne({where: {id}, select: ['status']});
+        return await this.userSessionRepository.findOne({where: {id}, select: ['id', 'status']});
     }
 
     async getUserSession(): Promise<UserSession[]> {
@@ -57,20 +57,20 @@ export class UserSessionRepository {
     }
 
     async getKeywordsFromUserSession(apiId: UserSession['apiId']): Promise<UserSession> {
-        return await this.userSessionRepository.findOne({where: {apiId}, select: ['keywords']});
+        return await this.userSessionRepository.findOne({where: {apiId}, select: ['id', 'keywords']});
     }
 
-    async getMainInfoById(id: UserSession['id']): Promise<Pick<UserSession, 'apiId' | 'apiHash' | 'logSession' | 'telegramId'>> {
+    async getMainInfoById(id: UserSession['id']): Promise<UserSession> {
         return this.userSessionRepository.findOne({
             where: {id},
-            select: ['apiId', 'apiHash', 'logSession', 'telegramId'],
+            select: ['id', 'apiId', 'apiHash', 'logSession', 'telegramId'],
         });
     }
 
-    async getMainInfoByUserId(telegramId: UserSession['telegramId']): Promise<Pick<UserSession, 'apiId' | 'apiHash' | 'logSession' | 'telegramId'>> {
+    async getMainInfoByUserId(telegramId: UserSession['telegramId']): Promise<UserSession> {
         return await this.userSessionRepository.findOne({
             where: {telegramId},
-            select: ['apiId', 'apiHash', 'logSession', 'telegramId'],
+            select: ['id', 'apiId', 'apiHash', 'logSession', 'telegramId'],
         });
     }
 

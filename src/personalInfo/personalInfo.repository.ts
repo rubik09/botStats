@@ -37,11 +37,11 @@ export class personalInfoRepository {
     }
 
     async getUsernameById(id: PersonalInfo['id']): Promise<PersonalInfo> {
-        return await this.personalInfoRepository.findOne({where: {id}, select: ['username']});
+        return await this.personalInfoRepository.findOne({where: {id}, select: ['id', 'username']});
     }
 
     async getPhoneById(id: PersonalInfo['id']): Promise<PersonalInfo> {
-        return await this.personalInfoRepository.findOne({where: {id}, select: ['phoneNumber'],});
+        return await this.personalInfoRepository.findOne({where: {id}, select: ['id', 'phoneNumber'],});
     }
 
     async deletePersonalInfoById(deletePersonalInfoDto: DeletePersonalInfoDto): Promise<number> {
