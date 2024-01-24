@@ -6,6 +6,15 @@ import {CreateUserDto} from "./dto/createUser.dto";
 import {DeleteUserDto} from "./dto/deleteUser.dto";
 import {UserSession} from "../userSession/entity/userSession.entity";
 import {UpdateUserDto} from "./dto/updateUser.dto";
+import {DeleteResult, UpdateResult} from "../utils/config";
+
+interface UsersUpdateResult extends UpdateResult {
+    raw: Users,
+}
+
+interface UsersDeleteResult extends DeleteResult {
+    raw: Users,
+}
 
 @Injectable()
 export class UsersRepository {
@@ -29,15 +38,15 @@ export class UsersRepository {
         return await this.usersRepository.count({where: {apiIdClient}});
     }
 
-    async cleanTable(): Promise<void> {
-        await this.usersRepository.delete({});
+    async cleanTable(): Promise<UsersDeleteResult> {
+        return await this.usersRepository.delete({});
     }
 
-    async deleteUserByTelegramId(deleteUserDto: DeleteUserDto): Promise<void> {
-        await this.usersRepository.delete(deleteUserDto);
+    async deleteUserByTelegramId(deleteUserDto: DeleteUserDto): Promise<UsersDeleteResult> {
+        return await this.usersRepository.delete(deleteUserDto);
     }
 
-    async updateUser(id: UserSession['id'], updateUserDto: UpdateUserDto): Promise<void> {
-        await this.usersRepository.update({id}, updateUserDto);
+    async updateUser(id: UserSession['id'], updateUserDto: UpdateUserDto): Promise<UsersUpdateResult> {
+        return await this.usersRepository.update({id}, updateUserDto);
     }
 }

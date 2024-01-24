@@ -5,6 +5,15 @@ import {PersonalInfo} from "./entity/personalInfo.entity";
 import {CreatePersonalInfoDto} from "./dto/createPersonalInfo.dto";
 import {UpdatePersonalInfoDto} from "./dto/updatePersonalInfo.dto";
 import {DeletePersonalInfoDto} from "./dto/deletePersonalInfo.dto";
+import {DeleteResult, UpdateResult} from "../utils/config";
+
+interface PersonalInfoUpdateResult extends UpdateResult {
+    raw: PersonalInfo,
+}
+
+interface PersonalInfoDeleteResult extends DeleteResult {
+    raw: PersonalInfo,
+}
 
 @Injectable()
 export class personalInfoRepository {
@@ -14,24 +23,24 @@ export class personalInfoRepository {
     ) {
     }
 
-    async createPersonalInfo(createPersonalInfoDto: CreatePersonalInfoDto): Promise<void> {
-        await this.personalInfoRepository.save(createPersonalInfoDto);
+    async createPersonalInfo(createPersonalInfoDto: CreatePersonalInfoDto): Promise<PersonalInfo> {
+        return await this.personalInfoRepository.save(createPersonalInfoDto);
     }
 
-    async updatePersonalInfo(id: PersonalInfo['id'], updatePersonalInfoDto: UpdatePersonalInfoDto): Promise<void> {
-        await this.personalInfoRepository.update({id}, updatePersonalInfoDto);
+    async updatePersonalInfo(id: PersonalInfo['id'], updatePersonalInfoDto: UpdatePersonalInfoDto): Promise<PersonalInfoUpdateResult> {
+        return await this.personalInfoRepository.update({id}, updatePersonalInfoDto);
     }
 
 
-    async checkByPhone(phoneNumber: PersonalInfo['phoneNumber']): Promise<PersonalInfo> {
+    async getByPhone(phoneNumber: PersonalInfo['phoneNumber']): Promise<PersonalInfo> {
         return await this.personalInfoRepository.findOne({where: {phoneNumber}});
     }
 
-    async checkByUserId(id: PersonalInfo['id']): Promise<PersonalInfo> {
+    async getByUserId(id: PersonalInfo['id']): Promise<PersonalInfo> {
         return await this.personalInfoRepository.findOne({where: {id}});
     }
 
-    async checkByUsername(username: PersonalInfo['username']): Promise<PersonalInfo> {
+    async getByUsername(username: PersonalInfo['username']): Promise<PersonalInfo> {
         return await this.personalInfoRepository.findOne({where: {username}});
     }
 
@@ -43,7 +52,7 @@ export class personalInfoRepository {
         return await this.personalInfoRepository.findOne({where: {id}, select: ['phoneNumber'],});
     }
 
-    async deletePersonalInfoById(deletePersonalInfoDto: DeletePersonalInfoDto): Promise<void> {
-        await this.personalInfoRepository.delete(deletePersonalInfoDto);
+    async deletePersonalInfoById(deletePersonalInfoDto: DeletePersonalInfoDto): Promise<PersonalInfoDeleteResult> {
+        return await this.personalInfoRepository.delete(deletePersonalInfoDto);
     }
 }
