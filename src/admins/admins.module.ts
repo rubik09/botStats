@@ -1,10 +1,14 @@
-import { Module } from '@nestjs/common';
-import { AdminsService } from './admins.service';
-import { AdminsController } from './admins.controller';
-import { AdminsRepository } from './admins.repository';
+import {Module} from '@nestjs/common';
+import {AdminsService} from './admins.service';
+import {AdminsController} from './admins.controller';
+import {AdminsRepository} from './admins.repository';
+import {Admins} from "./entity/admins.entity";
+import {TypeOrmModule} from "@nestjs/typeorm";
 
 @Module({
-  providers: [AdminsService, AdminsRepository],
-  controllers: [AdminsController]
+    imports: [TypeOrmModule.forFeature([Admins])],
+    providers: [AdminsService, AdminsRepository],
+    controllers: [AdminsController]
 })
-export class AdminsModule {}
+export class AdminsModule {
+}

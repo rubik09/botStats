@@ -1,10 +1,14 @@
-import { Module } from '@nestjs/common';
-import { PersonalInfoService } from './personalInfo.service';
-import { PersonalInfoController } from './personalInfo.controller';
-import {PersonalInfoRepository} from "./personalInfo.repository";
+import {Module} from '@nestjs/common';
+import {PersonalInfoService} from './personalInfo.service';
+import {PersonalInfoController} from './personalInfo.controller';
+import {TypeOrmModule} from "@nestjs/typeorm";
+import {personalInfoRepository} from "./personalInfo.repository";
+import {PersonalInfo} from "./entity/personalInfo.entity";
 
 @Module({
-  providers: [PersonalInfoService, PersonalInfoRepository],
-  controllers: [PersonalInfoController]
+    imports: [TypeOrmModule.forFeature([PersonalInfo])],
+    providers: [PersonalInfoService, personalInfoRepository],
+    controllers: [PersonalInfoController],
 })
-export class PersonalInfoModule {}
+export class PersonalInfoModule {
+}
