@@ -4,7 +4,7 @@ import {TOPIC_NAMES} from "../utils/config";
 
 const kafka = new Kafka({
     clientId: 'my-app',
-    brokers: ['kafka1:9092', 'kafka2:9092']
+    brokers: ['localhost:9092']
 })
 const producer = kafka.producer()
 const consumerIncoming = kafka.consumer({groupId: 'incoming'})
@@ -13,33 +13,29 @@ const consumerOutgoing = kafka.consumer({groupId: 'outgoing'})
 
 @Injectable()
 export class KafkaBufferService {
-    writeMessage = async (message, topicName) => {
+    async writeMessage(messages: [], topicName: string) {
         await producer.connect()
         await producer.send({
             topic: topicName,
-            messages: [
-                message
-            ],
+            messages: messages
         })
     }
 
-    readIncomingMessages = async () => {
-        await consumerIncoming.connect()
-        await consumerIncoming.subscribe({topic: TOPIC_NAMES.INCOMING_MESSAGE})
+    async runListening() {
+        await consumerIncoming.connect();
+        await consumerIncoming.subscribe({topic: TOPIC_NAMES.INCOMING_MESSAGE});
         await consumerIncoming.run({
             eachMessage: async ({message}) => {
-                // calculation logic
+                //calc incoming message logic
             },
-        })
-    }
+        });
 
-    readOutgoingMessages = async () => {
-        await consumerOutgoing.connect()
-        await consumerOutgoing.subscribe({topic: TOPIC_NAMES.OUTGOING_MESSAGE})
+        await consumerOutgoing.connect();
+        await consumerOutgoing.subscribe({topic: TOPIC_NAMES.OUTGOING_MESSAGE});
         await consumerOutgoing.run({
             eachMessage: async ({message}) => {
-                // calculation logic
+                //calc outgoing messages logic
             },
-        })
+        });
     }
 }
