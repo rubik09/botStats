@@ -25,7 +25,7 @@ export class KafkaBufferService {
 
     readIncomingMessages = async () => {
         await consumerIncoming.connect()
-        await consumerIncoming.subscribe({topic: TOPIC_NAMES.INCOMING_MESSAGE, fromBeginning: true})
+        await consumerIncoming.subscribe({topic: TOPIC_NAMES.INCOMING_MESSAGE})
         await consumerIncoming.run({
             eachMessage: async ({message}) => {
                 // calculation logic
@@ -35,7 +35,7 @@ export class KafkaBufferService {
 
     readOutgoingMessages = async () => {
         await consumerOutgoing.connect()
-        await consumerOutgoing.subscribe({topic: TOPIC_NAMES.OUTGOING_MESSAGE, fromBeginning: true})
+        await consumerOutgoing.subscribe({topic: TOPIC_NAMES.OUTGOING_MESSAGE})
         await consumerOutgoing.run({
             eachMessage: async ({message}) => {
                 // calculation logic
