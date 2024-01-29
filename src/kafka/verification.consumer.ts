@@ -1,6 +1,5 @@
 import { Injectable, OnModuleInit, Logger } from '@nestjs/common';
 import { ConsumerService } from './consumer.service';
-import { BotService } from '../bot/bot.service';
 import { kafkaMessage } from '../common/message.interface';
 import { ConfigService } from '@nestjs/config';
 @Injectable()

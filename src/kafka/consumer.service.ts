@@ -8,7 +8,7 @@ export class ConsumerService implements OnApplicationShutdown {
   private readonly consumers: Consumer[] = [];
   constructor(private readonly configService: ConfigService) {}
   async consume(topic: ConsumerSubscribeTopics, config: ConsumerRunConfig) {
-    const GROUPID = this.configService.get('app-config.TELEGRAM_DATA').LANGUAGE;
+    const GROUPID = this.configService.get('app-config.GROUP_ID').GROUPID;
     const consumer = this.kafka.consumer({ groupId: 'nestjs-kafka' + GROUPID });
     await consumer.connect();
     await consumer.subscribe(topic);
