@@ -16,7 +16,7 @@ export class VerificationConsumer implements OnModuleInit {
         const {
             INCOMING_MESSAGE,
             OUTGOING_MESSAGE,
-        } = this.configService.get('KAFKA_CONFIG.KAFKA_TOPICS');
+        } = this.configService.get('KAFKA_TOPICS');
         await this.consumerService.consume(
             {
                 topics: [

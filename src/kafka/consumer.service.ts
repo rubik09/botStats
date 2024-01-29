@@ -4,14 +4,14 @@ import {ConfigService} from '@nestjs/config';
 
 @Injectable()
 export class ConsumerService implements OnApplicationShutdown {
-    private readonly kafka = new Kafka(this.configService.get('KAFKA_CONFIG.KAFKA'));
+    private readonly kafka = new Kafka(this.configService.get('KAFKA'));
     private readonly consumers: Consumer[] = [];
 
     constructor(private readonly configService: ConfigService) {
     }
 
     async consume(topic: ConsumerSubscribeTopics, config: ConsumerRunConfig) {
-        const groupId = this.configService.get('KAFKA_CONFIG.GROUP_ID').GROUPID;;
+        const groupId = this.configService.get('GROUP_ID');
         const consumer = this.kafka.consumer({groupId: 'nestjs-kafka-' + groupId});
         await consumer.connect();
         await consumer.subscribe(topic);

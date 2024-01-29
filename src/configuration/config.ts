@@ -18,12 +18,12 @@ const {
     DB_PASSWORD,
     DB_DATABASE,
     DB_SYNCHRONIZE,
-    KAFKA_CLIENT_ID,
-    KAFKA_BROKER,
+    KAFKA_EVENTS_BROKERS,
     INCOMING_MESSAGE,
     OUTGOING_MESSAGE,
     GROUP_ID,
 } = process.env;
+
 
 export default (): any =>
     ({
@@ -47,7 +47,7 @@ export default (): any =>
             namingStrategy: new SnakeNamingStrategy(),
         },
         KAFKA: {
-            brokers: process.env.KAFKA_EVENTS_BROKERS.split(','),
+            brokers: KAFKA_EVENTS_BROKERS.split(','),
             // ssl: { rejectUnauthorized: false },
             // sasl: {
             //   mechanism: 'plain',
@@ -56,10 +56,10 @@ export default (): any =>
             // },
           },
           KAFKA_TOPICS: {
-            INCOMING_MESSAGE: process.env.INCOMING_MESSAGE,
-            OUTGOING_MESSAGE: process.env.OUTGOING_MESSAGE,
+            INCOMING_MESSAGE: INCOMING_MESSAGE,
+            OUTGOING_MESSAGE: OUTGOING_MESSAGE,
           },
           GROUP_ID: {
-            GROUPID: process.env.GROUPID,
+            GROUP_ID: GROUP_ID,
           }
     }) as const;
