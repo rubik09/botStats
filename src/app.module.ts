@@ -10,6 +10,8 @@ import {UsersModule} from './users/users.module';
 import {TypeOrmModule} from '@nestjs/typeorm';
 import {PersonalInfoModule} from './personalInfo/personalInfo.module';
 import {TelegramConnectModule} from './telegramConnect/telegramConnect.module';
+import { KafkaModule } from './kafka/kafka.module';
+import { VerificationConsumer } from './kafka/verification.consumer';
 
 @Module({
     imports: [
@@ -31,7 +33,11 @@ import {TelegramConnectModule} from './telegramConnect/telegramConnect.module';
         }),
         PersonalInfoModule,
         TelegramConnectModule,
+        KafkaModule,
     ],
+    providers: [
+        VerificationConsumer
+    ]
 })
 export class AppModule implements NestModule {
     configure(consumer: MiddlewareConsumer) {
