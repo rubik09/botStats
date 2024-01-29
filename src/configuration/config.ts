@@ -46,15 +46,20 @@ export default (): any =>
             synchronize: DB_SYNCHRONIZE,
             namingStrategy: new SnakeNamingStrategy(),
         },
-        KAFKA_CONFIG: {
-            KAFKA: {
-                clientId: KAFKA_CLIENT_ID,
-                brokers: [KAFKA_BROKER],
-            },
-            KAFKA_TOPICS: {
-                INCOMING_MESSAGE: INCOMING_MESSAGE,
-                OUTGOING_MESSAGE: OUTGOING_MESSAGE,
-            },
-            GROUP_ID: GROUP_ID
-        }
+        KAFKA: {
+            brokers: process.env.KAFKA_EVENTS_BROKERS.split(','),
+            // ssl: { rejectUnauthorized: false },
+            // sasl: {
+            //   mechanism: 'plain',
+            //   username: process.env.KAFKA_SASL_USERNAME,
+            //   password: process.env.KAFKA_SASL_PASSWORD,
+            // },
+          },
+          KAFKA_TOPICS: {
+            INCOMING_MESSAGE: process.env.INCOMING_MESSAGE,
+            OUTGOING_MESSAGE: process.env.OUTGOING_MESSAGE,
+          },
+          GROUP_ID: {
+            GROUPID: process.env.GROUPID,
+          }
     }) as const;
