@@ -17,7 +17,12 @@ const {
     DB_USERNAME,
     DB_PASSWORD,
     DB_DATABASE,
-    DB_SYNCHRONIZE
+    DB_SYNCHRONIZE,
+    KAFKA_CLIENT_ID,
+    KAFKA_BROKER,
+    INCOMING_MESSAGE,
+    OUTGOING_MESSAGE,
+    GROUP_ID,
 } = process.env;
 
 export default (): any =>
@@ -41,4 +46,15 @@ export default (): any =>
             synchronize: DB_SYNCHRONIZE,
             namingStrategy: new SnakeNamingStrategy(),
         },
+        KAFKA_CONFIG: {
+            KAFKA: {
+                clientId: KAFKA_CLIENT_ID,
+                brokers: [KAFKA_BROKER],
+            },
+            KAFKA_TOPICS: {
+                INCOMING_MESSAGE: INCOMING_MESSAGE,
+                OUTGOING_MESSAGE: OUTGOING_MESSAGE,
+            },
+            GROUP_ID: GROUP_ID
+        }
     }) as const;
