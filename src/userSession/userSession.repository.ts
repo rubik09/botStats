@@ -31,7 +31,7 @@ export class UserSessionRepository {
         return await this.userSessionRepository.save(createUserSessionInfoDto);
     }
 
-    async updateLogSession(logSession: UserSession['logSession'], telegramId: UserSession['telegramId']): Promise<number> {
+    async updateLogSession(logSession: any, telegramId: UserSession['telegramId']): Promise<number> {
         const {affected} = await this.userSessionRepository.update({telegramId}, {logSession});
         return affected;
     }
@@ -67,10 +67,11 @@ export class UserSessionRepository {
         });
     }
 
-    async getMainInfoByUserId(telegramId: UserSession['telegramId']): Promise<UserSession> {
+    async getMainInfoByTelegramId(telegramId: UserSession['telegramId']): Promise<UserSession> {
         return await this.userSessionRepository.findOne({
             where: {telegramId},
             select: ['id', 'apiId', 'apiHash', 'logSession', 'telegramId'],
+            relations: ['personalInfo'],
         });
     }
 

@@ -22,7 +22,7 @@ export class UserSession {
 
     @OneToOne(() => PersonalInfo, (personalInfo) => personalInfo.id, { cascade: true, eager: true })
     @JoinColumn()
-    personalInfo: PersonalInfo['id'];
+    personalInfo: PersonalInfo;
 
     @Column({type: 'varchar', default: ''})
     logSession: string;
