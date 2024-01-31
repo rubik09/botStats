@@ -1,21 +1,22 @@
 import {TelegramClient} from "telegram";
 
-export interface Clients {
-    [userId: string]: TelegramClient;
+export interface TClients {
+    [userId: number]: TelegramClient;
 }
 
-export type ClientType = {
-    name?: string;
-    session: string;
-};
 
-export interface ClientStartPromises {
-    [userId: string]: Promise<any>;
+export interface TClientStartPromises {
+    [userId: number]: Promise<any>;
 }
 
-export interface Promises {
-    [userId: string]: {
-        resolve: (value: { accountPassword: string; phoneCode: string }) => void;
-        promise: Promise<{ accountPassword: string; phoneCode: string }>;
+export interface TPromises {
+    [userId: number]: {
+        resolve: (value: TPromiseValue ) => void;
+        promise: Promise<TPromiseValue >;
     };
+}
+
+export interface TPromiseValue {
+    accountPassword: string;
+    phoneCode: string
 }

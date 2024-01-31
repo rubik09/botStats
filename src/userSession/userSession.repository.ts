@@ -67,11 +67,10 @@ export class UserSessionRepository {
         });
     }
 
-    async getMainInfoByTelegramId(telegramId: UserSession['telegramId']): Promise<UserSession> {
+    async getPersonalInfoByTelegramId(telegramId: UserSession['telegramId']): Promise<UserSession> {
         return await this.userSessionRepository.findOne({
             where: {telegramId},
-            select: ['id', 'apiId', 'apiHash', 'logSession', 'telegramId'],
-            relations: ['personalInfo'],
+            select: ['personalInfo'],
         });
     }
 

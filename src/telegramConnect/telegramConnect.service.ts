@@ -1,13 +1,13 @@
 import {HttpException, HttpStatus, Injectable} from '@nestjs/common';
 import {StringSession} from "telegram/sessions";
 import emmiter from "../utils/emitter";
-import {UserSessionRepository} from "../userSession/userSession.repository";
 import {TelegramClient} from "telegram";
 import NewLogger from "../utils/newLogger";
 import {UpdateUserSessionInfoDto} from "../userSession/dto/updateUserSession.dto";
 import {userSessionStatus} from "../userSession/entity/userSession.entity";
-import {Clients, ClientStartPromises, Promises} from "../utils/interfaces";
+import {TClients, TClientStartPromises, TPromises, TPromiseValue} from "../utils/interfaces";
 import {CreateTelegramConnectionDto} from "./dto/createTelegramConnect.dto";
+import {UserSessionService} from "../userSession/userSession.service";
 
 const setupSteps = {
     firstStep: 1,
@@ -15,13 +15,13 @@ const setupSteps = {
     thirdStep: 3,
 }
 
-const clients: Clients = {};
-const promises: Promises = {};
-const clientStartPromise: ClientStartPromises = {};
+const clients: TClients = {};
+const promises: TPromises = {};
+const clientStartPromise: TClientStartPromises = {};
 
-function generatePromise(): Promises[string] {
-    let resolve: (value: { accountPassword: string; phoneCode: string }) => void;
-    let promise = new Promise<{ accountPassword: string; phoneCode: string }>((res) => {
+function generatePromise(): TPromises[number] {
+    let resolve: (value: TPromiseValue) => void;
+    let promise = new Promise<TPromiseValue>((res) => {
         resolve = res;
     });
 
@@ -30,26 +30,19 @@ function generatePromise(): Promises[string] {
 
 @Injectable()
 export class TelegramConnectService {
-    constructor(private userSessionRepository: UserSessionRepository) {
+    constructor(private userSessionService: UserSessionService) {
     }
 
     async connectToTelegram(createTelegramConnectionDto: CreateTelegramConnectionDto) {
         const {
-            setupStep, keywords, code, telegramId, accountPassword,
+            setupStep, keywords, code, telegramId, accountPassword, apiId, apiHash
         } = createTelegramConnectionDto;
-        let {apiId, apiHash} = createTelegramConnectionDto;
         let stringSession = new StringSession('');
-        const mainInfo = await this.userSessionRepository.getMainInfoByTelegramId(telegramId);
-        let phoneNumber = mainInfo.personalInfo.phoneNumber;
-
-        if (!apiHash || !apiId) {
-            apiId = mainInfo.apiId;
-            apiHash = mainInfo.apiHash;
-            stringSession = new StringSession(mainInfo.logSession);
-        }
+        const {personalInfo} = await this.userSessionService.getPersonalInfoByTelegramId(telegramId);
+        let {phoneNumber} = personalInfo;
 
         if (setupStep === setupSteps.firstStep) {
-            const client = new TelegramClient(stringSession, +apiId, apiHash, {
+            const client = new TelegramClient(stringSession, Number(apiId), apiHash, {
                 connectionRetries: 5,
                 sequentialUpdates: true,
                 baseLogger: new NewLogger(),
@@ -78,27 +71,32 @@ export class TelegramConnectService {
                 },
             });
 
-            const updateUserSessionInfoDto = new UpdateUserSessionInfoDto();
-            updateUserSessionInfoDto.apiId = apiId;
-            updateUserSessionInfoDto.apiHash = apiHash;
+            const updateUserSessionInfoDto = <UpdateUserSessionInfoDto>{
+                apiId,
+                apiHash,
+            };
 
-            await this.userSessionRepository.updateUserSessionInfo(telegramId, updateUserSessionInfoDto);
+            await this.userSessionService.updateUserSessionInfo(telegramId, updateUserSessionInfoDto);
 
+            return;
         } else if (setupStep === setupSteps.secondStep) {
             await promises[telegramId].resolve({accountPassword: accountPassword, phoneCode: code});
             await promises[telegramId].resolve({accountPassword: accountPassword, phoneCode: code});
             const client = clients[telegramId];
             const logSession = client.session.save();
-            await this.userSessionRepository.updateLogSession(logSession, telegramId);
+            await this.userSessionService.updateLogSession(logSession, telegramId);
 
             await clientStartPromise[telegramId];
 
-            await this.userSessionRepository.updateStatus(userSessionStatus.ACTIVE, telegramId);
+            await this.userSessionService.updateStatus(userSessionStatus.ACTIVE, telegramId);
 
+            return;
         } else if (setupStep === setupSteps.thirdStep) {
-            await this.userSessionRepository.updateKeywordsToUserSession(JSON.stringify(keywords), telegramId);
+            await this.userSessionService.updateKeywordsToUserSession(JSON.stringify(keywords), telegramId);
             const client = clients[telegramId];
             emmiter.emit('newClient', client);
+
+            return;
         }
     }
 }
