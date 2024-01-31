@@ -5,6 +5,7 @@ import {Repository} from "typeorm";
 import {UpdateUserSessionInfoDto} from "./dto/updateUserSession.dto";
 import {CreateUserSessionInfoDto} from "./dto/createUserSessionInfo.dto";
 import {DeleteUserSessionDto} from "./dto/deleteUserSession.dto";
+import {UpdateApiInfoDto} from "./dto/updateApiInfo.dto";
 
 @Injectable()
 export class UserSessionRepository {
@@ -12,11 +13,6 @@ export class UserSessionRepository {
         @InjectRepository(UserSession)
         private readonly userSessionRepository: Repository<UserSession>,
     ) {
-    }
-
-    async updateStatus(status: UserSession['status'], telegramId: UserSession['telegramId']): Promise<number> {
-        const {affected} = await this.userSessionRepository.update({telegramId}, {status});
-        return affected;
     }
 
     async getStatusById(id: UserSession['id']): Promise<UserSession> {
@@ -31,30 +27,6 @@ export class UserSessionRepository {
         return await this.userSessionRepository.save(createUserSessionInfoDto);
     }
 
-    async updateLogSession(logSession: any, telegramId: UserSession['telegramId']): Promise<number> {
-        const {affected} = await this.userSessionRepository.update({telegramId}, {logSession});
-        return affected;
-    }
-
-    async updateUserSessionInfo(telegramId: UserSession['telegramId'], updateUserSessionInfoDto: UpdateUserSessionInfoDto): Promise<number> {
-        const {affected} = await this.userSessionRepository.update({telegramId}, updateUserSessionInfoDto);
-        return affected;
-    }
-
-    async updateKeywordsToUserSession(keywords: UserSession['keywords'], telegramId: UserSession['telegramId']): Promise<number> {
-        const {affected} = await this.userSessionRepository.update({telegramId}, {keywords});
-        return affected;
-    }
-
-    async updateKeywordsToUserSessionByApiId(keywords: UserSession['keywords'], apiId: UserSession['apiId']): Promise<number> {
-        const {affected} = await this.userSessionRepository.update({apiId}, {keywords});
-        return affected;
-    }
-
-    async changeStatus(id: UserSession['id'], status: UserSession['status']): Promise<number> {
-        const {affected} = await this.userSessionRepository.update({id}, {status});
-        return affected;
-    }
 
     async getKeywordsFromUserSession(apiId: UserSession['apiId']): Promise<UserSession> {
         return await this.userSessionRepository.findOne({where: {apiId}, select: ['id', 'keywords']});
@@ -85,6 +57,21 @@ export class UserSessionRepository {
 
     async updateUserSessionById(id: UserSession['id'], updateUserSessionInfoDto: UpdateUserSessionInfoDto): Promise<number> {
         const {affected} = await this.userSessionRepository.update({id}, updateUserSessionInfoDto);
+        return affected;
+    }
+
+    async updateUserSessionByTelegramId(telegramId: UserSession['telegramId'], updateUserSessionInfoDto: UpdateUserSessionInfoDto): Promise<number> {
+        const {affected} = await this.userSessionRepository.update({telegramId}, updateUserSessionInfoDto);
+        return affected;
+    }
+
+    async updateUserSessionByApiId(apiId: UserSession['apiId'], updateUserSessionInfoDto: UpdateUserSessionInfoDto): Promise<number> {
+        const {affected} = await this.userSessionRepository.update({apiId}, updateUserSessionInfoDto);
+        return affected;
+    }
+
+    async updateApiInfoByTelegramId(telegramId: UserSession['telegramId'], updateApiInfoDto: UpdateApiInfoDto): Promise<number> {
+        const {affected} = await this.userSessionRepository.update({telegramId}, updateApiInfoDto);
         return affected;
     }
 
