@@ -10,12 +10,7 @@ import {CreateTelegramConnectionDto} from "./dto/createTelegramConnect.dto";
 import {UserSessionService} from "../userSession/userSession.service";
 import {PersonalInfo} from "../personalInfo/entity/personalInfo.entity";
 import {UpdateApiInfoDto} from "../userSession/dto/updateApiInfo.dto";
-
-const setupSteps = {
-    firstStep: 1,
-    secondStep: 2,
-    thirdStep: 3,
-}
+import {setupSteps} from "../utils/consts";
 
 const clients: TClients = {};
 const promises: TPromises = {};
