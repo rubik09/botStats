@@ -81,7 +81,7 @@ export class TelegramConnectService {
         await promises[telegramId].resolve({accountPassword: accountPassword, phoneCode: code});
         await promises[telegramId].resolve({accountPassword: accountPassword, phoneCode: code});
         const client = clients[telegramId];
-        const logSession: any = client.session.save();
+        const logSession = String(client.session.save());
         await clientStartPromise[telegramId];
 
         const updateUserSessionInfoDto = <UpdateUserSessionInfoDto>{
