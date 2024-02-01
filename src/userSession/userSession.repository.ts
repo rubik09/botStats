@@ -55,6 +55,14 @@ export class UserSessionRepository {
         return await this.userSessionRepository.findOne({where: {id}});
     }
 
+    async getUserSessionByTelegramId(telegramId: UserSession['telegramId']): Promise<UserSession> {
+        return await this.userSessionRepository.findOne({where: {telegramId}});
+    }
+
+    async getUserSessionByApiId(apiId: UserSession['apiId']): Promise<UserSession> {
+        return await this.userSessionRepository.findOne({where: {apiId}});
+    }
+
     async updateUserSessionById(id: UserSession['id'], updateUserSessionInfoDto: UpdateUserSessionInfoDto): Promise<number> {
         const {affected} = await this.userSessionRepository.update({id}, updateUserSessionInfoDto);
         return affected;

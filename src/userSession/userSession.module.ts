@@ -9,7 +9,7 @@ import {UserSession} from "./entity/userSession.entity";
     imports: [TypeOrmModule.forFeature([UserSession])],
     providers: [UserSessionService, UserSessionRepository],
     controllers: [UserSessionController],
-    exports: [UserSessionRepository],
+    exports: [UserSessionRepository, UserSessionService],
 })
 export class UserSessionModule {
 }

@@ -5,11 +5,12 @@ import {TelegramClient} from "telegram";
 import NewLogger from "../utils/newLogger";
 import {UpdateUserSessionInfoDto} from "../userSession/dto/updateUserSession.dto";
 import {UserSession, userSessionStatus} from "../userSession/entity/userSession.entity";
-import {TClients, TClientStartPromises, TPromises, TPromiseValue, TSetupSteps} from "../utils/interfaces";
+import {TClients, TClientStartPromises, TPromises, TPromiseValue} from "../utils/interfaces";
 import {CreateTelegramConnectionDto} from "./dto/createTelegramConnect.dto";
 import {UserSessionService} from "../userSession/userSession.service";
 import {UpdateApiInfoDto} from "../userSession/dto/updateApiInfo.dto";
 import {setupSteps} from "../utils/consts";
+import {TSetupSteps} from "../utils/types";
 
 const clients: TClients = {};
 const promises: TPromises = {};
@@ -97,7 +98,7 @@ export class TelegramConnectService implements OnModuleInit {
         emmiter.emit('newClient', client);
     }
 
-    async onModuleInit(): Promise<any> {
+     onModuleInit(): any {
         this.connectionStepFunctions = {
             [setupSteps.FIRST_STEP]: async ({ apiId, apiHash, telegramId }: CreateTelegramConnectionDto) => this.firstConnectionStep(apiId, apiHash, telegramId),
             [setupSteps.SECOND_STEP]: async ({ accountPassword, code, telegramId }: CreateTelegramConnectionDto) => this.secondConnectionStep(accountPassword, code, telegramId),
@@ -108,5 +109,6 @@ export class TelegramConnectService implements OnModuleInit {
     async connectToTelegram(createTelegramConnectionDto: CreateTelegramConnectionDto) {
         const {setupStep} = createTelegramConnectionDto
         await this.connectionStepFunctions[setupStep as setupSteps](createTelegramConnectionDto);
+        return;
     }
 }
