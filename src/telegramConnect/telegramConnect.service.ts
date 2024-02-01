@@ -1,4 +1,4 @@
-import {HttpException, HttpStatus, Injectable} from '@nestjs/common';
+import {HttpException, HttpStatus, Injectable, OnModuleInit} from '@nestjs/common';
 import {StringSession} from "telegram/sessions";
 import emmiter from "../utils/emitter";
 import {TelegramClient} from "telegram";
@@ -25,12 +25,13 @@ function generatePromise(): TPromises[number] {
 }
 
 @Injectable()
-export class TelegramConnectService {
+export class TelegramConnectService implements OnModuleInit {
+    private connectionStepFunctions: TSetupSteps;
+
     constructor(private userSessionService: UserSessionService) {
     }
 
     async firstConnectionStep(apiId: UserSession['apiId'], apiHash: UserSession['apiHash'], telegramId: UserSession['telegramId']) {
-
         const stringSession = new StringSession('');
         const {personalInfo} = await this.userSessionService.getPersonalInfoByTelegramId(telegramId);
         const {phoneNumber} = personalInfo;
@@ -96,15 +97,16 @@ export class TelegramConnectService {
         emmiter.emit('newClient', client);
     }
 
-    async connectToTelegram(createTelegramConnectionDto: CreateTelegramConnectionDto) {
-        const {setupStep, apiId, apiHash, telegramId, accountPassword, code, keywords} = createTelegramConnectionDto
-
-        const connectionStepFunctions: TSetupSteps = {
-            [setupSteps.FIRST_STEP]: () => this.firstConnectionStep(apiId, apiHash, telegramId),
-            [setupSteps.SECOND_STEP]: () => this.secondConnectionStep(accountPassword, code, telegramId),
-            [setupSteps.THIRD_STEP]: () => this.thirdConnectionStep(keywords, telegramId),
+    async onModuleInit(): Promise<any> {
+        this.connectionStepFunctions = {
+            [setupSteps.FIRST_STEP]: async ({ apiId, apiHash, telegramId }: CreateTelegramConnectionDto) => this.firstConnectionStep(apiId, apiHash, telegramId),
+            [setupSteps.SECOND_STEP]: async ({ accountPassword, code, telegramId }: CreateTelegramConnectionDto) => this.secondConnectionStep(accountPassword, code, telegramId),
+            [setupSteps.THIRD_STEP]: async ({ keywords, telegramId }: CreateTelegramConnectionDto) => this.thirdConnectionStep(keywords, telegramId),
         };
+    }
 
-        await connectionStepFunctions[setupStep](createTelegramConnectionDto);
+    async connectToTelegram(createTelegramConnectionDto: CreateTelegramConnectionDto) {
+        const {setupStep} = createTelegramConnectionDto
+        await this.connectionStepFunctions[setupStep as setupSteps](createTelegramConnectionDto);
     }
 }

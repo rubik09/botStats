@@ -15,10 +15,10 @@ export class CreateTelegramConnectionDto extends PartialType(PickType(TelegramCo
     setupStep: setupSteps;
 
     @Length(5, 5)
-    code?: string;
+    code: string;
 
     @IsString()
     @Length(8, 30)
-    accountPassword?: string;
+    accountPassword: string;
 }
 
