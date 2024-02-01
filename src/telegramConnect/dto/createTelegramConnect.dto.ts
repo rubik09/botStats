@@ -1,6 +1,7 @@
 import {PartialType, PickType} from '@nestjs/mapped-types';
 import {TelegramConnectDto} from "./telegramConnect.dto";
 import {Min, Max, IsNumber, Length, IsString} from "class-validator";
+import {setupSteps} from "../../utils/consts";
 
 export class CreateTelegramConnectionDto extends PartialType(PickType(TelegramConnectDto, [
     'keywords',
@@ -11,7 +12,7 @@ export class CreateTelegramConnectionDto extends PartialType(PickType(TelegramCo
     @IsNumber()
     @Min(1)
     @Max(3)
-    setupStep: number;
+    setupStep: setupSteps;
 
     @Length(5, 5)
     code?: string;

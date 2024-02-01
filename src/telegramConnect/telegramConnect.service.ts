@@ -4,11 +4,10 @@ import emmiter from "../utils/emitter";
 import {TelegramClient} from "telegram";
 import NewLogger from "../utils/newLogger";
 import {UpdateUserSessionInfoDto} from "../userSession/dto/updateUserSession.dto";
-import {userSessionStatus} from "../userSession/entity/userSession.entity";
-import {TClients, TClientStartPromises, TPromises, TPromiseValue} from "../utils/interfaces";
+import {UserSession, userSessionStatus} from "../userSession/entity/userSession.entity";
+import {TClients, TClientStartPromises, TPromises, TPromiseValue, TSetupSteps} from "../utils/interfaces";
 import {CreateTelegramConnectionDto} from "./dto/createTelegramConnect.dto";
 import {UserSessionService} from "../userSession/userSession.service";
-import {PersonalInfo} from "../personalInfo/entity/personalInfo.entity";
 import {UpdateApiInfoDto} from "../userSession/dto/updateApiInfo.dto";
 import {setupSteps} from "../utils/consts";
 
@@ -30,8 +29,11 @@ export class TelegramConnectService {
     constructor(private userSessionService: UserSessionService) {
     }
 
-    async firstConnectionStep(createTelegramConnectionDto: CreateTelegramConnectionDto, phoneNumber: PersonalInfo["phoneNumber"], stringSession: StringSession) {
-        const {apiId, apiHash, telegramId} = createTelegramConnectionDto;
+    async firstConnectionStep(apiId: UserSession['apiId'], apiHash: UserSession['apiHash'], telegramId: UserSession['telegramId']) {
+
+        const stringSession = new StringSession('');
+        const {personalInfo} = await this.userSessionService.getPersonalInfoByTelegramId(telegramId);
+        const {phoneNumber} = personalInfo;
 
         const client = new TelegramClient(stringSession, Number(apiId), apiHash, {
             connectionRetries: 5,
@@ -57,7 +59,8 @@ export class TelegramConnectService {
                 promises[telegramId] = generatePromise();
                 return codeProm.phoneCode;
             },
-            onError: () => {
+            onError: (e) => {
+                console.log(e)
                 throw new HttpException('Internal server error', HttpStatus.INTERNAL_SERVER_ERROR);
             },
         });
@@ -68,11 +71,9 @@ export class TelegramConnectService {
         };
 
         await this.userSessionService.updateApiInfoByTelegramId(telegramId, updateApiInfoDto);
-        return;
     }
 
-    async secondConnectionStep(createTelegramConnectionDto: CreateTelegramConnectionDto) {
-        const {telegramId, accountPassword, code} = createTelegramConnectionDto;
+    async secondConnectionStep(accountPassword: string, code: string, telegramId: UserSession['telegramId']) {
         await promises[telegramId].resolve({accountPassword: accountPassword, phoneCode: code});
         await promises[telegramId].resolve({accountPassword: accountPassword, phoneCode: code});
         const client = clients[telegramId];
@@ -84,35 +85,26 @@ export class TelegramConnectService {
             status: userSessionStatus.ACTIVE,
         };
         await this.userSessionService.updateUserSessionByTelegramId(telegramId, updateUserSessionInfoDto);
-        return;
     }
 
-    async thirdConnectionStep(createTelegramConnectionDto: CreateTelegramConnectionDto) {
-        const {keywords, telegramId} = createTelegramConnectionDto;
+    async thirdConnectionStep(keywords: UserSession['keywords'], telegramId: UserSession['telegramId']) {
         const updateUserSessionInfoDto = <UpdateUserSessionInfoDto>{
             keywords,
         };
         await this.userSessionService.updateUserSessionByTelegramId(telegramId, updateUserSessionInfoDto);
         const client = clients[telegramId];
         emmiter.emit('newClient', client);
-        return;
     }
 
     async connectToTelegram(createTelegramConnectionDto: CreateTelegramConnectionDto) {
-        const {telegramId, setupStep} = createTelegramConnectionDto;
-        const stringSession = new StringSession('');
-        const {personalInfo} = await this.userSessionService.getPersonalInfoByTelegramId(telegramId);
-        const {phoneNumber} = personalInfo;
+        const {setupStep, apiId, apiHash, telegramId, accountPassword, code, keywords} = createTelegramConnectionDto
 
-        if (setupStep === setupSteps.firstStep) {
-            await this.firstConnectionStep(createTelegramConnectionDto, phoneNumber, stringSession);
-            return;
-        } else if (setupStep === setupSteps.secondStep) {
-            await this.secondConnectionStep(createTelegramConnectionDto);
-            return;
-        } else if (setupStep === setupSteps.thirdStep) {
-            await this.thirdConnectionStep(createTelegramConnectionDto);
-            return;
-        }
+        const connectionStepFunctions: TSetupSteps = {
+            [setupSteps.firstStep]: () => this.firstConnectionStep(apiId, apiHash, telegramId),
+            [setupSteps.secondStep]: () => this.secondConnectionStep(accountPassword, code, telegramId),
+            [setupSteps.thirdStep]: () => this.thirdConnectionStep(keywords, telegramId),
+        };
+
+        await connectionStepFunctions[setupStep](createTelegramConnectionDto);
     }
 }
