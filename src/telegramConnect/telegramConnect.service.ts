@@ -5,20 +5,20 @@ import {TelegramClient} from "telegram";
 import NewLogger from "../utils/newLogger";
 import {UpdateUserSessionInfoDto} from "../userSession/dto/updateUserSession.dto";
 import {UserSession, userSessionStatus} from "../userSession/entity/userSession.entity";
-import {TClients, TClientStartPromises, TPromises, TPromiseValue} from "../utils/interfaces";
+import {IClients, IClientStartPromises, IPromises, IPromiseValue} from "../utils/interfaces";
 import {CreateTelegramConnectionDto} from "./dto/createTelegramConnect.dto";
 import {UserSessionService} from "../userSession/userSession.service";
 import {UpdateApiInfoDto} from "../userSession/dto/updateApiInfo.dto";
 import {setupSteps} from "../utils/consts";
 import {TSetupSteps} from "../utils/types";
 
-const clients: TClients = {};
-const promises: TPromises = {};
-const clientStartPromise: TClientStartPromises = {};
+const clients: IClients = {};
+const promises: IPromises = {};
+const clientStartPromise: IClientStartPromises = {};
 
-function generatePromise(): TPromises[number] {
-    let resolve: (value: TPromiseValue) => void;
-    let promise = new Promise<TPromiseValue>((res) => {
+function generatePromise(): IPromises[number] {
+    let resolve: (value: IPromiseValue) => void;
+    let promise = new Promise<IPromiseValue>((res) => {
         resolve = res;
     });
 

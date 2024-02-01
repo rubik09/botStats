@@ -1,22 +1,22 @@
 import {TelegramClient} from "telegram";
 
-export interface TClients {
+export interface IClients {
     [userId: number]: TelegramClient;
 }
 
 
-export interface TClientStartPromises {
+export interface IClientStartPromises {
     [userId: number]: Promise<any>;
 }
 
-export interface TPromises {
+export interface IPromises {
     [userId: number]: {
-        resolve: (value: TPromiseValue ) => void;
-        promise: Promise<TPromiseValue >;
+        resolve: (value: IPromiseValue ) => void;
+        promise: Promise<IPromiseValue >;
     };
 }
 
-export interface TPromiseValue {
+export interface IPromiseValue {
     accountPassword: string;
     phoneCode: string
 }
