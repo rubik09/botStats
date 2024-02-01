@@ -1,5 +1,5 @@
 export enum setupSteps {
-    firstStep = 1,
-    secondStep = 2,
-    thirdStep = 3,
+    FIRST_STEP = 1,
+    SECOND_STEP = 2,
+    THIRD_STEP = 3,
 }

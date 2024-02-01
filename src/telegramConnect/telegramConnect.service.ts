@@ -100,9 +100,9 @@ export class TelegramConnectService {
         const {setupStep, apiId, apiHash, telegramId, accountPassword, code, keywords} = createTelegramConnectionDto
 
         const connectionStepFunctions: TSetupSteps = {
-            [setupSteps.firstStep]: () => this.firstConnectionStep(apiId, apiHash, telegramId),
-            [setupSteps.secondStep]: () => this.secondConnectionStep(accountPassword, code, telegramId),
-            [setupSteps.thirdStep]: () => this.thirdConnectionStep(keywords, telegramId),
+            [setupSteps.FIRST_STEP]: () => this.firstConnectionStep(apiId, apiHash, telegramId),
+            [setupSteps.SECOND_STEP]: () => this.secondConnectionStep(accountPassword, code, telegramId),
+            [setupSteps.THIRD_STEP]: () => this.thirdConnectionStep(keywords, telegramId),
         };
 
         await connectionStepFunctions[setupStep](createTelegramConnectionDto);
