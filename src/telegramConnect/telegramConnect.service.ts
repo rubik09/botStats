@@ -144,7 +144,7 @@ export class TelegramConnectService implements OnModuleInit {
         };
     }
 
-    async connectToTelegram(createTelegramConnectionDto: CreateTelegramConnectionDto) {
+    connectToTelegram(createTelegramConnectionDto: CreateTelegramConnectionDto) {
         const {setupStep} = createTelegramConnectionDto
 
         this.logger.log(`Main connectToTelegram function: run step ${setupStep}`);
