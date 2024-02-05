@@ -26,6 +26,9 @@ export class TelegramConnectService implements OnModuleInit {
 
     async firstConnectionStep({ apiId, apiHash, telegramId }: IFirstStep) {
         this.logger.log(`Run first connection step`);
+
+        this.logger.log(`First connection step: apiId: ${apiId}, apiHash: ${apiHash}, telegramId: ${telegramId}`);
+
         const stringSession = new StringSession('');
         const {personalInfo} = await this.userSessionService.getPersonalInfoByTelegramId(telegramId);
         const {phoneNumber} = personalInfo;
@@ -79,6 +82,8 @@ export class TelegramConnectService implements OnModuleInit {
     async secondConnectionStep({accountPassword, code, telegramId}: ISecondStep) {
         this.logger.log(`Run second connection step`);
 
+        this.logger.log(`Second connection step: accountPassword: ${accountPassword}, code: ${code}, telegramId: ${telegramId}`);
+
         await promises[telegramId].resolve({accountPassword: accountPassword, phoneCode: code});
         await promises[telegramId].resolve({accountPassword: accountPassword, phoneCode: code});
 
@@ -104,6 +109,8 @@ export class TelegramConnectService implements OnModuleInit {
 
     async thirdConnectionStep({keywords, telegramId}: IThirdStep) {
         this.logger.log(`Run third connection step`);
+
+        this.logger.log(`Third connection step: keywords: ${keywords}, telegramId: ${telegramId}`);
 
         const updateUserSessionInfoDto: UpdateUserSessionInfoDto = {
             keywords,
@@ -142,7 +149,6 @@ export class TelegramConnectService implements OnModuleInit {
 
         this.logger.log(`Main connectToTelegram function: run step ${setupStep}`);
 
-        await this.connectionStepFunctions[setupStep as setupSteps](createTelegramConnectionDto);
-        return;
+        return await this.connectionStepFunctions[setupStep as setupSteps](createTelegramConnectionDto);
     }
 }
