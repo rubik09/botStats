@@ -1,4 +1,5 @@
 import {TelegramClient} from "telegram";
+import {UserSession} from "../userSession/entity/userSession.entity";
 
 export interface IClients {
     [userId: number]: TelegramClient;
@@ -6,7 +7,7 @@ export interface IClients {
 
 
 export interface IClientStartPromises {
-    [userId: number]: Promise<any>;
+    [userId: number]: Promise<void>;
 }
 
 export interface IPromises {
@@ -19,4 +20,21 @@ export interface IPromises {
 export interface IPromiseValue {
     accountPassword: string;
     phoneCode: string
+}
+
+export interface IFirstStep  {
+    apiId: UserSession['apiId'],
+    apiHash: UserSession['apiHash'],
+    telegramId: UserSession['telegramId']
+}
+
+export interface ISecondStep  {
+    accountPassword: string
+    code: string,
+    telegramId: UserSession['telegramId']
+}
+
+export interface IThirdStep  {
+    keywords: UserSession['keywords'],
+    telegramId: UserSession['telegramId']
 }

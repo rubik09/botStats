@@ -3,12 +3,10 @@ import {UserSessionRepository} from "./userSession.repository";
 import {UserSession} from "./entity/userSession.entity";
 import {UpdateUserSessionInfoDto} from "./dto/updateUserSession.dto";
 import {UpdateApiInfoDto} from "./dto/updateApiInfo.dto";
-import {StatsService} from "../stats/stats.service";
 
 @Injectable()
 export class UserSessionService {
-    private readonly logger = new Logger(StatsService.name);
-
+    private readonly logger = new Logger(UserSessionService.name);
     constructor(private userSessionRepository: UserSessionRepository) {
     }
 
