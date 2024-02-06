@@ -27,7 +27,7 @@ export class VerificationConsumer implements OnModuleInit {
             {
                 eachMessage: async ({message, topic}) => {
                     const incomeMessage = message.value.toString();
-                    this.logger.log(`${topic} : ${incomeMessage}`);
+                    this.logger.debug(`${topic} : ${incomeMessage}`);
                     if (topic === OUTGOING_MESSAGE) {
                         //outgoing func
                     }

@@ -1,12 +1,7 @@
 import {StringSession} from 'telegram/sessions';
 import {TelegramClient} from 'telegram';
-import emmiter from './emitter';
+import emitterSubject from './emitter';
 import NewLogger from './newLogger';
-
-interface YourClientType {
-    id: number;
-    name: string;
-}
 
 export const clientsTelegram: Record<string, TelegramClient> = {};
 
@@ -23,7 +18,7 @@ async function telegramInit(log_session: string, api_id: string, api_hash: strin
     clientsTelegram[client_id] = client;
     client.floodSleepThreshold = 300;
 
-    emmiter.emit('newClient', client);
+    emitterSubject.next({ eventName: 'newClient', data: client });
 }
 
 export default telegramInit;
