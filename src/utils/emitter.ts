@@ -1,4 +1,5 @@
-import {EventEmitter} from 'node:events';
+import {Subject} from "rxjs";
 
-const emmiter = new EventEmitter();
-export default emmiter;
+const emitterSubject = new Subject();
+
+export default emitterSubject;
