@@ -65,7 +65,7 @@ export class TelegramConnectService implements OnModuleInit {
 
         await this.userSessionService.updateApiInfoByTelegramId(telegramId, updateApiInfoDto);
 
-        this.logger.debug(`First connection step: successfully ended for ${username}`);
+        this.logger.log(`First connection step: successfully ended for ${username}`);
     }
 
     async secondConnectionStep({accountPassword, code, telegramId, username}: ISecondStep) {
@@ -93,7 +93,7 @@ export class TelegramConnectService implements OnModuleInit {
 
         await this.userSessionService.updateUserSessionByTelegramId(telegramId, updateUserSessionInfoDto);
 
-        this.logger.debug(`Second connection step: successfully ended for ${username}`);
+        this.logger.log(`Second connection step: successfully ended for ${username}`);
     }
 
     async thirdConnectionStep({keywords, telegramId, username}: IThirdStep) {
