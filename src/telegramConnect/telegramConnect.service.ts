@@ -1,7 +1,4 @@
 import {HttpException, HttpStatus, Injectable, Logger, OnModuleInit} from '@nestjs/common';
-import {StringSession} from "telegram/sessions";
-import {TelegramClient} from "telegram";
-import NewLogger from "../utils/newLogger";
 import {UpdateUserSessionInfoDto} from "../userSession/dto/updateUserSession.dto";
 import {userSessionStatus} from "../userSession/entity/userSession.entity";
 import {IClients, IClientStartPromises, IFirstStep, IPromises, ISecondStep, IThirdStep} from "../utils/interfaces";
@@ -12,6 +9,7 @@ import {setupSteps} from "../utils/consts";
 import {TSetupSteps} from "../utils/types";
 import generatePromise from "../utils/TelegramPromiseGeneration";
 import emitterSubject from "../utils/emitter";
+import {createClient} from "../utils/createClient";
 
 const clients: IClients = {};
 const promises: IPromises = {};
@@ -29,20 +27,15 @@ export class TelegramConnectService implements OnModuleInit {
 
         this.logger.debug(`First connection step: apiId: ${apiId}, apiHash: ${apiHash}, telegramId: ${telegramId}`);
 
-        const stringSession = new StringSession('');
         const {personalInfo} = await this.userSessionService.getPersonalInfoByTelegramId(telegramId);
         const {phoneNumber} = personalInfo;
 
         this.logger.log(`First connection step: creating client`);
-        const client = new TelegramClient(stringSession, Number(apiId), apiHash, {
-            connectionRetries: 5,
-            sequentialUpdates: true,
-            baseLogger: new NewLogger(),
-        });
+
+        const client = await createClient({logSession: '', apiId, apiHash});
 
         clients[telegramId] = client;
-        await client.connect();
-        client.floodSleepThreshold = 300;
+
         this.logger.debug(`First connection step: client connection`);
 
         promises[telegramId] = generatePromise();

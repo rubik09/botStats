@@ -38,3 +38,16 @@ export interface IThirdStep  {
     keywords: UserSession['keywords'],
     telegramId: UserSession['telegramId']
 }
+
+export interface ICreateClient  {
+    logSession: UserSession['logSession'],
+    apiId: UserSession['apiId'],
+    apiHash: UserSession['apiHash'],
+}
+
+export interface ITelegramInit  {
+    logSession: UserSession["logSession"],
+    apiId: UserSession["apiId"],
+    apiHash: UserSession["apiHash"],
+    telegramId: UserSession["telegramId"],
+}
