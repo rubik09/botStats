@@ -23,24 +23,26 @@ export class TelegramConnectService implements OnModuleInit {
     }
 
     async firstConnectionStep({ apiId, apiHash, telegramId }: IFirstStep) {
-        this.logger.debug(`Run first connection step`);
-
-        this.logger.debug(`First connection step: apiId: ${apiId}, apiHash: ${apiHash}, telegramId: ${telegramId}`);
-
         const {personalInfo} = await this.userSessionService.getPersonalInfoByTelegramId(telegramId);
-        const {phoneNumber} = personalInfo;
+        const {phoneNumber, username} = personalInfo;
 
-        this.logger.log(`First connection step: creating client`);
+        this.logger.debug(`Run first connection step for ${username}`);
+
+        this.logger.debug(`First connection step: apiId: ${apiId}, apiHash: ${apiHash}, telegramId: ${telegramId}, ${username}`);
+
+
+
+        this.logger.log(`First connection step: creating client for ${username}`);
 
         const client = await createClient({logSession: '', apiId, apiHash});
 
         clients[telegramId] = client;
 
-        this.logger.debug(`First connection step: client connection`);
+        this.logger.debug(`First connection step: client connection for ${username}`);
 
         promises[telegramId] = generatePromise();
 
-        this.logger.debug(`First connection step: generating promises and wait code with password`);
+        this.logger.debug(`First connection step: generating promises and wait code with password for ${username}`);
 
         clientStartPromise[telegramId] = client.start({
             phoneNumber: phoneNumber,
@@ -56,7 +58,7 @@ export class TelegramConnectService implements OnModuleInit {
             },
             onError: (e) => {
                 console.log(e)
-                this.logger.error(`First connection step: error on client.start`);
+                this.logger.error(`First connection step: error on client.start for ${username}`);
                 throw new HttpException('Internal server error', HttpStatus.INTERNAL_SERVER_ERROR);
             },
         });
@@ -68,25 +70,28 @@ export class TelegramConnectService implements OnModuleInit {
 
         await this.userSessionService.updateApiInfoByTelegramId(telegramId, updateApiInfoDto);
 
-        this.logger.debug(`First connection step: successfully ended`);
+        this.logger.debug(`First connection step: successfully ended for ${username}`);
     }
 
     async secondConnectionStep({accountPassword, code, telegramId}: ISecondStep) {
-        this.logger.debug(`Run second connection step`);
+        const {personalInfo} = await this.userSessionService.getPersonalInfoByTelegramId(telegramId);
+        const {username} = personalInfo;
 
-        this.logger.debug(`Second connection step: accountPassword: ${accountPassword}, code: ${code}, telegramId: ${telegramId}`);
+        this.logger.debug(`Run second connection step for ${username}`);
+
+        this.logger.debug(`Second connection step: accountPassword: ${accountPassword}, code: ${code}, telegramId: ${telegramId}, ${username}`);
 
         await promises[telegramId].resolve({accountPassword: accountPassword, phoneCode: code});
         await promises[telegramId].resolve({accountPassword: accountPassword, phoneCode: code});
 
-        this.logger.debug(`Second connection step: resolving code and password promises`);
+        this.logger.debug(`Second connection step: resolving code and password promises for ${username}`);
 
 
         const client = clients[telegramId];
         const logSession = String(client.session.save());
         await clientStartPromise[telegramId];
 
-        this.logger.debug(`Second connection step: save log session`);
+        this.logger.debug(`Second connection step: save log session for ${username}`);
 
 
         const updateUserSessionInfoDto: UpdateUserSessionInfoDto = {
@@ -96,13 +101,16 @@ export class TelegramConnectService implements OnModuleInit {
 
         await this.userSessionService.updateUserSessionByTelegramId(telegramId, updateUserSessionInfoDto);
 
-        this.logger.debug(`Second connection step: successfully ended`);
+        this.logger.debug(`Second connection step: successfully ended for ${username}`);
     }
 
     async thirdConnectionStep({keywords, telegramId}: IThirdStep) {
-        this.logger.debug(`Run third connection step`);
+        const {personalInfo} = await this.userSessionService.getPersonalInfoByTelegramId(telegramId);
+        const {username} = personalInfo;
 
-        this.logger.debug(`Third connection step: keywords: ${keywords}, telegramId: ${telegramId}`);
+        this.logger.debug(`Run third connection step for ${username}`);
+
+        this.logger.debug(`Third connection step: keywords: ${keywords}, telegramId: ${telegramId}, ${username}`);
 
         const updateUserSessionInfoDto: UpdateUserSessionInfoDto = {
             keywords,
@@ -110,11 +118,11 @@ export class TelegramConnectService implements OnModuleInit {
         await this.userSessionService.updateUserSessionByTelegramId(telegramId, updateUserSessionInfoDto);
         const client = clients[telegramId];
 
-        this.logger.debug(`Third connection step: run emmiter`);
+        this.logger.debug(`Third connection step: run emmiter for ${username}`);
 
         emitterSubject.next({ eventName: 'newClient', data: client });
 
-        this.logger.log(`Third connection step: successfully ended`);
+        this.logger.log(`Third connection step: successfully ended for ${username}`);
     }
 
      onModuleInit() {
