@@ -2,6 +2,7 @@ import {PartialType, PickType} from '@nestjs/mapped-types';
 import {TelegramConnectDto} from "./telegramConnect.dto";
 import {Min, Max, IsNumber, Length, IsString} from "class-validator";
 import {setupSteps} from "../../utils/consts";
+import {PersonalInfo} from "../../personalInfo/entity/personalInfo.entity";
 
 export class CreateTelegramConnectionDto extends PartialType(PickType(TelegramConnectDto, [
     'keywords',
@@ -20,5 +21,9 @@ export class CreateTelegramConnectionDto extends PartialType(PickType(TelegramCo
     @IsString()
     @Length(8, 30)
     accountPassword: string;
+
+    username: PersonalInfo["username"];
+
+    phoneNumber?: PersonalInfo["phoneNumber"];
 }
 

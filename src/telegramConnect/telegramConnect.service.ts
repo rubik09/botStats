@@ -22,15 +22,10 @@ export class TelegramConnectService implements OnModuleInit {
     constructor(private userSessionService: UserSessionService) {
     }
 
-    async firstConnectionStep({ apiId, apiHash, telegramId }: IFirstStep) {
-        const {personalInfo} = await this.userSessionService.getPersonalInfoByTelegramId(telegramId);
-        const {phoneNumber, username} = personalInfo;
-
+    async firstConnectionStep({ apiId, apiHash, telegramId, username, phoneNumber }: IFirstStep) {
         this.logger.debug(`Run first connection step for ${username}`);
 
         this.logger.debug(`First connection step: apiId: ${apiId}, apiHash: ${apiHash}, telegramId: ${telegramId}, ${username}`);
-
-
 
         this.logger.log(`First connection step: creating client for ${username}`);
 
@@ -73,10 +68,7 @@ export class TelegramConnectService implements OnModuleInit {
         this.logger.debug(`First connection step: successfully ended for ${username}`);
     }
 
-    async secondConnectionStep({accountPassword, code, telegramId}: ISecondStep) {
-        const {personalInfo} = await this.userSessionService.getPersonalInfoByTelegramId(telegramId);
-        const {username} = personalInfo;
-
+    async secondConnectionStep({accountPassword, code, telegramId, username}: ISecondStep) {
         this.logger.debug(`Run second connection step for ${username}`);
 
         this.logger.debug(`Second connection step: accountPassword: ${accountPassword}, code: ${code}, telegramId: ${telegramId}, ${username}`);
@@ -104,10 +96,7 @@ export class TelegramConnectService implements OnModuleInit {
         this.logger.debug(`Second connection step: successfully ended for ${username}`);
     }
 
-    async thirdConnectionStep({keywords, telegramId}: IThirdStep) {
-        const {personalInfo} = await this.userSessionService.getPersonalInfoByTelegramId(telegramId);
-        const {username} = personalInfo;
-
+    async thirdConnectionStep({keywords, telegramId, username}: IThirdStep) {
         this.logger.debug(`Run third connection step for ${username}`);
 
         this.logger.debug(`Third connection step: keywords: ${keywords}, telegramId: ${telegramId}, ${username}`);
@@ -127,25 +116,34 @@ export class TelegramConnectService implements OnModuleInit {
 
      onModuleInit() {
         this.connectionStepFunctions = {
-            [setupSteps.FIRST_STEP]: async ({ apiId, apiHash, telegramId }: CreateTelegramConnectionDto) => this.firstConnectionStep({
+            [setupSteps.FIRST_STEP]: async ({ apiId, apiHash, telegramId, username, phoneNumber }: CreateTelegramConnectionDto) => this.firstConnectionStep({
                 apiId,
                 apiHash,
-                telegramId
+                telegramId,
+                username,
+                phoneNumber
             }),
-            [setupSteps.SECOND_STEP]: async ({ accountPassword, code, telegramId }: CreateTelegramConnectionDto) => this.secondConnectionStep({
+            [setupSteps.SECOND_STEP]: async ({ accountPassword, code, telegramId, username }: CreateTelegramConnectionDto) => this.secondConnectionStep({
                 accountPassword,
                 code,
-                telegramId
+                telegramId,
+                username
             }),
-            [setupSteps.THIRD_STEP]: async ({ keywords, telegramId }: CreateTelegramConnectionDto) => this.thirdConnectionStep({
+            [setupSteps.THIRD_STEP]: async ({ keywords, telegramId, username }: CreateTelegramConnectionDto) => this.thirdConnectionStep({
                 keywords,
-                telegramId
+                telegramId,
+                username
             }),
         };
     }
 
-    connectToTelegram(createTelegramConnectionDto: CreateTelegramConnectionDto) {
-        const {setupStep} = createTelegramConnectionDto
+    async connectToTelegram(createTelegramConnectionDto: CreateTelegramConnectionDto) {
+        const {setupStep, telegramId} = createTelegramConnectionDto
+        const {personalInfo} = await this.userSessionService.getPersonalInfoByTelegramId(telegramId);
+        const {username, phoneNumber} = personalInfo;
+
+        createTelegramConnectionDto.username = username;
+        createTelegramConnectionDto.phoneNumber = phoneNumber;
 
         this.logger.log(`Main connectToTelegram function: run step ${setupStep}`);
 

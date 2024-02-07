@@ -1,5 +1,6 @@
 import {TelegramClient} from "telegram";
 import {UserSession} from "../userSession/entity/userSession.entity";
+import {PersonalInfo} from "../personalInfo/entity/personalInfo.entity";
 
 export interface IClients {
     [userId: number]: TelegramClient;
@@ -22,21 +23,24 @@ export interface IPromiseValue {
     phoneCode: string
 }
 
-export interface IFirstStep  {
+export interface IGeneralStep  {
+    telegramId: UserSession['telegramId'],
+    username: PersonalInfo['username']
+}
+
+export interface IFirstStep extends IGeneralStep  {
     apiId: UserSession['apiId'],
     apiHash: UserSession['apiHash'],
-    telegramId: UserSession['telegramId']
+    phoneNumber: PersonalInfo['phoneNumber']
 }
 
-export interface ISecondStep  {
+export interface ISecondStep extends IGeneralStep {
     accountPassword: string
     code: string,
-    telegramId: UserSession['telegramId']
 }
 
-export interface IThirdStep  {
+export interface IThirdStep extends IGeneralStep {
     keywords: UserSession['keywords'],
-    telegramId: UserSession['telegramId']
 }
 
 export interface ICreateClient  {
