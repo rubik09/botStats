@@ -21,6 +21,9 @@ export class Stats {
     incomingMessagesCount: number;
 
     @Column({default: 0})
+    outgoingMessagesCount: number;
+
+    @Column({default: 0})
     usersCount: number;
 
     @CreateDateColumn({type: 'timestamp without time zone'})

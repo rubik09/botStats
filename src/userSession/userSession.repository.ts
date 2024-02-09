@@ -28,7 +28,7 @@ export class UserSessionRepository {
     }
 
 
-    async getKeywordsFromUserSession(apiId: UserSession['apiId']): Promise<UserSession> {
+    async getKeywordsFromUserSessionByApiId(apiId: UserSession['apiId']): Promise<UserSession> {
         return await this.userSessionRepository.findOne({where: {apiId}, select: ['id', 'keywords']});
     }
 
@@ -42,6 +42,13 @@ export class UserSessionRepository {
     async getPersonalInfoByTelegramId(telegramId: UserSession['telegramId']): Promise<UserSession> {
         return await this.userSessionRepository.findOne({
             where: {telegramId},
+            select: ['personalInfo'],
+        });
+    }
+
+    async getPersonalInfoByApiId(apiId: UserSession['apiId']): Promise<UserSession> {
+        return await this.userSessionRepository.findOne({
+            where: {apiId},
             select: ['personalInfo'],
         });
     }

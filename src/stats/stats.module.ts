@@ -11,7 +11,8 @@ import {UserSessionModule} from "../userSession/userSession.module";
 @Module({
     imports: [TypeOrmModule.forFeature([Stats]), UserSessionModule, UsersModule],
     providers: [StatsService, StatsRepository],
-    controllers: [StatsController]
+    controllers: [StatsController],
+    exports: [StatsService]
 })
 export class StatsModule {
 }
