@@ -97,12 +97,12 @@ export class StatsService {
         return stats;
     }
 
-    async incomingMessages(dataObjStr: string): Promise<void> {
+    async incomingMessages(clientInfoStr: string): Promise<void> {
         this.logger.log(`Trying to add incoming message to stats`);
 
-        this.logger.log(`parsing dataObjStr`);
-        const dataObj = JSON.parse(dataObjStr);
-        const {apiId, telegramId} = dataObj;
+        this.logger.log(`parsing clientInfoStr`);
+        const clientInfoObj = JSON.parse(clientInfoStr);
+        const {apiId, telegramId} = clientInfoObj;
 
         const createUserDto: CreateUserDto = <CreateUserDto>{
             telegramId,

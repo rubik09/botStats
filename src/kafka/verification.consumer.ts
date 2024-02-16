@@ -28,13 +28,13 @@ export class VerificationConsumer implements OnModuleInit {
             },
             {
                 eachMessage: async ({message, topic}) => {
-                    const dataObjStr = message.value.toString();
-                    this.logger.debug(`${topic} : ${dataObjStr}`);
+                    const clientInfoStr = message.value.toString();
+                    this.logger.debug(`${topic} : ${clientInfoStr}`);
                     if (topic === OUTGOING_MESSAGE) {
                         // await this.statsService.outgoingMessages(message);
                     }
                     if (topic === INCOMING_MESSAGE) {
-                        await this.statsService.incomingMessages(dataObjStr)
+                        await this.statsService.incomingMessages(clientInfoStr)
                     }
                 },
             },

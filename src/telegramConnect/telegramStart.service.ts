@@ -4,7 +4,7 @@ import emitterSubject from "../utils/emitter";
 import {ProducerService} from "../kafka/producer.service";
 import {NewMessage} from "telegram/events";
 import {ConfigService} from "@nestjs/config";
-import arrTelegramInit from "../utils/telegramInit";
+import telegramAccountsInit from "../utils/telegramInit";
 
 @Injectable()
 export class TelegramStartService implements OnModuleInit {
@@ -31,12 +31,12 @@ export class TelegramStartService implements OnModuleInit {
                         const {className, userId} = event;
                         if (className !== 'UpdateShortMessage') return;
 
-                        const dataObj = {apiId: client.apiId, telegramId: userId};
-                        const dataObjStr = JSON.stringify(dataObj);
+                        const clientInfoObj = {apiId: client.apiId, telegramId: userId};
+                        const clientInfoStr = JSON.stringify(clientInfoObj);
 
                         await this.producerService.produce({
                             topic: INCOMING_MESSAGE,
-                            messages: [{value: dataObjStr}]
+                            messages: [{value: clientInfoStr}]
                         });
                         new NewMessage({incoming: true})
                     }
@@ -46,7 +46,7 @@ export class TelegramStartService implements OnModuleInit {
 
         const allSessions = await this.userSessionService.getActiveUserSessions();
 
-        await arrTelegramInit(allSessions);
+        await telegramAccountsInit(allSessions);
     }
 
 }

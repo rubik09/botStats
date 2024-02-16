@@ -17,7 +17,7 @@ async function telegramInit({logSession, apiId, apiHash, telegramId}: ITelegramI
     emitterSubject.next({ eventName: 'newClient', data: client });
 }
 
-async function arrTelegramInit(allSessions: UserSession[]){
+async function telegramAccountsInit(allSessions: UserSession[]){
     for (const session of allSessions) {
         const {
             logSession,
@@ -33,4 +33,4 @@ async function arrTelegramInit(allSessions: UserSession[]){
     }
 }
 
-export default arrTelegramInit;
+export default telegramAccountsInit;
