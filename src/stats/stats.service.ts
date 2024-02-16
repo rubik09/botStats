@@ -4,6 +4,8 @@ import {CreateUserDto} from "../users/dto/createUser.dto";
 import {StatsRepository} from "./stats.repository";
 import {Stats} from "./entity/stats.entity";
 import {UpdateStatsDto} from "./dto/updateStats.dto";
+import {UserSessionService} from "../userSession/userSession.service";
+import {UpdateUserSessionInfoDto} from "../userSession/dto/updateUserSession.dto";
 
 @Injectable()
 export class StatsService {
@@ -11,6 +13,7 @@ export class StatsService {
     constructor(
         private readonly statsRepository: StatsRepository,
         private readonly usersService: UsersService,
+        private readonly userSessionService: UserSessionService,
     ) {
     }
 
@@ -120,5 +123,59 @@ export class StatsService {
         await this.increaseIncomingMessagesCountToSessionByApiId(apiId);
 
         this.logger.debug(`incoming message successfully add to stats`);
+    };
+
+    async outgoingMessages(clientInfoStr: string) {
+        this.logger.log(`Trying to add outgoing message to stats`);
+
+        this.logger.log(`parsing clientInfoStr`);
+        const clientInfoObj = JSON.parse(clientInfoStr);
+        const {apiId, message} = clientInfoObj;
+
+        const {keywords} = await this.userSessionService.getKeywordsFromUserSessionByApiId(apiId);
+        const parsedKeywords = await JSON.parse(keywords);
+        const {personalInfo} = await this.userSessionService.getPersonalInfoByApiId(apiId);
+        const {username} = personalInfo;
+        const statsArr = await this.getStatsByApiId(apiId);
+
+        if (!statsArr) await this.createStats(apiId);
+
+        await this.increaseOutgoingMessagesCountToSessionByApiId(apiId);
+
+        this.logger.debug({username, apiId, date: new Date()})
+
+        const msgLowerCase = message.toLowerCase().trim();
+        for (const [i, elem] of parsedKeywords.entries()) {
+            const {
+                keyword
+            } = elem;
+
+            if (!keyword) continue;
+
+            const keywordsList = keyword.split(';');
+
+            for (const item of keywordsList) {
+                const keywordLowerCase = item.toLowerCase().trim();
+
+                this.logger.debug(`keyword: ${keyword} matched?`, (msgLowerCase.indexOf(keywordLowerCase) >= 0));
+
+                if (!(msgLowerCase.indexOf(keywordLowerCase) >= 0)) continue;
+
+                parsedKeywords[i].count++
+            }
+        }
+        const stringifyKeywords = JSON.stringify(parsedKeywords);
+
+        this.logger.debug({arraySame: keywords === stringifyKeywords, message});
+
+        if (keywords === stringifyKeywords) return;
+
+        const updateUserSessionInfoDto: UpdateUserSessionInfoDto = <UpdateUserSessionInfoDto>{
+            stringifyKeywords,
+        };
+
+        await this.userSessionService.updateUserSessionByApiId(apiId, updateUserSessionInfoDto);
+
+        this.logger.debug(`outgoing message successfully add to stats`);
     };
 }

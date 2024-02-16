@@ -31,7 +31,7 @@ export class VerificationConsumer implements OnModuleInit {
                     const clientInfoStr = message.value.toString();
                     this.logger.debug(`${topic} : ${clientInfoStr}`);
                     if (topic === OUTGOING_MESSAGE) {
-                        // await this.statsService.outgoingMessages(message);
+                        await this.statsService.outgoingMessages(clientInfoStr)
                     }
                     if (topic === INCOMING_MESSAGE) {
                         await this.statsService.incomingMessages(clientInfoStr)
