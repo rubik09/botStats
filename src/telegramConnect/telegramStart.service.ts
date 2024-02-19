@@ -5,6 +5,7 @@ import {ProducerService} from "../kafka/producer.service";
 import {NewMessage} from "telegram/events";
 import {ConfigService} from "@nestjs/config";
 import telegramAccountsInit from "../utils/telegramInit";
+import {TelegramClient} from "telegram";
 
 @Injectable()
 export class TelegramStartService implements OnModuleInit {
@@ -23,8 +24,8 @@ export class TelegramStartService implements OnModuleInit {
             OUTGOING_MESSAGE,
         } = this.configService.get('KAFKA_TOPICS');
 
-        emitterSubject.subscribe(async (eventObj: { eventName: string, data: any }) => {
-                if (eventObj.eventName !== 'newClient') return
+        emitterSubject.subscribe(async (eventObj: { eventName: string, data: TelegramClient }) => {
+                if (eventObj.eventName !== 'newClient') return;
                 const client = eventObj.data;
                 client.addEventHandler(
                     async (event: any) => {
@@ -39,6 +40,30 @@ export class TelegramStartService implements OnModuleInit {
                             messages: [{value: clientInfoStr}]
                         });
                         new NewMessage({incoming: true})
+                    }
+                );
+            },
+        );
+
+        emitterSubject.subscribe(async (eventObj: { eventName: string, data: TelegramClient }) => {
+                if (eventObj.eventName !== 'newClient') return;
+                const client = eventObj.data;
+                client.addEventHandler(
+                    async (event: any) => {
+                        const {className} = event;
+
+                        if (className !== 'UpdateShortMessage') return;
+
+                        const {message} = event;
+
+                        const clientInfoObj = {apiId: client.apiId, message};
+                        const clientInfoStr = JSON.stringify(clientInfoObj);
+
+                        await this.producerService.produce({
+                            topic: OUTGOING_MESSAGE,
+                            messages: [{value: clientInfoStr}]
+                        });
+                        new NewMessage({outgoing: true})
                     }
                 );
             },
