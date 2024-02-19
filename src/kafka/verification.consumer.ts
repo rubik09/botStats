@@ -1,6 +1,7 @@
 import {Injectable, OnModuleInit, Logger} from '@nestjs/common';
 import {ConsumerService} from './consumer.service';
 import {ConfigService} from '@nestjs/config';
+import {StatsService} from "../stats/stats.service";
 
 @Injectable()
 export class VerificationConsumer implements OnModuleInit {
@@ -9,6 +10,7 @@ export class VerificationConsumer implements OnModuleInit {
     constructor(
         private readonly consumerService: ConsumerService,
         private readonly configService: ConfigService,
+        private readonly statsService: StatsService,
     ) {
     }
 
@@ -26,13 +28,13 @@ export class VerificationConsumer implements OnModuleInit {
             },
             {
                 eachMessage: async ({message, topic}) => {
-                    const incomeMessage = message.value.toString();
-                    this.logger.debug(`${topic} : ${incomeMessage}`);
+                    const clientInfoStr = message.value.toString();
+                    this.logger.debug(`${topic} : ${clientInfoStr}`);
                     if (topic === OUTGOING_MESSAGE) {
-                        //outgoing func
+                        // await this.statsService.outgoingMessages(message);
                     }
                     if (topic === INCOMING_MESSAGE) {
-                        //incoming func
+                        await this.statsService.incomingMessages(clientInfoStr)
                     }
                 },
             },

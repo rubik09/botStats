@@ -16,5 +16,9 @@ export class StatsDto {
 
     @IsNumber()
     @Min(0)
+    outgoingMessagesCount: Stats['outgoingMessagesCount'];
+
+    @IsNumber()
+    @Min(0)
     usersCount: Stats['usersCount'];
 }

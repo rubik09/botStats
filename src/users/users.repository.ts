@@ -15,9 +15,9 @@ export class UsersRepository {
     ) {
     }
 
-    async findUserById(id: Users['id']): Promise<Users> {
+    async findUserByApiIdAndTelegramId(createUserDto: CreateUserDto): Promise<Users> {
         return await this.usersRepository.findOne({
-            where: {id},
+            where: createUserDto,
         });
     }
 
@@ -25,7 +25,7 @@ export class UsersRepository {
         return await this.usersRepository.save(createUserDto);
     }
 
-    async getCountUsersById(apiIdClient: Users['apiIdClient']): Promise<number> {
+    async getCountUsersByApiId(apiIdClient: Users['apiIdClient']): Promise<number> {
         return await this.usersRepository.count({where: {apiIdClient}});
     }
 
