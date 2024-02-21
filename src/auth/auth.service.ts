@@ -29,8 +29,7 @@ export class AuthService {
 
         this.logger.log(`Trying to login admin with email: ${email}`);
 
-        const valid = await this.validateAdmin(email, password);
-        if (!valid) return;
+        await this.validateAdmin(email, password);
         const payload = { email };
 
         this.logger.debug(`admin with email: ${email} login`);
