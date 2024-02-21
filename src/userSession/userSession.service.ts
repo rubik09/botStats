@@ -72,6 +72,17 @@ export class UserSessionService {
         return activeSessions;
     }
 
+    async getAllUserSessions(): Promise<UserSession[]> {
+        this.logger.log(`Trying to get Active User Sessions`);
+
+        const activeSessions = await this.userSessionRepository.getUserSessions();
+
+        this.logger.debug(`Active User Sessions successfully get`);
+
+        return activeSessions;
+    }
+
+
     async updateUserSessionById(id: UserSession['id'], updateUserSessionInfoDto: UpdateUserSessionInfoDto): Promise<number> {
         this.logger.log(`Trying to update user session by id: ${id}`);
 

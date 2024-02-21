@@ -19,7 +19,7 @@ export class UserSessionRepository {
         return await this.userSessionRepository.findOne({where: {id}, select: ['id', 'status']});
     }
 
-    async getUserSession(): Promise<UserSession[]> {
+    async getUserSessions(): Promise<UserSession[]> {
         return await this.userSessionRepository.find();
     }
 
