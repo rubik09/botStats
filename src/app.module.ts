@@ -10,8 +10,9 @@ import {UsersModule} from './users/users.module';
 import {TypeOrmModule} from '@nestjs/typeorm';
 import {PersonalInfoModule} from './personalInfo/personalInfo.module';
 import {TelegramConnectModule} from './telegramConnect/telegramConnect.module';
-import { KafkaModule } from './kafka/kafka.module';
-import { VerificationConsumer } from './kafka/verification.consumer';
+import {KafkaModule} from './kafka/kafka.module';
+import {VerificationConsumer} from './kafka/verification.consumer';
+import {AuthModule} from './auth/auth.module';
 
 @Module({
     imports: [
@@ -34,11 +35,13 @@ import { VerificationConsumer } from './kafka/verification.consumer';
         PersonalInfoModule,
         TelegramConnectModule,
         KafkaModule,
+        AuthModule,
     ],
     providers: [
         VerificationConsumer
     ]
 })
+
 export class AppModule implements NestModule {
     configure(consumer: MiddlewareConsumer) {
         consumer.apply().exclude('health').forRoutes({path: '*', method: RequestMethod.ALL});
