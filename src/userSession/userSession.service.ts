@@ -3,11 +3,15 @@ import {UserSessionRepository} from "./userSession.repository";
 import {UserSession} from "./entity/userSession.entity";
 import {UpdateUserSessionInfoDto} from "./dto/updateUserSession.dto";
 import {UpdateApiInfoDto} from "./dto/updateApiInfo.dto";
+import {CreatePersonalInfoDto} from "../personalInfo/dto/createPersonalInfo.dto";
 
 @Injectable()
 export class UserSessionService {
     private readonly logger = new Logger(UserSessionService.name);
-    constructor(private userSessionRepository: UserSessionRepository) {
+
+    constructor(
+        private userSessionRepository: UserSessionRepository,
+    ) {
     }
 
 
@@ -151,4 +155,27 @@ export class UserSessionService {
         return updatedUserSession;
     }
 
+    async createUserSession(newSession: {
+        telegramId: UserSession['telegramId'],
+        personalInfo: CreatePersonalInfoDto
+    }): Promise<UserSession> {
+        this.logger.log(`Trying to create user session`);
+
+        const {telegramId} = newSession
+
+        const userSession = await this.userSessionRepository.getUserSessionByTelegramId(telegramId);
+
+        console.log(userSession)
+
+        if (userSession) {
+            this.logger.error(`session with telegramId: ${telegramId} already exist`);
+            throw new HttpException(`session with telegramId: ${telegramId} already exist`, HttpStatus.BAD_REQUEST);
+        }
+
+        const newUserSession = await this.userSessionRepository.createUserSession(newSession);
+
+        this.logger.debug(`admin successfully created`);
+
+        return newUserSession;
+    }
 }

@@ -26,7 +26,6 @@ import {AuthModule} from './auth/auth.module';
         StatsModule,
         UsersModule,
         PersonalInfoModule,
-        UserSessionModule,
         TelegramConnectModule,
         TypeOrmModule.forRootAsync({
             useFactory: async (configService: ConfigService) => configService.get('POSTGRES_DB_SETTINGS'),
