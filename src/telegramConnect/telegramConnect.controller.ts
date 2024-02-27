@@ -1,13 +1,14 @@
-import {Body, Controller, Post} from '@nestjs/common';
+import {Body, Controller, Post, UseGuards} from '@nestjs/common';
 import {TelegramConnectService} from "./telegramConnect.service";
 import {CreateTelegramConnectionDto} from "./dto/createTelegramConnect.dto";
+import {JwtGuard} from "../auth/jwtAuth.guard";
 
 @Controller('telegramConnect')
 export class TelegramConnectController {
     constructor(private readonly telegramConnectService: TelegramConnectService) {}
 
     @Post('')
-    // @UseGuards(JwtGuard)
+    @UseGuards(JwtGuard)
     async connectToTelegram(@Body() createTelegramConnectionDto: CreateTelegramConnectionDto) {
         return await this.telegramConnectService.connectToTelegram(createTelegramConnectionDto);
     }
