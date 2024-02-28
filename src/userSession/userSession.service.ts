@@ -155,13 +155,8 @@ export class UserSessionService {
         return updatedUserSession;
     }
 
-    async createUserSession(newSession: {
-        telegramId: UserSession['telegramId'],
-        personalInfo: CreatePersonalInfoDto
-    }): Promise<UserSession> {
+    async createUserSession(telegramId: UserSession['telegramId'], personalInfo: CreatePersonalInfoDto): Promise<UserSession> {
         this.logger.log(`Trying to create user session`);
-
-        const {telegramId} = newSession
 
         const userSession = await this.userSessionRepository.getUserSessionByTelegramId(telegramId);
 
@@ -172,7 +167,7 @@ export class UserSessionService {
             throw new HttpException(`session with telegramId: ${telegramId} already exist`, HttpStatus.BAD_REQUEST);
         }
 
-        const newUserSession = await this.userSessionRepository.createUserSession(newSession);
+        const newUserSession = await this.userSessionRepository.createUserSession(telegramId, personalInfo);
 
         this.logger.debug(`admin successfully created`);
 

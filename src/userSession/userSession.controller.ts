@@ -8,15 +8,15 @@ import {JwtGuard} from "../auth/jwtAuth.guard";
 export class UserSessionController {
     constructor(private readonly userSessionService: UserSessionService) {}
 
-    @Get('')
+    @Get()
     @UseGuards(JwtGuard)
     async getAllUserSessions() {
         return await this.userSessionService.getAllUserSessions();
     }
 
-    @Patch('/:id')
+    @Patch(':id')
     @UseGuards(JwtGuard)
-    async updateUserSessionByTelegramId(@Param('id') telegramId: UserSession['telegramId'], @Body() body: UpdateUserSessionInfoDto) {
+    async updateUserSessionByTelegramId(@Param('id') telegramId: UserSession['telegramId'], @Body() body: UpdateUserSessionInfoDto): Promise<number> {
         return await this.userSessionService.updateUserSessionByTelegramId(telegramId, body);
     }
 }

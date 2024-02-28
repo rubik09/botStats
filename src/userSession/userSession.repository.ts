@@ -23,8 +23,8 @@ export class UserSessionRepository {
         return await this.userSessionRepository.find();
     }
 
-    async createUserSession(newSession: {telegramId: UserSession['telegramId'], personalInfo: CreatePersonalInfoDto }): Promise<UserSession> {
-        return await this.userSessionRepository.save(newSession);
+    async createUserSession(telegramId: UserSession['telegramId'], personalInfo: CreatePersonalInfoDto): Promise<UserSession> {
+        return await this.userSessionRepository.save({telegramId, personalInfo});
     }
 
 

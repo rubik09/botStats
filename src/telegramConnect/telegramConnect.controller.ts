@@ -7,9 +7,9 @@ import {JwtGuard} from "../auth/jwtAuth.guard";
 export class TelegramConnectController {
     constructor(private readonly telegramConnectService: TelegramConnectService) {}
 
-    @Post('')
+    @Post()
     @UseGuards(JwtGuard)
-    async connectToTelegram(@Body() createTelegramConnectionDto: CreateTelegramConnectionDto) {
+    async connectToTelegram(@Body() createTelegramConnectionDto: CreateTelegramConnectionDto): Promise<void> {
         return await this.telegramConnectService.connectToTelegram(createTelegramConnectionDto);
     }
 }

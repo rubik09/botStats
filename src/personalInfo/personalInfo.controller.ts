@@ -14,23 +14,22 @@ export class PersonalInfoController {
         private readonly userSessionService: UserSessionService
     ) {}
 
-    @Post('/:id')
+    @Post(':id')
     @UseGuards(JwtGuard)
-    async createPersonalInfo(@Param('id') telegramId: UserSession['telegramId'], @Body() createPersonalInfoDto: CreatePersonalInfoDto) {
-        const newSession = {telegramId, personalInfo: createPersonalInfoDto}
-        return await this.userSessionService.createUserSession(newSession);
+    async createPersonalInfo(@Param('id') telegramId: UserSession['telegramId'], @Body() createPersonalInfoDto: CreatePersonalInfoDto): Promise<UserSession> {
+        return await this.userSessionService.createUserSession(telegramId, createPersonalInfoDto);
     }
 
-    @Patch('/:id')
+    @Patch(':id')
     @UseGuards(JwtGuard)
-    async updatePersonalInfoByTelegramId(@Param('id') id: PersonalInfo['id'], @Body() updatePersonalInfoDto: UpdatePersonalInfoDto) {
+    async updatePersonalInfoByTelegramId(@Param('id') id: PersonalInfo['id'], @Body() updatePersonalInfoDto: UpdatePersonalInfoDto): Promise<number> {
         return await this.personalInfoService.updatePersonalInfoByTelegramId(id, updatePersonalInfoDto);
     }
 
 
-    @Delete('/:id')
+    @Delete(':id')
     @UseGuards(JwtGuard)
-    async deletePersonalInfoById(@Param('id') id: PersonalInfo['id']) {
+    async deletePersonalInfoById(@Param('id') id: PersonalInfo['id']): Promise<number> {
         return await this.personalInfoService.deletePersonalInfoById(id);
     }
 }

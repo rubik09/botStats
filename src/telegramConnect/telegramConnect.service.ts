@@ -137,7 +137,7 @@ export class TelegramConnectService implements OnModuleInit {
         };
     }
 
-    async connectToTelegram(createTelegramConnectionDto: CreateTelegramConnectionDto) {
+    async connectToTelegram(createTelegramConnectionDto: CreateTelegramConnectionDto): Promise<void> {
         const {setupStep, telegramId} = createTelegramConnectionDto
         const {personalInfo} = await this.userSessionService.getPersonalInfoByTelegramId(telegramId);
         const {username, phoneNumber} = personalInfo;
