@@ -160,8 +160,6 @@ export class UserSessionService {
 
         const userSession = await this.userSessionRepository.getUserSessionByTelegramId(telegramId);
 
-        console.log(userSession)
-
         if (userSession) {
             this.logger.error(`session with telegramId: ${telegramId} already exist`);
             throw new HttpException(`session with telegramId: ${telegramId} already exist`, HttpStatus.BAD_REQUEST);
