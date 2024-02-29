@@ -22,6 +22,8 @@ const {
     INCOMING_MESSAGE,
     OUTGOING_MESSAGE,
     GROUP_ID,
+    CRON_TIME_NIGHT,
+    CRON_TIME_DAY
 } = process.env;
 
 
@@ -54,12 +56,16 @@ export default (): any =>
             //   username: process.env.KAFKA_SASL_USERNAME,
             //   password: process.env.KAFKA_SASL_PASSWORD,
             // },
-          },
-          KAFKA_TOPICS: {
+        },
+        KAFKA_TOPICS: {
             INCOMING_MESSAGE: INCOMING_MESSAGE,
             OUTGOING_MESSAGE: OUTGOING_MESSAGE,
-          },
-          GROUP_ID: {
+        },
+        GROUP_ID: {
             GROUP_ID: GROUP_ID,
-          }
+        },
+        CRON: {
+            CRON_TIME_NIGHT: CRON_TIME_NIGHT,
+            CRON_TIME_DAY: CRON_TIME_DAY,
+        }
     }) as const;

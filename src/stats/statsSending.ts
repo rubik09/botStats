@@ -1,13 +1,6 @@
-import * as dotenv from 'dotenv';
 import {googleSheets} from "../utils/googleClient";
 import {PersonalInfo} from "../personalInfo/entity/personalInfo.entity";
-
-dotenv.config();
-
-const {
-    SPREADSHEET_ID,
-    SHEET_ID,
-} = process.env;
+import {sheetId, spreadSheetId} from "../utils/consts";
 
 const StatsSending = async (
     username: PersonalInfo['username'],
@@ -41,17 +34,17 @@ const StatsSending = async (
 
         const sheets = await googleSheets();
         const res = await sheets.spreadsheets.values.get({
-            spreadsheetId: String(SPREADSHEET_ID),
+            spreadsheetId: spreadSheetId,
             range: 'A1:P',
         });
         const lastFilledCell = res.data.values.length
         await sheets.spreadsheets.batchUpdate({
-                spreadsheetId: String(SPREADSHEET_ID),
+                spreadsheetId: spreadSheetId,
                 requestBody: {
                     requests: [{
                         updateCells: {
                             range: {
-                                sheetId: Number(SHEET_ID),
+                                sheetId: sheetId,
                                 startRowIndex: lastFilledCell,
                                 endRowIndex: lastFilledCell + 2,
                                 startColumnIndex: 0,

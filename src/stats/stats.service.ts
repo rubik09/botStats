@@ -9,6 +9,8 @@ import {UpdateUserSessionInfoDto} from "../userSession/dto/updateUserSession.dto
 import zeroOutCounts from "../utils/zeroOutCounts";
 import statsSending from "./statsSending";
 import * as cron from "node-cron";
+import {time} from "../utils/consts";
+import {ConfigService} from "@nestjs/config";
 
 @Injectable()
 export class StatsService implements OnModuleInit {
@@ -17,6 +19,7 @@ export class StatsService implements OnModuleInit {
         private readonly statsRepository: StatsRepository,
         private readonly usersService: UsersService,
         private readonly userSessionService: UserSessionService,
+        private readonly configService: ConfigService,
     ) {
     }
 
@@ -229,12 +232,17 @@ export class StatsService implements OnModuleInit {
     }
 
     onModuleInit(): any {
-        cron.schedule('0 1 * * *', async () => {
-            await this.PreSendCalculation('10:00-00:00 - day');
+        const {
+            CRON_TIME_DAY,
+            CRON_TIME_NIGHT,
+        } = this.configService.get('CRON');
+
+        cron.schedule(CRON_TIME_DAY, async () => {
+            await this.PreSendCalculation(time.DAY);
         }, {scheduled: true, timezone: "Europe/Moscow"});
 
-        cron.schedule('0 11 * * *', async () => {
-            await this.PreSendCalculation('00:00-10:00 - night');
+        cron.schedule(CRON_TIME_NIGHT, async () => {
+            await this.PreSendCalculation(time.NIGHT);
         }, {scheduled: true, timezone: "Europe/Moscow"});
     }
 
