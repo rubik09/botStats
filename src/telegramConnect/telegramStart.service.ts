@@ -27,18 +27,19 @@ export class TelegramStartService implements OnModuleInit {
                 const client = eventObj.data;
                 client.addEventHandler(
                     async (event: any) => {
-                        const {className, userId} = event;
+                        const {className, userId} = event.originalUpdate;
+
                         if (className !== 'UpdateShortMessage') return;
 
-                        const clientInfoObj = {apiId: client.apiId, telegramId: Number(userId.value)};
+                        const clientInfoObj = {apiId: client.apiId, telegramId: Number(userId)};
                         const clientInfoStr = JSON.stringify(clientInfoObj);
 
                         await this.producerService.produce({
                             topic: INCOMING_MESSAGE,
                             messages: [{value: clientInfoStr}]
                         });
-                        new NewMessage({incoming: true})
-                    }
+                    },
+                    new NewMessage({incoming: true})
                 );
             },
         );
@@ -48,11 +49,11 @@ export class TelegramStartService implements OnModuleInit {
                 const client = eventObj.data;
                 client.addEventHandler(
                     async (event: any) => {
-                        const {className} = event;
+                        const {className} = event.originalUpdate;
 
                         if (className !== 'UpdateShortMessage') return;
 
-                        const {message} = event;
+                        const {message} = event.originalUpdate;
 
                         const clientInfoObj = {apiId: client.apiId, message};
                         const clientInfoStr = JSON.stringify(clientInfoObj);
@@ -61,8 +62,8 @@ export class TelegramStartService implements OnModuleInit {
                             topic: OUTGOING_MESSAGE,
                             messages: [{value: clientInfoStr}]
                         });
-                        new NewMessage({outgoing: true})
-                    }
+                    },
+                    new NewMessage({outgoing: true})
                 );
             },
         );
