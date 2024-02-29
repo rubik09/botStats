@@ -27,7 +27,9 @@ export class TelegramStartService implements OnModuleInit {
                 const client = eventObj.data;
                 client.addEventHandler(
                     async (event: any) => {
-                        const {className, userId} = event;
+                        const {className, userId, out} = event;
+
+                        if (out) return;
                         if (className !== 'UpdateShortMessage') return;
 
                         const clientInfoObj = {apiId: client.apiId, telegramId: Number(userId.value)};
@@ -48,8 +50,9 @@ export class TelegramStartService implements OnModuleInit {
                 const client = eventObj.data;
                 client.addEventHandler(
                     async (event: any) => {
-                        const {className} = event;
+                        const {className, out} = event;
 
+                        if (!out) return;
                         if (className !== 'UpdateShortMessage') return;
 
                         const {message} = event;

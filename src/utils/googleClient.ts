@@ -6,7 +6,10 @@ export const auth = new google.auth.GoogleAuth({
 });
 
 export const googleSheets = async (): Promise<sheets_v4.Sheets> => {
-    const client = await auth.getClient();
-
-    return google.sheets({version: 'v4', auth: client as any}) as sheets_v4.Sheets;
+    try {
+        const client = await auth.getClient();
+        return google.sheets({version: 'v4', auth: client as any}) as sheets_v4.Sheets;
+    } catch (error) {
+        throw error;
+    }
 };

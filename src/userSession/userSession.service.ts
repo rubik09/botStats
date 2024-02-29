@@ -35,14 +35,14 @@ export class UserSessionService {
     async getPersonalInfoByApiId(apiId: UserSession['apiId']): Promise<UserSession> {
         this.logger.log(`Trying to get personal info by apiId: ${apiId}`);
 
-        const userSession = this.userSessionRepository.getUserSessionByApiId(apiId);
+        const userSession = await this.userSessionRepository.getUserSessionByApiId(apiId);
 
         if (!userSession) {
             this.logger.error(`personal info with apiId: ${apiId} not found`);
             throw new HttpException(`personal info with apiId: ${apiId} not found`, HttpStatus.NOT_FOUND);
         }
 
-        const personalInfo = this.userSessionRepository.getPersonalInfoByApiId(apiId);
+        const personalInfo = await this.userSessionRepository.getPersonalInfoByApiId(apiId);
 
         this.logger.debug(`personal info successfully get`);
 
@@ -52,14 +52,14 @@ export class UserSessionService {
     async getKeywordsFromUserSessionByApiId(apiId: UserSession['apiId']): Promise<UserSession> {
         this.logger.log(`Trying to get keywords by apiId: ${apiId}`);
 
-        const userSession = this.userSessionRepository.getUserSessionByApiId(apiId);
+        const userSession = await this.userSessionRepository.getUserSessionByApiId(apiId);
 
         if (!userSession) {
             this.logger.error(`keywords with apiId: ${apiId} not found`);
             throw new HttpException(`keywords with apiId: ${apiId} not found`, HttpStatus.NOT_FOUND);
         }
 
-        const keywords = this.userSessionRepository.getKeywordsFromUserSessionByApiId(apiId);
+        const keywords = await this.userSessionRepository.getKeywordsFromUserSessionByApiId(apiId);
 
         this.logger.debug(`keywords successfully get`);
 
@@ -124,14 +124,14 @@ export class UserSessionService {
     async updateUserSessionByApiId(apiId: UserSession['apiId'], updateUserSessionInfoDto: UpdateUserSessionInfoDto): Promise<number> {
         this.logger.log(`Trying to update user session by apiId: ${apiId}`);
 
-        const userSession = this.userSessionRepository.getUserSessionByApiId(apiId);
+        const userSession = await this.userSessionRepository.getUserSessionByApiId(apiId);
 
         if (!userSession) {
             this.logger.error(`user session with apiId: ${apiId} not found`);
             throw new HttpException(`user session with apiId: ${apiId} not found`, HttpStatus.NOT_FOUND);
         }
 
-        const updatedUserSession = this.userSessionRepository.updateUserSessionByApiId(apiId, updateUserSessionInfoDto)
+        const updatedUserSession = await this.userSessionRepository.updateUserSessionByApiId(apiId, updateUserSessionInfoDto)
 
         this.logger.debug(`user session successfully updated`);
 

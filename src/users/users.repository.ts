@@ -34,6 +34,11 @@ export class UsersRepository {
         return affected;
     }
 
+    async cleanTableByApiId(apiIdClient: Users['apiIdClient']): Promise<number> {
+        const {affected} = await this.usersRepository.delete({apiIdClient});
+        return affected;
+    }
+
     async deleteUserByTelegramId(deleteUserDto: DeleteUserDto): Promise<number> {
         const {affected} = await this.usersRepository.delete(deleteUserDto);
         return affected;
