@@ -12,14 +12,14 @@ export class PersonalInfoService {
     async updatePersonalInfoByTelegramId(id: PersonalInfo['id'], updatePersonalInfoDto: UpdatePersonalInfoDto): Promise<number> {
         this.logger.log(`Trying to update personal info by id: ${id}`);
 
-        const personalInfo = await this.personalInfoRepository.getByUserId(id);
+        const personalInfo = this.personalInfoRepository.getByUserId(id);
 
         if (!personalInfo) {
             this.logger.error(`personal info with id: ${id} not found`);
             throw new HttpException(`personal info with id: ${id} not found`, HttpStatus.NOT_FOUND);
         }
 
-        const updatedUserSession = await this.personalInfoRepository.updatePersonalInfo(id, updatePersonalInfoDto);
+        const updatedUserSession = this.personalInfoRepository.updatePersonalInfo(id, updatePersonalInfoDto);
 
         this.logger.debug(`personal info successfully updated`);
 
@@ -29,14 +29,14 @@ export class PersonalInfoService {
     async deletePersonalInfoById(id: PersonalInfo['id']): Promise<number> {
         this.logger.log(`Trying to delete personal info by: ${id}`);
 
-        const userSession = await this.personalInfoRepository.getByUserId(id);
+        const userSession = this.personalInfoRepository.getByUserId(id);
 
         if (!userSession) {
             this.logger.error(`personal info with id: ${id} not found`);
             throw new HttpException(`personal info with id: ${id} not found`, HttpStatus.NOT_FOUND);
         }
 
-        const deleted = await this.personalInfoRepository.deletePersonalInfoById(id)
+        const deleted = this.personalInfoRepository.deletePersonalInfoById(id)
 
         this.logger.debug(`personal info successfully deleted`);
 

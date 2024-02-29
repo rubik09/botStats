@@ -20,7 +20,7 @@ export class StatsService {
     async getStatsByApiId(apiId: Stats['apiIdClient']): Promise<Stats> {
         this.logger.log(`Trying to get stats by apiId: ${apiId}`);
 
-        const stats = await this.statsRepository.getStatsByApiId(apiId);
+        const stats = this.statsRepository.getStatsByApiId(apiId);
 
         if (!stats) {
             this.logger.error(`stats with apiId: ${apiId} not found`);
@@ -35,14 +35,14 @@ export class StatsService {
     async createStats(apiId: Stats['apiIdClient']): Promise<Stats> {
         this.logger.log(`Trying to create stats by apiId: ${apiId}`);
 
-        const stats = await this.statsRepository.getStatsByApiId(apiId);
+        const stats = this.statsRepository.getStatsByApiId(apiId);
 
         if (stats) {
             this.logger.error(`stats with apiId: ${apiId} already exist`);
             throw new HttpException(`stats with apiId: ${apiId}  already exist`, HttpStatus.BAD_REQUEST);
         }
 
-        const newStats = await this.statsRepository.createStats(apiId);
+        const newStats = this.statsRepository.createStats(apiId);
 
         this.logger.debug(`stats successfully created`);
 
@@ -52,14 +52,14 @@ export class StatsService {
     async updateStatsByApiId(updateStatsDto: UpdateStatsDto, apiId: Stats['apiIdClient']): Promise<number> {
         this.logger.log(`Trying to update stats by apiId: ${apiId}`);
 
-        const userSession = await this.getStatsByApiId(apiId);
+        const userSession = this.getStatsByApiId(apiId);
 
         if (!userSession) {
             this.logger.error(`stats with apiId: ${apiId} not found`);
             throw new HttpException(`stats with apiId: ${apiId} not found`, HttpStatus.NOT_FOUND);
         }
 
-        const stats = await this.statsRepository.updateStatsByApiId(updateStatsDto, apiId);
+        const stats = this.statsRepository.updateStatsByApiId(updateStatsDto, apiId);
 
         this.logger.debug(`stats successfully updated`);
 
@@ -69,14 +69,14 @@ export class StatsService {
     async increaseIncomingMessagesCountToSessionByApiId(apiId: Stats['apiIdClient']): Promise<number> {
         this.logger.log(`Trying to increase incoming messages count by apiId: ${apiId}`);
 
-        const userSession = await this.getStatsByApiId(apiId);
+        const userSession = this.getStatsByApiId(apiId);
 
         if (!userSession) {
             this.logger.error(`stats with apiId: ${apiId} not found`);
             throw new HttpException(`stats with apiId: ${apiId} not found`, HttpStatus.NOT_FOUND);
         }
 
-        const stats = await this.statsRepository.increaseIncomingMessagesCountToSessionByApiId(apiId);
+        const stats = this.statsRepository.increaseIncomingMessagesCountToSessionByApiId(apiId);
 
         this.logger.debug(`incoming messages count successfully increased`);
 
@@ -86,14 +86,14 @@ export class StatsService {
     async increaseOutgoingMessagesCountToSessionByApiId(apiId: Stats['apiIdClient']): Promise<number> {
         this.logger.log(`Trying to increase outgoing messages count by apiId: ${apiId}`);
 
-        const userSession = await this.getStatsByApiId(apiId);
+        const userSession = this.getStatsByApiId(apiId);
 
         if (!userSession) {
             this.logger.error(`stats with apiId: ${apiId} not found`);
             throw new HttpException(`stats with apiId: ${apiId} not found`, HttpStatus.NOT_FOUND);
         }
 
-        const stats = await this.statsRepository.increaseOutgoingMessagesCountToSessionByApiId(apiId);
+        const stats = this.statsRepository.increaseOutgoingMessagesCountToSessionByApiId(apiId);
 
         this.logger.debug(`outgoing messages count successfully increased`);
 
@@ -112,11 +112,11 @@ export class StatsService {
             apiIdClient: apiId,
         };
 
-        const user = await this.usersService.getUserByApiIdAndTelegramId(createUserDto);
+        const user = this.usersService.getUserByApiIdAndTelegramId(createUserDto);
 
         if (!user) await this.usersService.createUser(createUserDto);
 
-        const stats = await this.getStatsByApiId(apiId);
+        const stats = this.getStatsByApiId(apiId);
 
         if (!stats) await this.createStats(apiId);
 
@@ -133,10 +133,10 @@ export class StatsService {
         const {apiId, message} = clientInfoObj;
 
         const {keywords} = await this.userSessionService.getKeywordsFromUserSessionByApiId(apiId);
-        const parsedKeywords = await JSON.parse(keywords);
+        const parsedKeywords = JSON.parse(keywords);
         const {personalInfo} = await this.userSessionService.getPersonalInfoByApiId(apiId);
         const {username} = personalInfo;
-        const statsArr = await this.getStatsByApiId(apiId);
+        const statsArr = this.getStatsByApiId(apiId);
 
         if (!statsArr) await this.createStats(apiId);
 

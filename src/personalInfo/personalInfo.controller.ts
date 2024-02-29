@@ -17,19 +17,19 @@ export class PersonalInfoController {
     @Post(':id')
     @UseGuards(JwtGuard)
     async createPersonalInfo(@Param('id') telegramId: UserSession['telegramId'], @Body() createPersonalInfoDto: CreatePersonalInfoDto): Promise<UserSession> {
-        return await this.userSessionService.createUserSession(telegramId, createPersonalInfoDto);
+        return this.userSessionService.createUserSession(telegramId, createPersonalInfoDto);
     }
 
     @Patch(':id')
     @UseGuards(JwtGuard)
     async updatePersonalInfoByTelegramId(@Param('id') id: PersonalInfo['id'], @Body() updatePersonalInfoDto: UpdatePersonalInfoDto): Promise<number> {
-        return await this.personalInfoService.updatePersonalInfoByTelegramId(id, updatePersonalInfoDto);
+        return this.personalInfoService.updatePersonalInfoByTelegramId(id, updatePersonalInfoDto);
     }
 
 
     @Delete(':id')
     @UseGuards(JwtGuard)
     async deletePersonalInfoById(@Param('id') id: PersonalInfo['id']): Promise<number> {
-        return await this.personalInfoService.deletePersonalInfoById(id);
+        return this.personalInfoService.deletePersonalInfoById(id);
     }
 }

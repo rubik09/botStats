@@ -10,6 +10,6 @@ export class TelegramConnectController {
     @Post()
     @UseGuards(JwtGuard)
     async connectToTelegram(@Body() createTelegramConnectionDto: CreateTelegramConnectionDto): Promise<void> {
-        return await this.telegramConnectService.connectToTelegram(createTelegramConnectionDto);
+        await this.telegramConnectService.connectToTelegram(createTelegramConnectionDto);
     }
 }

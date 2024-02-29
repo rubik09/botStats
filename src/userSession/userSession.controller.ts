@@ -10,13 +10,13 @@ export class UserSessionController {
 
     @Get()
     @UseGuards(JwtGuard)
-    async getAllUserSessions() {
-        return await this.userSessionService.getAllUserSessions();
+    async getAllUserSessions(): Promise<UserSession[]> {
+        return this.userSessionService.getAllUserSessions();
     }
 
     @Patch(':id')
     @UseGuards(JwtGuard)
     async updateUserSessionByTelegramId(@Param('id') telegramId: UserSession['telegramId'], @Body() body: UpdateUserSessionInfoDto): Promise<number> {
-        return await this.userSessionService.updateUserSessionByTelegramId(telegramId, body);
+        return this.userSessionService.updateUserSessionByTelegramId(telegramId, body);
     }
 }
