@@ -1,4 +1,4 @@
-import {Injectable, Logger, OnModuleInit} from '@nestjs/common';
+import {Injectable, OnModuleInit} from '@nestjs/common';
 import {UserSessionService} from "../userSession/userSession.service";
 import emitterSubject from "../utils/emitter";
 import {ProducerService} from "../kafka/producer.service";
@@ -9,8 +9,6 @@ import {TelegramClient} from "telegram";
 
 @Injectable()
 export class TelegramStartService implements OnModuleInit {
-    private readonly logger = new Logger(TelegramStartService.name);
-
     constructor(
         private userSessionService: UserSessionService,
         private producerService: ProducerService,
@@ -32,7 +30,7 @@ export class TelegramStartService implements OnModuleInit {
                         const {className, userId} = event;
                         if (className !== 'UpdateShortMessage') return;
 
-                        const clientInfoObj = {apiId: client.apiId, telegramId: userId};
+                        const clientInfoObj = {apiId: client.apiId, telegramId: Number(userId.value)};
                         const clientInfoStr = JSON.stringify(clientInfoObj);
 
                         await this.producerService.produce({

@@ -4,10 +4,9 @@ import {Repository} from "typeorm";
 import {PersonalInfo} from "./entity/personalInfo.entity";
 import {CreatePersonalInfoDto} from "./dto/createPersonalInfo.dto";
 import {UpdatePersonalInfoDto} from "./dto/updatePersonalInfo.dto";
-import {DeletePersonalInfoDto} from "./dto/deletePersonalInfo.dto";
 
 @Injectable()
-export class personalInfoRepository {
+export class PersonalInfoRepository {
     constructor(
         @InjectRepository(PersonalInfo)
         private readonly personalInfoRepository: Repository<PersonalInfo>,
@@ -44,8 +43,8 @@ export class personalInfoRepository {
         return await this.personalInfoRepository.findOne({where: {id}, select: ['id', 'phoneNumber'],});
     }
 
-    async deletePersonalInfoById(deletePersonalInfoDto: DeletePersonalInfoDto): Promise<number> {
-        const {affected} = await this.personalInfoRepository.delete(deletePersonalInfoDto);
+    async deletePersonalInfoById(id: PersonalInfo['id']): Promise<number> {
+        const {affected} = await this.personalInfoRepository.delete({id});
         return affected;
     }
 }

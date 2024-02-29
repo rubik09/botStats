@@ -6,7 +6,7 @@ export class PersonalInfoDto {
     id: PersonalInfo['id'];
 
     @IsString()
-    @Length(10, 25)
+    @Length(2, 25)
     region: PersonalInfo['region'];
 
     @IsString()

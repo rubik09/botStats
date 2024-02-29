@@ -13,7 +13,7 @@ export class AdminsService {
     async findAdminById(id: Admins['id']): Promise<Admins> {
         this.logger.log(`Trying to get personal info by id: ${id}`);
 
-        const admin = await this.adminsRepository.findOneById(id);
+        const admin = this.adminsRepository.findOneById(id);
 
         if (!admin) {
             this.logger.error(`admin with id: ${id} not found`);
@@ -28,7 +28,7 @@ export class AdminsService {
     async findAdminByEmail(email: Admins['email']): Promise<Admins> {
         this.logger.log(`Trying to get personal info by email: ${email}`);
 
-        const admin = await this.adminsRepository.findOneByEmail(email);
+        const admin = this.adminsRepository.findOneByEmail(email);
 
         if (!admin) {
             this.logger.error(`admin with email: ${email} not found`);
@@ -45,14 +45,14 @@ export class AdminsService {
 
         const {email} = createAdminDto
 
-        const admin = await this.adminsRepository.findOneByEmail(email);
+        const admin = this.adminsRepository.findOneByEmail(email);
 
         if (admin) {
             this.logger.error(`admin with email: ${email} already exist`);
             throw new HttpException(`admin with email: ${email} already exist`, HttpStatus.BAD_REQUEST);
         }
 
-        const newAdmin = await this.adminsRepository.createAdmin(createAdminDto);
+        const newAdmin = this.adminsRepository.createAdmin(createAdminDto);
 
         this.logger.debug(`admin successfully created`);
 

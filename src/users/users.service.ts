@@ -13,7 +13,7 @@ export class UsersService {
         const {apiIdClient, telegramId} = createUserDto
         this.logger.log(`Trying to get user by apiId: ${apiIdClient} and telegramId: ${telegramId}`);
 
-        const user = await this.usersRepository.findUserByApiIdAndTelegramId(createUserDto);
+        const user = this.usersRepository.findUserByApiIdAndTelegramId(createUserDto);
 
         if (!user) {
             this.logger.error(`user with apiId: ${apiIdClient} and telegramId: ${telegramId} not found`);
@@ -29,14 +29,14 @@ export class UsersService {
         const {apiIdClient, telegramId} = createUserDto
         this.logger.log(`Trying to create user by apiId: ${apiIdClient} and telegramId: ${telegramId}`);
 
-        const user = await this.getUserByApiIdAndTelegramId(createUserDto);
+        const user = this.getUserByApiIdAndTelegramId(createUserDto);
 
         if (user) {
             this.logger.error(`user with apiId: ${apiIdClient} and telegramId: ${telegramId} already exist`);
             throw new HttpException(`user with apiId: ${apiIdClient} and telegramId: ${telegramId} already exist`, HttpStatus.BAD_REQUEST);
         }
 
-        const newUser = await this.usersRepository.createUser(createUserDto);
+        const newUser = this.usersRepository.createUser(createUserDto);
 
         this.logger.debug(`user successfully created`);
 
@@ -46,7 +46,7 @@ export class UsersService {
     async getCountUsersByApiId(apiIdClient: Users['apiIdClient']): Promise<number> {
         this.logger.log(`Trying to get users count by apiId: ${apiIdClient}`);
 
-        const count = await this.usersRepository.getCountUsersByApiId(apiIdClient );
+        const count = this.usersRepository.getCountUsersByApiId(apiIdClient );
 
         this.logger.debug(`users count successfully get`);
 
@@ -56,7 +56,7 @@ export class UsersService {
     async cleanTable(): Promise<number> {
         this.logger.log(`Trying to clean users table`);
 
-        const cleanTable = await this.usersRepository.cleanTable();
+        const cleanTable = this.usersRepository.cleanTable();
 
         this.logger.debug(`users table successfully cleaned`);
 

@@ -20,7 +20,7 @@ export class UserSession {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @OneToOne(() => PersonalInfo, (personalInfo) => personalInfo.id, { cascade: true, eager: true })
+    @OneToOne(() => PersonalInfo, (personalInfo) => personalInfo.id, { cascade: true, eager: true, onDelete: 'CASCADE' })
     @JoinColumn()
     personalInfo: PersonalInfo;
 
@@ -33,7 +33,7 @@ export class UserSession {
     @Column({
         type: "enum",
         enum: userSessionStatus,
-        default: userSessionStatus.ACTIVE
+        default: userSessionStatus.DISABLED
     })
     status: userSessionStatus;
 
@@ -45,7 +45,7 @@ export class UserSession {
     })
     apiId: number;
 
-    @Column({type: 'varchar', length: 40, unique: true, default: ''})
+    @Column({type: 'varchar', length: 40, unique: true, default: null})
     apiHash: string;
 
     @Column({

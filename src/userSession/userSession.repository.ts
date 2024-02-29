@@ -3,9 +3,9 @@ import {InjectRepository} from "@nestjs/typeorm";
 import {UserSession, userSessionStatus} from "./entity/userSession.entity";
 import {Repository} from "typeorm";
 import {UpdateUserSessionInfoDto} from "./dto/updateUserSession.dto";
-import {CreateUserSessionInfoDto} from "./dto/createUserSessionInfo.dto";
 import {DeleteUserSessionDto} from "./dto/deleteUserSession.dto";
 import {UpdateApiInfoDto} from "./dto/updateApiInfo.dto";
+import {CreatePersonalInfoDto} from "../personalInfo/dto/createPersonalInfo.dto";
 
 @Injectable()
 export class UserSessionRepository {
@@ -23,8 +23,8 @@ export class UserSessionRepository {
         return await this.userSessionRepository.find();
     }
 
-    async createUserSession(createUserSessionInfoDto: CreateUserSessionInfoDto): Promise<UserSession> {
-        return await this.userSessionRepository.save(createUserSessionInfoDto);
+    async createUserSession(telegramId: UserSession['telegramId'], personalInfo: CreatePersonalInfoDto): Promise<UserSession> {
+        return await this.userSessionRepository.save({telegramId, personalInfo});
     }
 
 
@@ -53,8 +53,13 @@ export class UserSessionRepository {
         });
     }
 
-    async deleteUserSession(deleteUserSessionDto: DeleteUserSessionDto): Promise<number> {
+    async deleteUserSessionById(deleteUserSessionDto: DeleteUserSessionDto): Promise<number> {
         const {affected} = await this.userSessionRepository.delete(deleteUserSessionDto);
+        return affected;
+    }
+
+    async deleteUserSessionByTelegramId(telegramId: UserSession['telegramId']): Promise<number> {
+        const {affected} = await this.userSessionRepository.delete({telegramId});
         return affected;
     }
 

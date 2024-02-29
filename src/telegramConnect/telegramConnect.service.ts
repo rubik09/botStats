@@ -147,6 +147,6 @@ export class TelegramConnectService implements OnModuleInit {
 
         this.logger.log(`Main connectToTelegram function: run step ${setupStep}`);
 
-        return this.connectionStepFunctions[setupStep as setupSteps](createTelegramConnectionDto);
+        await this.connectionStepFunctions[setupStep as setupSteps](createTelegramConnectionDto);
     }
 }
