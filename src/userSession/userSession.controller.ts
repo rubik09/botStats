@@ -9,7 +9,7 @@ export class UserSessionController {
     constructor(private readonly userSessionService: UserSessionService) {}
 
     @Get()
-    @UseGuards(JwtGuard)
+    // @UseGuards(JwtGuard)
     async getAllUserSessions(): Promise<UserSession[]> {
         return this.userSessionService.getAllUserSessions();
     }
