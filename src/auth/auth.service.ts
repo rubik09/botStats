@@ -51,6 +51,6 @@ export class AuthService {
 
         this.logger.debug(`admin with email: ${email} registered`);
 
-        return this.login(newAdmin);
+        return this.login(createAdminDto);
     }
 }
