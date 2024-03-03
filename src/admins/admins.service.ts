@@ -45,7 +45,7 @@ export class AdminsService {
 
         const {email} = createAdminDto
 
-        const admin = this.adminsRepository.findOneByEmail(email);
+        const admin = await this.adminsRepository.findOneByEmail(email);
 
         if (admin) {
             this.logger.error(`admin with email: ${email} already exist`);
