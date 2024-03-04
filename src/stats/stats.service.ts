@@ -30,7 +30,6 @@ export class StatsService implements OnModuleInit {
 
     if (!stats) {
       this.logger.error(`stats with apiId: ${apiId} not found`);
-      throw new HttpException(`stats with apiId: ${apiId} not found`, HttpStatus.NOT_FOUND);
     }
 
     this.logger.debug(`stats successfully get`);
