@@ -1,249 +1,316 @@
-import {HttpException, HttpStatus, Injectable, Logger, OnModuleInit} from '@nestjs/common';
-import {UsersService} from "../users/users.service";
-import {CreateUserDto} from "../users/dto/createUser.dto";
-import {StatsRepository} from "./stats.repository";
-import {Stats} from "./entity/stats.entity";
-import {UpdateStatsDto} from "./dto/updateStats.dto";
-import {UserSessionService} from "../userSession/userSession.service";
-import {UpdateUserSessionInfoDto} from "../userSession/dto/updateUserSession.dto";
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  Logger,
+  OnModuleInit,
+} from "@nestjs/common";
+import { UsersService } from "../users/users.service";
+import { CreateUserDto } from "../users/dto/createUser.dto";
+import { StatsRepository } from "./stats.repository";
+import { Stats } from "./entity/stats.entity";
+import { UpdateStatsDto } from "./dto/updateStats.dto";
+import { UserSessionService } from "../userSession/userSession.service";
+import { UpdateUserSessionInfoDto } from "../userSession/dto/updateUserSession.dto";
 import zeroOutCounts from "../utils/zeroOutCounts";
 import statsSending from "./statsSending";
 import * as cron from "node-cron";
-import {cronTimezone, time} from "../utils/consts";
-import {ConfigService} from "@nestjs/config";
+import { cronTimezone, time } from "../utils/consts";
+import { ConfigService } from "@nestjs/config";
 
 @Injectable()
 export class StatsService implements OnModuleInit {
-    private readonly logger = new Logger(StatsService.name);
-    constructor(
-        private readonly statsRepository: StatsRepository,
-        private readonly usersService: UsersService,
-        private readonly userSessionService: UserSessionService,
-        private readonly configService: ConfigService,
-    ) {
+  private readonly logger = new Logger(StatsService.name);
+  constructor(
+    private readonly statsRepository: StatsRepository,
+    private readonly usersService: UsersService,
+    private readonly userSessionService: UserSessionService,
+    private readonly configService: ConfigService,
+  ) {}
+
+  async getStatsByApiId(apiId: Stats["apiIdClient"]): Promise<Stats> {
+    this.logger.log(`Trying to get stats by apiId: ${apiId}`);
+
+    const stats = await this.statsRepository.getStatsByApiId(apiId);
+
+    if (!stats) {
+      this.logger.error(`stats with apiId: ${apiId} not found`);
+      throw new HttpException(
+        `stats with apiId: ${apiId} not found`,
+        HttpStatus.NOT_FOUND,
+      );
     }
 
-    async getStatsByApiId(apiId: Stats['apiIdClient']): Promise<Stats> {
-        this.logger.log(`Trying to get stats by apiId: ${apiId}`);
+    this.logger.debug(`stats successfully get`);
 
-        const stats = await this.statsRepository.getStatsByApiId(apiId);
+    return stats;
+  }
 
-        if (!stats) {
-            this.logger.error(`stats with apiId: ${apiId} not found`);
-            throw new HttpException(`stats with apiId: ${apiId} not found`, HttpStatus.NOT_FOUND);
-        }
+  async createStats(apiId: Stats["apiIdClient"]): Promise<Stats> {
+    this.logger.log(`Trying to create stats by apiId: ${apiId}`);
 
-        this.logger.debug(`stats successfully get`);
+    const stats = await this.statsRepository.getStatsByApiId(apiId);
 
-        return stats;
+    if (stats) {
+      this.logger.error(`stats with apiId: ${apiId} already exist`);
+      throw new HttpException(
+        `stats with apiId: ${apiId}  already exist`,
+        HttpStatus.BAD_REQUEST,
+      );
     }
 
-    async createStats(apiId: Stats['apiIdClient']): Promise<Stats> {
-        this.logger.log(`Trying to create stats by apiId: ${apiId}`);
+    const newStats = await this.statsRepository.createStats(apiId);
 
-        const stats = await this.statsRepository.getStatsByApiId(apiId);
+    this.logger.debug(`stats successfully created`);
 
-        if (stats) {
-            this.logger.error(`stats with apiId: ${apiId} already exist`);
-            throw new HttpException(`stats with apiId: ${apiId}  already exist`, HttpStatus.BAD_REQUEST);
-        }
+    return newStats;
+  }
 
-        const newStats = await this.statsRepository.createStats(apiId);
+  async updateStatsByApiId(
+    updateStatsDto: UpdateStatsDto,
+    apiId: Stats["apiIdClient"],
+  ): Promise<number> {
+    this.logger.log(`Trying to update stats by apiId: ${apiId}`);
 
-        this.logger.debug(`stats successfully created`);
+    const userSession = await this.getStatsByApiId(apiId);
 
-        return newStats;
+    if (!userSession) {
+      this.logger.error(`stats with apiId: ${apiId} not found`);
+      throw new HttpException(
+        `stats with apiId: ${apiId} not found`,
+        HttpStatus.NOT_FOUND,
+      );
     }
 
-    async updateStatsByApiId(updateStatsDto: UpdateStatsDto, apiId: Stats['apiIdClient']): Promise<number> {
-        this.logger.log(`Trying to update stats by apiId: ${apiId}`);
+    const stats = await this.statsRepository.updateStatsByApiId(
+      updateStatsDto,
+      apiId,
+    );
 
-        const userSession = await this.getStatsByApiId(apiId);
+    this.logger.debug(`stats successfully updated`);
 
-        if (!userSession) {
-            this.logger.error(`stats with apiId: ${apiId} not found`);
-            throw new HttpException(`stats with apiId: ${apiId} not found`, HttpStatus.NOT_FOUND);
-        }
+    return stats;
+  }
 
-        const stats = await this.statsRepository.updateStatsByApiId(updateStatsDto, apiId);
+  async increaseIncomingMessagesCountToSessionByApiId(
+    apiId: Stats["apiIdClient"],
+  ): Promise<number> {
+    this.logger.log(
+      `Trying to increase incoming messages count by apiId: ${apiId}`,
+    );
 
-        this.logger.debug(`stats successfully updated`);
+    const userSession = this.getStatsByApiId(apiId);
 
-        return stats;
+    if (!userSession) {
+      this.logger.error(`stats with apiId: ${apiId} not found`);
+      throw new HttpException(
+        `stats with apiId: ${apiId} not found`,
+        HttpStatus.NOT_FOUND,
+      );
     }
 
-    async increaseIncomingMessagesCountToSessionByApiId(apiId: Stats['apiIdClient']): Promise<number> {
-        this.logger.log(`Trying to increase incoming messages count by apiId: ${apiId}`);
+    const stats =
+      this.statsRepository.increaseIncomingMessagesCountToSessionByApiId(apiId);
 
-        const userSession = this.getStatsByApiId(apiId);
+    this.logger.debug(`incoming messages count successfully increased`);
 
-        if (!userSession) {
-            this.logger.error(`stats with apiId: ${apiId} not found`);
-            throw new HttpException(`stats with apiId: ${apiId} not found`, HttpStatus.NOT_FOUND);
-        }
+    return stats;
+  }
 
-        const stats = this.statsRepository.increaseIncomingMessagesCountToSessionByApiId(apiId);
+  async increaseOutgoingMessagesCountToSessionByApiId(
+    apiId: Stats["apiIdClient"],
+  ): Promise<number> {
+    this.logger.log(
+      `Trying to increase outgoing messages count by apiId: ${apiId}`,
+    );
 
-        this.logger.debug(`incoming messages count successfully increased`);
+    const userSession = await this.getStatsByApiId(apiId);
 
-        return stats;
+    if (!userSession) {
+      this.logger.error(`stats with apiId: ${apiId} not found`);
+      throw new HttpException(
+        `stats with apiId: ${apiId} not found`,
+        HttpStatus.NOT_FOUND,
+      );
     }
 
-    async increaseOutgoingMessagesCountToSessionByApiId(apiId: Stats['apiIdClient']): Promise<number> {
-        this.logger.log(`Trying to increase outgoing messages count by apiId: ${apiId}`);
+    const stats =
+      await this.statsRepository.increaseOutgoingMessagesCountToSessionByApiId(
+        apiId,
+      );
 
-        const userSession = await this.getStatsByApiId(apiId);
+    this.logger.debug(`outgoing messages count successfully increased`);
 
-        if (!userSession) {
-            this.logger.error(`stats with apiId: ${apiId} not found`);
-            throw new HttpException(`stats with apiId: ${apiId} not found`, HttpStatus.NOT_FOUND);
-        }
+    return stats;
+  }
 
-        const stats = await this.statsRepository.increaseOutgoingMessagesCountToSessionByApiId(apiId);
+  async incomingMessages(clientInfoStr: string): Promise<void> {
+    this.logger.log(`Trying to add incoming message to stats`);
 
-        this.logger.debug(`outgoing messages count successfully increased`);
+    this.logger.log(`parsing clientInfoStr`);
+    const clientInfoObj = JSON.parse(clientInfoStr);
+    const { apiId, telegramId } = clientInfoObj;
 
-        return stats;
-    }
-
-    async incomingMessages(clientInfoStr: string): Promise<void> {
-        this.logger.log(`Trying to add incoming message to stats`);
-
-        this.logger.log(`parsing clientInfoStr`);
-        const clientInfoObj = JSON.parse(clientInfoStr);
-        const {apiId, telegramId} = clientInfoObj;
-
-        const createUserDto: CreateUserDto = <CreateUserDto>{
-            telegramId,
-            apiIdClient: apiId,
-        };
-
-        const user = await this.usersService.getUserByApiIdAndTelegramId(createUserDto);
-
-        if (!user) await this.usersService.createUser(createUserDto);
-
-        const stats = await this.getStatsByApiId(apiId);
-
-        if (!stats) await this.createStats(apiId);
-
-        await this.increaseIncomingMessagesCountToSessionByApiId(apiId);
-
-        this.logger.debug(`incoming message successfully add to stats`);
+    const createUserDto: CreateUserDto = <CreateUserDto>{
+      telegramId,
+      apiIdClient: apiId,
     };
 
-    async outgoingMessages(clientInfoStr: string) {
-        this.logger.log(`Trying to add outgoing message to stats`);
+    const user =
+      await this.usersService.getUserByApiIdAndTelegramId(createUserDto);
 
-        this.logger.log(`parsing clientInfoStr`);
-        const clientInfoObj = JSON.parse(clientInfoStr);
-        const {apiId, message} = clientInfoObj;
+    if (!user) await this.usersService.createUser(createUserDto);
 
-        const {keywords} = await this.userSessionService.getKeywordsFromUserSessionByApiId(apiId);
-        const parsedKeywords = JSON.parse(keywords);
-        const {personalInfo} = await this.userSessionService.getPersonalInfoByApiId(apiId);
-        const {username} = personalInfo;
-        const statsArr = await this.getStatsByApiId(apiId);
+    const stats = await this.getStatsByApiId(apiId);
 
-        if (!statsArr) await this.createStats(apiId);
+    if (!stats) await this.createStats(apiId);
 
-        await this.increaseOutgoingMessagesCountToSessionByApiId(apiId);
+    await this.increaseIncomingMessagesCountToSessionByApiId(apiId);
 
-        this.logger.debug({username, apiId, date: new Date()})
+    this.logger.debug(`incoming message successfully add to stats`);
+  }
 
-        const msgLowerCase = message.toLowerCase().trim();
-        for (const [i, elem] of parsedKeywords.entries()) {
-            const {
-                keyword
-            } = elem;
+  async outgoingMessages(clientInfoStr: string) {
+    this.logger.log(`Trying to add outgoing message to stats`);
 
-            if (!keyword) continue;
+    this.logger.log(`parsing clientInfoStr`);
+    const clientInfoObj = JSON.parse(clientInfoStr);
+    const { apiId, message } = clientInfoObj;
 
-            const keywordsList = keyword.split(';');
+    const { keywords } =
+      await this.userSessionService.getKeywordsFromUserSessionByApiId(apiId);
+    const parsedKeywords = JSON.parse(keywords);
+    const { personalInfo } =
+      await this.userSessionService.getPersonalInfoByApiId(apiId);
+    const { username } = personalInfo;
+    const statsArr = await this.getStatsByApiId(apiId);
 
-            for (const item of keywordsList) {
-                const keywordLowerCase = item.toLowerCase().trim();
+    if (!statsArr) await this.createStats(apiId);
 
-                this.logger.debug(`keyword: ${keyword} matched?`, (msgLowerCase.indexOf(keywordLowerCase) >= 0));
+    await this.increaseOutgoingMessagesCountToSessionByApiId(apiId);
 
-                if (!(msgLowerCase.indexOf(keywordLowerCase) >= 0)) continue;
+    this.logger.debug({ username, apiId, date: new Date() });
 
-                parsedKeywords[i].count++
-            }
-        }
-        const stringifyKeywords = JSON.stringify(parsedKeywords);
+    const msgLowerCase = message.toLowerCase().trim();
+    for (const [i, elem] of parsedKeywords.entries()) {
+      const { keyword } = elem;
 
-        this.logger.debug({arraySame: keywords === stringifyKeywords, message});
+      if (!keyword) continue;
 
-        if (keywords === stringifyKeywords) return;
+      const keywordsList = keyword.split(";");
 
-        const updateUserSessionInfoDto: UpdateUserSessionInfoDto = <UpdateUserSessionInfoDto>{
-            keywords: stringifyKeywords,
-        };
+      for (const item of keywordsList) {
+        const keywordLowerCase = item.toLowerCase().trim();
 
-        await this.userSessionService.updateUserSessionByApiId(apiId, updateUserSessionInfoDto);
+        this.logger.debug(
+          `keyword: ${keyword} matched?`,
+          msgLowerCase.indexOf(keywordLowerCase) >= 0,
+        );
 
-        this.logger.debug(`outgoing message successfully add to stats`);
+        if (!(msgLowerCase.indexOf(keywordLowerCase) >= 0)) continue;
+
+        parsedKeywords[i].count++;
+      }
+    }
+    const stringifyKeywords = JSON.stringify(parsedKeywords);
+
+    this.logger.debug({ arraySame: keywords === stringifyKeywords, message });
+
+    if (keywords === stringifyKeywords) return;
+
+    const updateUserSessionInfoDto: UpdateUserSessionInfoDto = <
+      UpdateUserSessionInfoDto
+    >{
+      keywords: stringifyKeywords,
     };
 
-    async PreSendCalculation (timeMessage: string) {
-        const activeAccounts = await this.userSessionService.getActiveUserSessions();
+    await this.userSessionService.updateUserSessionByApiId(
+      apiId,
+      updateUserSessionInfoDto,
+    );
 
-        for (const account of activeAccounts) {
-            const {apiId} = account;
-            const statsArr = await this.getStatsByApiId(apiId);
-            if (!statsArr) await this.createStats(apiId);
-            const allUsers = await this.usersService.getCountUsersByApiId(apiId);
-            const {incomingMessagesCount, outgoingMessagesCount} = await this.getStatsByApiId(apiId);
-            const {keywords} = await this.userSessionService.getKeywordsFromUserSessionByApiId(apiId);
-            const parsedKeywords = JSON.parse(keywords);
-            const {personalInfo} = await this.userSessionService.getPersonalInfoByApiId(apiId);
-            const {username} = personalInfo;
-            let averageMessagesCount = incomingMessagesCount / allUsers;
-            if (incomingMessagesCount < 1 || allUsers < 1) averageMessagesCount = 0;
+    this.logger.debug(`outgoing message successfully add to stats`);
+  }
 
-            this.logger.debug({
-                username: username,
-                api_id: apiId,
-                'incomingMessages': incomingMessagesCount,
-                'outgoingMessages': outgoingMessagesCount
-            });
+  async PreSendCalculation(timeMessage: string) {
+    const activeAccounts =
+      await this.userSessionService.getActiveUserSessions();
 
-            await statsSending(username, incomingMessagesCount, allUsers, Number(averageMessagesCount.toFixed(2)), parsedKeywords, timeMessage);
+    for (const account of activeAccounts) {
+      const { apiId } = account;
+      const statsArr = await this.getStatsByApiId(apiId);
+      if (!statsArr) await this.createStats(apiId);
+      const allUsers = await this.usersService.getCountUsersByApiId(apiId);
+      const { incomingMessagesCount, outgoingMessagesCount } =
+        await this.getStatsByApiId(apiId);
+      const { keywords } =
+        await this.userSessionService.getKeywordsFromUserSessionByApiId(apiId);
+      const parsedKeywords = JSON.parse(keywords);
+      const { personalInfo } =
+        await this.userSessionService.getPersonalInfoByApiId(apiId);
+      const { username } = personalInfo;
+      let averageMessagesCount = incomingMessagesCount / allUsers;
+      if (incomingMessagesCount < 1 || allUsers < 1) averageMessagesCount = 0;
 
-            const newArr = zeroOutCounts(parsedKeywords);
-            const stringifyNewArr = JSON.stringify(newArr);
+      this.logger.debug({
+        username: username,
+        api_id: apiId,
+        incomingMessages: incomingMessagesCount,
+        outgoingMessages: outgoingMessagesCount,
+      });
 
-            const updateStatsDto: UpdateStatsDto = <UpdateStatsDto>{
-                incomingMessagesCount: 0,
-                outgoingMessagesCount: 0,
-                usersCount: 0,
-            };
+      await statsSending(
+        username,
+        incomingMessagesCount,
+        allUsers,
+        Number(averageMessagesCount.toFixed(2)),
+        parsedKeywords,
+        timeMessage,
+      );
 
-            await this.updateStatsByApiId(updateStatsDto, apiId);
+      const newArr = zeroOutCounts(parsedKeywords);
+      const stringifyNewArr = JSON.stringify(newArr);
 
-            await this.usersService.cleanTableByApiId(apiId);
+      const updateStatsDto: UpdateStatsDto = <UpdateStatsDto>{
+        incomingMessagesCount: 0,
+        outgoingMessagesCount: 0,
+        usersCount: 0,
+      };
 
-            const updateUserSessionInfoDto: UpdateUserSessionInfoDto = <UpdateUserSessionInfoDto>{
-                keywords: stringifyNewArr,
-            };
+      await this.updateStatsByApiId(updateStatsDto, apiId);
 
-            await this.userSessionService.updateUserSessionByApiId(apiId, updateUserSessionInfoDto);
-        }
+      await this.usersService.cleanTableByApiId(apiId);
+
+      const updateUserSessionInfoDto: UpdateUserSessionInfoDto = <
+        UpdateUserSessionInfoDto
+      >{
+        keywords: stringifyNewArr,
+      };
+
+      await this.userSessionService.updateUserSessionByApiId(
+        apiId,
+        updateUserSessionInfoDto,
+      );
     }
+  }
 
-    onModuleInit(): any {
-        const {
-            CRON_TIME_DAY,
-            CRON_TIME_NIGHT,
-        } = this.configService.get('CRON');
+  onModuleInit(): any {
+    const { CRON_TIME_DAY, CRON_TIME_NIGHT } = this.configService.get("CRON");
 
-        cron.schedule(CRON_TIME_DAY, async () => {
-            await this.PreSendCalculation(time.DAY);
-        }, {scheduled: true, timezone: cronTimezone});
+    cron.schedule(
+      CRON_TIME_DAY,
+      async () => {
+        await this.PreSendCalculation(time.DAY);
+      },
+      { scheduled: true, timezone: cronTimezone },
+    );
 
-        cron.schedule(CRON_TIME_NIGHT, async () => {
-            await this.PreSendCalculation(time.NIGHT);
-        }, {scheduled: true, timezone: cronTimezone});
-    }
-
+    cron.schedule(
+      CRON_TIME_NIGHT,
+      async () => {
+        await this.PreSendCalculation(time.NIGHT);
+      },
+      { scheduled: true, timezone: cronTimezone },
+    );
+  }
 }

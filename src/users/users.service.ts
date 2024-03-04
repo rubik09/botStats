@@ -1,74 +1,87 @@
-import {HttpException, HttpStatus, Injectable, Logger} from '@nestjs/common';
-import {UsersRepository} from "./users.repository";
-import {CreateUserDto} from "./dto/createUser.dto";
-import {Users} from "./entity/users.entity";
+import { HttpException, HttpStatus, Injectable, Logger } from "@nestjs/common";
+import { UsersRepository } from "./users.repository";
+import { CreateUserDto } from "./dto/createUser.dto";
+import { Users } from "./entity/users.entity";
 
 @Injectable()
 export class UsersService {
-    private readonly logger = new Logger(UsersService.name);
-    constructor(private readonly usersRepository: UsersRepository) {
+  private readonly logger = new Logger(UsersService.name);
+  constructor(private readonly usersRepository: UsersRepository) {}
+
+  async getUserByApiIdAndTelegramId(createUserDto: CreateUserDto) {
+    const { apiIdClient, telegramId } = createUserDto;
+    this.logger.log(
+      `Trying to get user by apiId: ${apiIdClient} and telegramId: ${telegramId}`,
+    );
+
+    const user =
+      await this.usersRepository.findUserByApiIdAndTelegramId(createUserDto);
+
+    if (!user) {
+      this.logger.error(
+        `user with apiId: ${apiIdClient} and telegramId: ${telegramId} not found`,
+      );
     }
 
-    async getUserByApiIdAndTelegramId(createUserDto: CreateUserDto) {
-        const {apiIdClient, telegramId} = createUserDto
-        this.logger.log(`Trying to get user by apiId: ${apiIdClient} and telegramId: ${telegramId}`);
+    this.logger.debug(`user successfully get`);
 
-        const user = await this.usersRepository.findUserByApiIdAndTelegramId(createUserDto);
+    return user;
+  }
 
-        if (!user) {
-            this.logger.error(`user with apiId: ${apiIdClient} and telegramId: ${telegramId} not found`);
-        }
+  async createUser(createUserDto: CreateUserDto): Promise<Users> {
+    const { apiIdClient, telegramId } = createUserDto;
+    this.logger.log(
+      `Trying to create user by apiId: ${apiIdClient} and telegramId: ${telegramId}`,
+    );
 
-        this.logger.debug(`user successfully get`);
+    const user = await this.getUserByApiIdAndTelegramId(createUserDto);
 
-        return user
+    if (user) {
+      this.logger.error(
+        `user with apiId: ${apiIdClient} and telegramId: ${telegramId} already exist`,
+      );
+      throw new HttpException(
+        `user with apiId: ${apiIdClient} and telegramId: ${telegramId} already exist`,
+        HttpStatus.BAD_REQUEST,
+      );
     }
 
-    async createUser(createUserDto: CreateUserDto): Promise<Users> {
-        const {apiIdClient, telegramId} = createUserDto
-        this.logger.log(`Trying to create user by apiId: ${apiIdClient} and telegramId: ${telegramId}`);
+    const newUser = await this.usersRepository.createUser(createUserDto);
 
-        const user = await this.getUserByApiIdAndTelegramId(createUserDto);
+    this.logger.debug(`user successfully created`);
 
-        if (user) {
-            this.logger.error(`user with apiId: ${apiIdClient} and telegramId: ${telegramId} already exist`);
-            throw new HttpException(`user with apiId: ${apiIdClient} and telegramId: ${telegramId} already exist`, HttpStatus.BAD_REQUEST);
-        }
+    return newUser;
+  }
 
-        const newUser = await this.usersRepository.createUser(createUserDto);
+  async getCountUsersByApiId(
+    apiIdClient: Users["apiIdClient"],
+  ): Promise<number> {
+    this.logger.log(`Trying to get users count by apiId: ${apiIdClient}`);
 
-        this.logger.debug(`user successfully created`);
+    const count = await this.usersRepository.getCountUsersByApiId(apiIdClient);
 
-        return newUser;
-    }
+    this.logger.debug(`users count successfully get`);
 
-    async getCountUsersByApiId(apiIdClient: Users['apiIdClient']): Promise<number> {
-        this.logger.log(`Trying to get users count by apiId: ${apiIdClient}`);
+    return count;
+  }
 
-        const count = await this.usersRepository.getCountUsersByApiId(apiIdClient );
+  async cleanTable(): Promise<number> {
+    this.logger.log(`Trying to clean users table`);
 
-        this.logger.debug(`users count successfully get`);
+    const cleanTable = this.usersRepository.cleanTable();
 
-        return count;
-    }
+    this.logger.debug(`users table successfully cleaned`);
 
-    async cleanTable(): Promise<number> {
-        this.logger.log(`Trying to clean users table`);
+    return cleanTable;
+  }
 
-        const cleanTable = this.usersRepository.cleanTable();
+  async cleanTableByApiId(apiIdClient: Users["apiIdClient"]): Promise<number> {
+    this.logger.log(`Trying to clean users table`);
 
-        this.logger.debug(`users table successfully cleaned`);
+    const cleanTable = this.usersRepository.cleanTableByApiId(apiIdClient);
 
-        return cleanTable;
-    }
+    this.logger.debug(`users table successfully cleaned`);
 
-    async cleanTableByApiId(apiIdClient: Users['apiIdClient']): Promise<number> {
-        this.logger.log(`Trying to clean users table`);
-
-        const cleanTable = this.usersRepository.cleanTableByApiId(apiIdClient);
-
-        this.logger.debug(`users table successfully cleaned`);
-
-        return cleanTable;
-    }
+    return cleanTable;
+  }
 }
