@@ -1,6 +1,5 @@
-import { PickType } from "@nestjs/mapped-types";
-import { TelegramConnectDto } from "./telegramConnect.dto";
+import { PickType } from '@nestjs/mapped-types';
 
-export class DeleteTelegramConnectDto extends PickType(TelegramConnectDto, [
-  "id",
-]) {}
+import { TelegramConnectDto } from './telegramConnect.dto';
+
+export class DeleteTelegramConnectDto extends PickType(TelegramConnectDto, ['id']) {}

@@ -1,6 +1,7 @@
-import { TelegramClient } from "telegram";
-import { UserSession } from "../userSession/entity/userSession.entity";
-import { PersonalInfo } from "../personalInfo/entity/personalInfo.entity";
+import { TelegramClient } from 'telegram';
+
+import { PersonalInfo } from '../personalInfo/entity/personalInfo.entity';
+import { UserSession } from '../userSession/entity/userSession.entity';
 
 export interface IClients {
   [userId: number]: TelegramClient;
@@ -23,14 +24,14 @@ export interface IPromiseValue {
 }
 
 export interface IGeneralStep {
-  telegramId: UserSession["telegramId"];
-  username: PersonalInfo["username"];
+  telegramId: UserSession['telegramId'];
+  username: PersonalInfo['username'];
 }
 
 export interface IFirstStep extends IGeneralStep {
-  apiId: UserSession["apiId"];
-  apiHash: UserSession["apiHash"];
-  phoneNumber: PersonalInfo["phoneNumber"];
+  apiId: UserSession['apiId'];
+  apiHash: UserSession['apiHash'];
+  phoneNumber: PersonalInfo['phoneNumber'];
 }
 
 export interface ISecondStep extends IGeneralStep {
@@ -39,18 +40,18 @@ export interface ISecondStep extends IGeneralStep {
 }
 
 export interface IThirdStep extends IGeneralStep {
-  keywords: UserSession["keywords"];
+  keywords: UserSession['keywords'];
 }
 
 export interface ICreateClient {
-  logSession: UserSession["logSession"];
-  apiId: UserSession["apiId"];
-  apiHash: UserSession["apiHash"];
+  logSession: UserSession['logSession'];
+  apiId: UserSession['apiId'];
+  apiHash: UserSession['apiHash'];
 }
 
 export interface ITelegramInit {
-  logSession: UserSession["logSession"];
-  apiId: UserSession["apiId"];
-  apiHash: UserSession["apiHash"];
-  telegramId: UserSession["telegramId"];
+  logSession: UserSession['logSession'];
+  apiId: UserSession['apiId'];
+  apiHash: UserSession['apiHash'];
+  telegramId: UserSession['telegramId'];
 }

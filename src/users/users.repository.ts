@@ -1,11 +1,12 @@
-import { Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
-import { Users } from "./entity/users.entity";
-import { CreateUserDto } from "./dto/createUser.dto";
-import { DeleteUserDto } from "./dto/deleteUser.dto";
-import { UserSession } from "../userSession/entity/userSession.entity";
-import { UpdateUserDto } from "./dto/updateUser.dto";
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+
+import { CreateUserDto } from './dto/createUser.dto';
+import { DeleteUserDto } from './dto/deleteUser.dto';
+import { UpdateUserDto } from './dto/updateUser.dto';
+import { Users } from './entity/users.entity';
+import { UserSession } from '../userSession/entity/userSession.entity';
 
 @Injectable()
 export class UsersRepository {
@@ -14,9 +15,7 @@ export class UsersRepository {
     private readonly usersRepository: Repository<Users>,
   ) {}
 
-  async findUserByApiIdAndTelegramId(
-    createUserDto: CreateUserDto,
-  ): Promise<Users> {
+  async findUserByApiIdAndTelegramId(createUserDto: CreateUserDto): Promise<Users> {
     return await this.usersRepository.findOne({
       where: createUserDto,
     });
@@ -26,9 +25,7 @@ export class UsersRepository {
     return await this.usersRepository.save(createUserDto);
   }
 
-  async getCountUsersByApiId(
-    apiIdClient: Users["apiIdClient"],
-  ): Promise<number> {
+  async getCountUsersByApiId(apiIdClient: Users['apiIdClient']): Promise<number> {
     return await this.usersRepository.count({ where: { apiIdClient } });
   }
 
@@ -37,7 +34,7 @@ export class UsersRepository {
     return affected;
   }
 
-  async cleanTableByApiId(apiIdClient: Users["apiIdClient"]): Promise<number> {
+  async cleanTableByApiId(apiIdClient: Users['apiIdClient']): Promise<number> {
     const { affected } = await this.usersRepository.delete({ apiIdClient });
     return affected;
   }
@@ -47,14 +44,8 @@ export class UsersRepository {
     return affected;
   }
 
-  async updateUser(
-    id: UserSession["id"],
-    updateUserDto: UpdateUserDto,
-  ): Promise<number> {
-    const { affected } = await this.usersRepository.update(
-      { id },
-      updateUserDto,
-    );
+  async updateUser(id: UserSession['id'], updateUserDto: UpdateUserDto): Promise<number> {
+    const { affected } = await this.usersRepository.update({ id }, updateUserDto);
     return affected;
   }
 }

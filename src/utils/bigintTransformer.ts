@@ -1,4 +1,4 @@
-import { ValueTransformer } from "typeorm";
+import { ValueTransformer } from 'typeorm';
 
 export const bigintTransformer: ValueTransformer = {
   to: (entityValue: number) => entityValue as unknown as bigint,

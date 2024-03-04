@@ -1,4 +1,5 @@
-import { PickType } from "@nestjs/mapped-types";
-import { UserSessionDto } from "./userSession.dto";
+import { PickType } from '@nestjs/mapped-types';
 
-export class DeleteUserSessionDto extends PickType(UserSessionDto, ["id"]) {}
+import { UserSessionDto } from './userSession.dto';
+
+export class DeleteUserSessionDto extends PickType(UserSessionDto, ['id']) {}

@@ -1,8 +1,8 @@
-import { IPromises, IPromiseValue } from "./interfaces";
+import { IPromiseValue, IPromises } from './interfaces';
 
 export default function generatePromise(): IPromises[number] {
   let resolve: (value: IPromiseValue) => void;
-  let promise = new Promise<IPromiseValue>((res) => {
+  const promise = new Promise<IPromiseValue>((res) => {
     resolve = res;
   });
 

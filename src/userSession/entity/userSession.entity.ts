@@ -1,21 +1,22 @@
 import {
   Column,
-  Entity,
-  PrimaryGeneratedColumn,
   CreateDateColumn,
-  UpdateDateColumn,
-  OneToOne,
+  Entity,
   JoinColumn,
-} from "typeorm";
-import { bigintTransformer } from "../../utils/bigintTransformer";
-import { PersonalInfo } from "../../personalInfo/entity/personalInfo.entity";
+  OneToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+
+import { PersonalInfo } from '../../personalInfo/entity/personalInfo.entity';
+import { bigintTransformer } from '../../utils/bigintTransformer';
 
 export enum userSessionStatus {
-  ACTIVE = "active",
-  DISABLED = "disabled",
+  ACTIVE = 'active',
+  DISABLED = 'disabled',
 }
 
-@Entity({ name: "sessions" })
+@Entity({ name: 'sessions' })
 export class UserSession {
   @PrimaryGeneratedColumn()
   id: number;
@@ -23,19 +24,19 @@ export class UserSession {
   @OneToOne(() => PersonalInfo, (personalInfo) => personalInfo.id, {
     cascade: true,
     eager: true,
-    onDelete: "CASCADE",
+    onDelete: 'CASCADE',
   })
   @JoinColumn()
   personalInfo: PersonalInfo;
 
-  @Column({ type: "varchar", default: "" })
+  @Column({ type: 'varchar', default: '' })
   logSession: string;
 
-  @Column({ type: "varchar", default: "" })
+  @Column({ type: 'varchar', default: '' })
   keywords: string;
 
   @Column({
-    type: "enum",
+    type: 'enum',
     enum: userSessionStatus,
     default: userSessionStatus.DISABLED,
   })
@@ -43,25 +44,25 @@ export class UserSession {
 
   @Column({
     unique: true,
-    type: "bigint",
+    type: 'bigint',
     default: null,
     transformer: bigintTransformer,
   })
   apiId: number;
 
-  @Column({ type: "varchar", length: 40, unique: true, default: null })
+  @Column({ type: 'varchar', length: 40, unique: true, default: null })
   apiHash: string;
 
   @Column({
     unique: true,
-    type: "bigint",
+    type: 'bigint',
     transformer: bigintTransformer,
   })
   telegramId: number;
 
-  @CreateDateColumn({ type: "timestamp without time zone" })
+  @CreateDateColumn({ type: 'timestamp without time zone' })
   createdAt: Date;
 
-  @UpdateDateColumn({ type: "timestamp without time zone" })
+  @UpdateDateColumn({ type: 'timestamp without time zone' })
   updatedAt: Date;
 }

@@ -1,7 +1,5 @@
-import { PickType } from "@nestjs/mapped-types";
-import { UserSessionDto } from "./userSession.dto";
+import { PickType } from '@nestjs/mapped-types';
 
-export class UpdateApiInfoDto extends PickType(UserSessionDto, [
-  "apiId",
-  "apiHash",
-]) {}
+import { UserSessionDto } from './userSession.dto';
+
+export class UpdateApiInfoDto extends PickType(UserSessionDto, ['apiId', 'apiHash']) {}

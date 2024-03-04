@@ -1,11 +1,12 @@
-import { Injectable, OnModuleInit } from "@nestjs/common";
-import { UserSessionService } from "../userSession/userSession.service";
-import emitterSubject from "../utils/emitter";
-import { ProducerService } from "../kafka/producer.service";
-import { NewMessage } from "telegram/events";
-import { ConfigService } from "@nestjs/config";
-import telegramAccountsInit from "../utils/telegramInit";
-import { TelegramClient } from "telegram";
+import { Injectable, OnModuleInit } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { TelegramClient } from 'telegram';
+import { NewMessage } from 'telegram/events';
+
+import { ProducerService } from '../kafka/producer.service';
+import { UserSessionService } from '../userSession/userSession.service';
+import emitterSubject from '../utils/emitter';
+import telegramAccountsInit from '../utils/telegramInit';
 
 @Injectable()
 export class TelegramStartService implements OnModuleInit {
@@ -16,59 +17,54 @@ export class TelegramStartService implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
-    const { INCOMING_MESSAGE, OUTGOING_MESSAGE } =
-      this.configService.get("KAFKA_TOPICS");
+    const { INCOMING_MESSAGE, OUTGOING_MESSAGE } = this.configService.get('KAFKA_TOPICS');
 
-    emitterSubject.subscribe(
-      async (eventObj: { eventName: string; data: TelegramClient }) => {
-        if (eventObj.eventName !== "newClient") return;
-        const client = eventObj.data;
-        client.addEventHandler(
-          async (event: any) => {
-            const { className, userId } = event.originalUpdate;
+    emitterSubject.subscribe(async (eventObj: { eventName: string; data: TelegramClient }) => {
+      if (eventObj.eventName !== 'newClient') return;
+      const client = eventObj.data;
+      client.addEventHandler(
+        async (event: any) => {
+          const { className, userId } = event.originalUpdate;
 
-            if (className !== "UpdateShortMessage") return;
+          if (className !== 'UpdateShortMessage') return;
 
-            const clientInfoObj = {
-              apiId: client.apiId,
-              telegramId: Number(userId),
-            };
-            const clientInfoStr = JSON.stringify(clientInfoObj);
+          const clientInfoObj = {
+            apiId: client.apiId,
+            telegramId: Number(userId),
+          };
+          const clientInfoStr = JSON.stringify(clientInfoObj);
 
-            await this.producerService.produce({
-              topic: INCOMING_MESSAGE,
-              messages: [{ value: clientInfoStr }],
-            });
-          },
-          new NewMessage({ incoming: true }),
-        );
-      },
-    );
+          await this.producerService.produce({
+            topic: INCOMING_MESSAGE,
+            messages: [{ value: clientInfoStr }],
+          });
+        },
+        new NewMessage({ incoming: true }),
+      );
+    });
 
-    emitterSubject.subscribe(
-      async (eventObj: { eventName: string; data: TelegramClient }) => {
-        if (eventObj.eventName !== "newClient") return;
-        const client = eventObj.data;
-        client.addEventHandler(
-          async (event: any) => {
-            const { className } = event.originalUpdate;
+    emitterSubject.subscribe(async (eventObj: { eventName: string; data: TelegramClient }) => {
+      if (eventObj.eventName !== 'newClient') return;
+      const client = eventObj.data;
+      client.addEventHandler(
+        async (event: any) => {
+          const { className } = event.originalUpdate;
 
-            if (className !== "UpdateShortMessage") return;
+          if (className !== 'UpdateShortMessage') return;
 
-            const { message } = event.originalUpdate;
+          const { message } = event.originalUpdate;
 
-            const clientInfoObj = { apiId: client.apiId, message };
-            const clientInfoStr = JSON.stringify(clientInfoObj);
+          const clientInfoObj = { apiId: client.apiId, message };
+          const clientInfoStr = JSON.stringify(clientInfoObj);
 
-            await this.producerService.produce({
-              topic: OUTGOING_MESSAGE,
-              messages: [{ value: clientInfoStr }],
-            });
-          },
-          new NewMessage({ outgoing: true }),
-        );
-      },
-    );
+          await this.producerService.produce({
+            topic: OUTGOING_MESSAGE,
+            messages: [{ value: clientInfoStr }],
+          });
+        },
+        new NewMessage({ outgoing: true }),
+      );
+    });
 
     const allSessions = await this.userSessionService.getActiveUserSessions();
 

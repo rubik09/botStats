@@ -1,4 +1,5 @@
-import { PickType } from "@nestjs/mapped-types";
-import { UserDto } from "./user.dto";
+import { PickType } from '@nestjs/mapped-types';
 
-export class DeleteUserDto extends PickType(UserDto, ["telegramId"]) {}
+import { UserDto } from './user.dto';
+
+export class DeleteUserDto extends PickType(UserDto, ['telegramId']) {}

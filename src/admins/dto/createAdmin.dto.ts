@@ -1,4 +1,5 @@
-import { PickType } from "@nestjs/mapped-types";
-import { AdminDto } from "./admin.dto";
+import { PickType } from '@nestjs/mapped-types';
 
-export class CreateAdminDto extends PickType(AdminDto, ["email", "password"]) {}
+import { AdminDto } from './admin.dto';
+
+export class CreateAdminDto extends PickType(AdminDto, ['email', 'password']) {}

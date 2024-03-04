@@ -1,28 +1,22 @@
-import {
-  Column,
-  Entity,
-  PrimaryGeneratedColumn,
-  CreateDateColumn,
-  UpdateDateColumn,
-} from "typeorm";
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
-@Entity({ name: "personalInfo" })
+@Entity({ name: 'personalInfo' })
 export class PersonalInfo {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: "varchar", length: 25 })
+  @Column({ type: 'varchar', length: 25 })
   region: string;
 
-  @Column({ type: "varchar", length: 40, unique: true })
+  @Column({ type: 'varchar', length: 40, unique: true })
   username: string;
 
-  @Column({ type: "varchar", length: 40, unique: true })
+  @Column({ type: 'varchar', length: 40, unique: true })
   phoneNumber: string;
 
-  @CreateDateColumn({ type: "timestamp without time zone" })
+  @CreateDateColumn({ type: 'timestamp without time zone' })
   createdAt: Date;
 
-  @UpdateDateColumn({ type: "timestamp without time zone" })
+  @UpdateDateColumn({ type: 'timestamp without time zone' })
   updatedAt: Date;
 }

@@ -1,7 +1,8 @@
-import { Injectable, OnModuleInit, Logger } from "@nestjs/common";
-import { ConsumerService } from "./consumer.service";
-import { ConfigService } from "@nestjs/config";
-import { StatsService } from "../stats/stats.service";
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+
+import { ConsumerService } from './consumer.service';
+import { StatsService } from '../stats/stats.service';
 
 @Injectable()
 export class VerificationConsumer implements OnModuleInit {
@@ -14,8 +15,7 @@ export class VerificationConsumer implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
-    const { INCOMING_MESSAGE, OUTGOING_MESSAGE } =
-      this.configService.get("KAFKA_TOPICS");
+    const { INCOMING_MESSAGE, OUTGOING_MESSAGE } = this.configService.get('KAFKA_TOPICS');
     await this.consumerService.consume(
       {
         topics: [INCOMING_MESSAGE, OUTGOING_MESSAGE],

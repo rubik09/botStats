@@ -1,11 +1,12 @@
-import { Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Admins } from "./entity/admins.entity";
-import { Repository } from "typeorm";
-import { CreateAdminDto } from "./dto/createAdmin.dto";
-import { DeleteAdminDto } from "./dto/deleteAdmin.dto";
-import { UserSession } from "../userSession/entity/userSession.entity";
-import { UpdateAdminDto } from "./dto/updateAdmin.dto";
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+
+import { CreateAdminDto } from './dto/createAdmin.dto';
+import { DeleteAdminDto } from './dto/deleteAdmin.dto';
+import { UpdateAdminDto } from './dto/updateAdmin.dto';
+import { Admins } from './entity/admins.entity';
+import { UserSession } from '../userSession/entity/userSession.entity';
 
 @Injectable()
 export class AdminsRepository {
@@ -18,13 +19,13 @@ export class AdminsRepository {
     return await this.adminsRepository.save(createAdminDto);
   }
 
-  async findOneByEmail(email: Admins["email"]): Promise<Admins> {
+  async findOneByEmail(email: Admins['email']): Promise<Admins> {
     return await this.adminsRepository.findOne({
       where: { email },
     });
   }
 
-  async findOneById(id: Admins["id"]): Promise<Admins> {
+  async findOneById(id: Admins['id']): Promise<Admins> {
     return await this.adminsRepository.findOne({
       where: { id },
     });
@@ -35,14 +36,8 @@ export class AdminsRepository {
     return affected;
   }
 
-  async updateAdmin(
-    id: UserSession["id"],
-    updateAdminDto: UpdateAdminDto,
-  ): Promise<number> {
-    const { affected } = await this.adminsRepository.update(
-      { id },
-      updateAdminDto,
-    );
+  async updateAdmin(id: UserSession['id'], updateAdminDto: UpdateAdminDto): Promise<number> {
+    const { affected } = await this.adminsRepository.update({ id }, updateAdminDto);
     return affected;
   }
 }

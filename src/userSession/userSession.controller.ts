@@ -1,10 +1,11 @@
-import { Body, Controller, Get, Param, Patch, UseGuards } from "@nestjs/common";
-import { UserSessionService } from "./userSession.service";
-import { UpdateUserSessionInfoDto } from "./dto/updateUserSession.dto";
-import { UserSession } from "./entity/userSession.entity";
-import { JwtGuard } from "../auth/jwtAuth.guard";
+import { Body, Controller, Get, Param, Patch, UseGuards } from '@nestjs/common';
 
-@Controller("sessions")
+import { UpdateUserSessionInfoDto } from './dto/updateUserSession.dto';
+import { UserSession } from './entity/userSession.entity';
+import { UserSessionService } from './userSession.service';
+import { JwtGuard } from '../auth/jwtAuth.guard';
+
+@Controller('sessions')
 export class UserSessionController {
   constructor(private readonly userSessionService: UserSessionService) {}
 
@@ -14,15 +15,12 @@ export class UserSessionController {
     return this.userSessionService.getAllUserSessions();
   }
 
-  @Patch(":id")
+  @Patch(':id')
   @UseGuards(JwtGuard)
   async updateUserSessionByTelegramId(
-    @Param("id") telegramId: UserSession["telegramId"],
+    @Param('id') telegramId: UserSession['telegramId'],
     @Body() body: UpdateUserSessionInfoDto,
   ): Promise<number> {
-    return this.userSessionService.updateUserSessionByTelegramId(
-      telegramId,
-      body,
-    );
+    return this.userSessionService.updateUserSessionByTelegramId(telegramId, body);
   }
 }

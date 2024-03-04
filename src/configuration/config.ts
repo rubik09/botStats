@@ -1,7 +1,7 @@
-import * as pack from "../../package.json";
-import { SnakeNamingStrategy } from "typeorm-naming-strategies";
+import * as dotenv from 'dotenv';
+import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
-import * as dotenv from "dotenv";
+import * as pack from '../../package.json';
 
 dotenv.config();
 
@@ -28,8 +28,8 @@ const {
 
 export default (): any =>
   ({
-    API_PREFIX: "/api",
-    API_VERSION: "/v1",
+    API_PREFIX: '/api',
+    API_VERSION: '/v1',
     SERVICE_NAME: pack.name,
     HTTP_PORT: Number(HTTP_PORT),
     LOG_LEVEL: LOG_LEVEL,
@@ -48,7 +48,7 @@ export default (): any =>
       namingStrategy: new SnakeNamingStrategy(),
     },
     KAFKA: {
-      brokers: KAFKA_EVENTS_BROKERS.split(","),
+      brokers: KAFKA_EVENTS_BROKERS.split(','),
       // ssl: { rejectUnauthorized: false },
       // sasl: {
       //   mechanism: 'plain',

@@ -1,23 +1,18 @@
-import { Injectable, OnApplicationShutdown } from "@nestjs/common";
-import {
-  Kafka,
-  Consumer,
-  ConsumerSubscribeTopics,
-  ConsumerRunConfig,
-} from "kafkajs";
-import { ConfigService } from "@nestjs/config";
+import { Injectable, OnApplicationShutdown } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { Consumer, ConsumerRunConfig, ConsumerSubscribeTopics, Kafka } from 'kafkajs';
 
 @Injectable()
 export class ConsumerService implements OnApplicationShutdown {
-  private readonly kafka = new Kafka(this.configService.get("KAFKA"));
+  private readonly kafka = new Kafka(this.configService.get('KAFKA'));
   private readonly consumers: Consumer[] = [];
 
   constructor(private readonly configService: ConfigService) {}
 
   async consume(topic: ConsumerSubscribeTopics, config: ConsumerRunConfig) {
-    const groupId = this.configService.get("GROUP_ID");
+    const groupId = this.configService.get('GROUP_ID');
     const consumer = this.kafka.consumer({
-      groupId: "nestjs-kafka-" + groupId,
+      groupId: 'nestjs-kafka-' + groupId,
     });
     await consumer.connect();
     await consumer.subscribe(topic);

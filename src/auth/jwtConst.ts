@@ -1,5 +1,6 @@
-import * as dotenv from "dotenv";
-import * as process from "process";
+import * as process from 'process';
+
+import * as dotenv from 'dotenv';
 
 dotenv.config();
 

@@ -1,4 +1,5 @@
-import { PickType } from "@nestjs/mapped-types";
-import { StatsDto } from "./stats.dto";
+import { PickType } from '@nestjs/mapped-types';
 
-export class DeleteStatsDto extends PickType(StatsDto, ["apiIdClient"]) {}
+import { StatsDto } from './stats.dto';
+
+export class DeleteStatsDto extends PickType(StatsDto, ['apiIdClient']) {}

@@ -1,19 +1,20 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
-import { bigintTransformer } from "../../utils/bigintTransformer";
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity({ name: "users" })
+import { bigintTransformer } from '../../utils/bigintTransformer';
+
+@Entity({ name: 'users' })
 export class Users {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column({
-    type: "bigint",
+    type: 'bigint',
     transformer: bigintTransformer,
   })
   telegramId: number;
 
   @Column({
-    type: "bigint",
+    type: 'bigint',
     transformer: bigintTransformer,
   })
   apiIdClient: number;

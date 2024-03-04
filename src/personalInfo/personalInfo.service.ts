@@ -1,7 +1,8 @@
-import { HttpException, HttpStatus, Injectable, Logger } from "@nestjs/common";
-import { PersonalInfoRepository } from "./personalInfo.repository";
-import { PersonalInfo } from "./entity/personalInfo.entity";
-import { UpdatePersonalInfoDto } from "./dto/updatePersonalInfo.dto";
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
+
+import { UpdatePersonalInfoDto } from './dto/updatePersonalInfo.dto';
+import { PersonalInfo } from './entity/personalInfo.entity';
+import { PersonalInfoRepository } from './personalInfo.repository';
 
 @Injectable()
 export class PersonalInfoService {
@@ -9,7 +10,7 @@ export class PersonalInfoService {
   constructor(private personalInfoRepository: PersonalInfoRepository) {}
 
   async updatePersonalInfoByTelegramId(
-    id: PersonalInfo["id"],
+    id: PersonalInfo['id'],
     updatePersonalInfoDto: UpdatePersonalInfoDto,
   ): Promise<number> {
     this.logger.log(`Trying to update personal info by id: ${id}`);
@@ -18,33 +19,24 @@ export class PersonalInfoService {
 
     if (!personalInfo) {
       this.logger.error(`personal info with id: ${id} not found`);
-      throw new HttpException(
-        `personal info with id: ${id} not found`,
-        HttpStatus.NOT_FOUND,
-      );
+      throw new HttpException(`personal info with id: ${id} not found`, HttpStatus.NOT_FOUND);
     }
 
-    const updatedUserSession = this.personalInfoRepository.updatePersonalInfo(
-      id,
-      updatePersonalInfoDto,
-    );
+    const updatedUserSession = this.personalInfoRepository.updatePersonalInfo(id, updatePersonalInfoDto);
 
     this.logger.debug(`personal info successfully updated`);
 
     return updatedUserSession;
   }
 
-  async deletePersonalInfoById(id: PersonalInfo["id"]): Promise<number> {
+  async deletePersonalInfoById(id: PersonalInfo['id']): Promise<number> {
     this.logger.log(`Trying to delete personal info by: ${id}`);
 
     const userSession = this.personalInfoRepository.getByUserId(id);
 
     if (!userSession) {
       this.logger.error(`personal info with id: ${id} not found`);
-      throw new HttpException(
-        `personal info with id: ${id} not found`,
-        HttpStatus.NOT_FOUND,
-      );
+      throw new HttpException(`personal info with id: ${id} not found`, HttpStatus.NOT_FOUND);
     }
 
     const deleted = this.personalInfoRepository.deletePersonalInfoById(id);

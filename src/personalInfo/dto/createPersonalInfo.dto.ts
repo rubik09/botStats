@@ -1,8 +1,5 @@
-import { PickType } from "@nestjs/mapped-types";
-import { PersonalInfoDto } from "./personalInfo.dto";
+import { PickType } from '@nestjs/mapped-types';
 
-export class CreatePersonalInfoDto extends PickType(PersonalInfoDto, [
-  "region",
-  "username",
-  "phoneNumber",
-]) {}
+import { PersonalInfoDto } from './personalInfo.dto';
+
+export class CreatePersonalInfoDto extends PickType(PersonalInfoDto, ['region', 'username', 'phoneNumber']) {}

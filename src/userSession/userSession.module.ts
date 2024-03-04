@@ -1,9 +1,10 @@
-import { Module } from "@nestjs/common";
-import { UserSessionService } from "./userSession.service";
-import { UserSessionController } from "./userSession.controller";
-import { UserSessionRepository } from "./userSession.repository";
-import { TypeOrmModule } from "@nestjs/typeorm";
-import { UserSession } from "./entity/userSession.entity";
+import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+
+import { UserSession } from './entity/userSession.entity';
+import { UserSessionController } from './userSession.controller';
+import { UserSessionRepository } from './userSession.repository';
+import { UserSessionService } from './userSession.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([UserSession])],

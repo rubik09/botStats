@@ -1,20 +1,15 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from "typeorm";
-import { bigintTransformer } from "../../utils/bigintTransformer";
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
-@Entity({ name: "stats" })
+import { bigintTransformer } from '../../utils/bigintTransformer';
+
+@Entity({ name: 'stats' })
 export class Stats {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column({
     unique: true,
-    type: "bigint",
+    type: 'bigint',
     transformer: bigintTransformer,
   })
   apiIdClient: number;
@@ -28,9 +23,9 @@ export class Stats {
   @Column({ default: 0 })
   usersCount: number;
 
-  @CreateDateColumn({ type: "timestamp without time zone" })
+  @CreateDateColumn({ type: 'timestamp without time zone' })
   createdAt: Date;
 
-  @UpdateDateColumn({ type: "timestamp without time zone" })
+  @UpdateDateColumn({ type: 'timestamp without time zone' })
   updatedAt: Date;
 }
