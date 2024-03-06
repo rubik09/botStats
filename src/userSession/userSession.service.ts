@@ -29,6 +29,21 @@ export class UserSessionService {
     return personalInfo;
   }
 
+  async getUserSessionByTelegramId(telegramId: UserSession['telegramId']): Promise<UserSession> {
+    this.logger.log(`Trying to get UserSession by telegramId: ${telegramId}`);
+
+    const userSession = this.userSessionRepository.getUserSessionByTelegramId(telegramId);
+
+    if (!userSession) {
+      this.logger.error(`UserSession with telegramId: ${telegramId} not found`);
+      throw new HttpException(`UserSession with telegramId: ${telegramId} not found`, HttpStatus.NOT_FOUND);
+    }
+
+    this.logger.debug(`UserSession successfully get`);
+
+    return userSession;
+  }
+
   async getPersonalInfoByApiId(apiId: UserSession['apiId']): Promise<UserSession> {
     this.logger.log(`Trying to get personal info by apiId: ${apiId}`);
 

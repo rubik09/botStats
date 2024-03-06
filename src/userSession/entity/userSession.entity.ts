@@ -6,10 +6,12 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
 
 import { PersonalInfo } from '../../personalInfo/entity/personalInfo.entity';
 import { bigintTransformer } from '../../utils/bigintTransformer';
+import {Keywords} from "../../keywords/entity/keywords.entity";
 
 export enum userSessionStatus {
   ACTIVE = 'active',
@@ -32,8 +34,8 @@ export class UserSession {
   @Column({ type: 'varchar', default: '' })
   logSession: string;
 
-  @Column({ type: 'varchar', default: '' })
-  keywords: string;
+  @OneToMany(() => Keywords, (keywords) => keywords.userSession, { cascade: true })
+  keywords: Keywords[];
 
   @Column({
     type: 'enum',

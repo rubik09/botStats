@@ -13,6 +13,7 @@ import { StatsModule } from './stats/stats.module';
 import { TelegramConnectModule } from './telegramConnect/telegramConnect.module';
 import { UsersModule } from './users/users.module';
 import { UserSessionModule } from './userSession/userSession.module';
+import { KeywordsModule } from './keywords/keywords.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { UserSessionModule } from './userSession/userSession.module';
     TelegramConnectModule,
     KafkaModule,
     AuthModule,
+    KeywordsModule,
   ],
   providers: [VerificationConsumer],
 })
