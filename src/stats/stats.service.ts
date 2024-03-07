@@ -183,17 +183,37 @@ export class StatsService implements OnModuleInit {
   }
 
   async PreSendCalculation(timeMessage: string) {
+    this.logger.debug(`run PreSendCalculation`);
+
     const activeAccounts = await this.userSessionService.getActiveUserSessions();
 
+    this.logger.debug(`active accounts arr: ${activeAccounts}`);
+
     for (const account of activeAccounts) {
+      this.logger.debug(`run for cycle`);
+
       const { apiId } = account;
       const statsArr = await this.getStatsByApiId(apiId);
       if (!statsArr) await this.createStats(apiId);
       const allUsers = await this.usersService.getCountUsersByApiId(apiId);
       const { incomingMessagesCount, outgoingMessagesCount } = await this.getStatsByApiId(apiId);
+
+      this.logger.debug(`run getKeywordsFromUserSessionByApiId`);
+
       const { keywords } = await this.userSessionService.getKeywordsFromUserSessionByApiId(apiId);
+
+      this.logger.debug(`run JSON.parse(keywords)`);
+
       const parsedKeywords = JSON.parse(keywords);
+
+      this.logger.debug(`JSON.parse(keywords) ended`);
+
+      this.logger.debug(`run getPersonalInfoByApiId`);
+
       const { personalInfo } = await this.userSessionService.getPersonalInfoByApiId(apiId);
+
+      this.logger.debug(`getPersonalInfoByApiId ended`);
+
       const { username } = personalInfo;
       let averageMessagesCount = incomingMessagesCount / allUsers;
       if (incomingMessagesCount < 1 || allUsers < 1) averageMessagesCount = 0;
