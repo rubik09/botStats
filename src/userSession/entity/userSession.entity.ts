@@ -32,7 +32,7 @@ export class UserSession {
   @Column({ type: 'varchar', default: '' })
   logSession: string;
 
-  @Column({ type: 'varchar', default: '' })
+  @Column({ type: 'json', default: "[]" })
   keywords: string;
 
   @Column({
