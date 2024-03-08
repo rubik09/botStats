@@ -10,9 +10,6 @@ export class UserSessionDto {
   @IsString()
   logSession: UserSession['logSession'];
 
-  @IsString()
-  keywords: UserSession['keywords'];
-
   @IsEnum(userSessionStatus)
   status: UserSession['status'];
 

@@ -16,11 +16,8 @@ export class Keywords {
   @Column({ type: 'varchar'})
   activity: string;
 
-  @Column({ type: 'varchar'})
+  @Column({ type: 'json'})
   keyword: string;
-
-  @ManyToOne(() => UserSession, (userSession) => userSession.keywords, { onDelete: 'CASCADE' })
-  userSession: UserSession;
 
   @Column({ default: 0 })
   count: number;
@@ -30,4 +27,7 @@ export class Keywords {
 
   @UpdateDateColumn({ type: 'timestamp without time zone' })
   updatedAt: Date;
+
+  @ManyToOne(() => UserSession, (userSession) => userSession.id, { onDelete: 'CASCADE' })
+  userSession: UserSession;
 }

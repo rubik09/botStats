@@ -137,8 +137,7 @@ export class StatsService implements OnModuleInit {
     const clientInfoObj = JSON.parse(clientInfoStr);
     const { apiId, message } = clientInfoObj;
 
-    const { keywords } = await this.userSessionService.getKeywordsFromUserSessionByApiId(apiId);
-    const { personalInfo } = await this.userSessionService.getPersonalInfoByApiId(apiId);
+    const { personalInfo, id } = await this.userSessionService.getPersonalInfoByApiId(apiId);
     const { username } = personalInfo;
     const statsArr = await this.getStatsByApiId(apiId);
 
@@ -149,25 +148,10 @@ export class StatsService implements OnModuleInit {
     this.logger.debug({ username, apiId, date: new Date() });
 
     const msgLowerCase = message.toLowerCase().trim();
-    for (const [i, elem] of keywords.entries()) {
-      const { keyword, id } = elem;
 
-      if (!keyword) continue;
+    const keywords = await this.keywordsService.getKeywordsByMessage(msgLowerCase, id);
 
-      const keywordsList = keyword.split(';');
-
-      for (const item of keywordsList) {
-        const keywordLowerCase = item.toLowerCase().trim();
-
-        this.logger.debug(`keyword: ${keyword} matched?`, msgLowerCase.indexOf(keywordLowerCase) >= 0);
-
-        if (!(msgLowerCase.indexOf(keywordLowerCase) >= 0)) continue;
-
-        await this.keywordsService.increaseKeywordCountById(id);
-      }
-    }
-
-    this.logger.debug({ array: keywords, message });
+    if (keywords) await this.keywordsService.increaseKeywordCountById(keywords.id);
 
     this.logger.debug(`outgoing message successfully add to stats`);
   }
@@ -181,7 +165,7 @@ export class StatsService implements OnModuleInit {
       if (!statsArr) await this.createStats(apiId);
       const allUsers = await this.usersService.getCountUsersByApiId(apiId);
       const { incomingMessagesCount, outgoingMessagesCount } = await this.getStatsByApiId(apiId);
-      const { keywords } = await this.userSessionService.getKeywordsFromUserSessionByApiId(apiId);
+      const keywords  = await this.keywordsService.getKeywordsByUserSessionId(id);
       const { personalInfo } = await this.userSessionService.getPersonalInfoByApiId(apiId);
       const { username } = personalInfo;
       let averageMessagesCount = incomingMessagesCount / allUsers;

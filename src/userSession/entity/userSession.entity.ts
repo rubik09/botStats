@@ -34,9 +34,6 @@ export class UserSession {
   @Column({ type: 'varchar', default: '' })
   logSession: string;
 
-  @OneToMany(() => Keywords, (keywords) => keywords.userSession, { cascade: true })
-  keywords: Keywords[];
-
   @Column({
     type: 'enum',
     enum: userSessionStatus,

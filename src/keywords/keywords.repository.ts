@@ -40,6 +40,10 @@ export class KeywordsRepository {
         return await this.keywordsRepository.findOne({where: {id: keywordId}});
     }
 
+    async getKeywordsByUserSessionId(userSessionId: number): Promise<Keywords[]> {
+        return this.keywordsRepository.find({where: {userSession: { id: userSessionId }}});
+    }
+
     async resetCountByUserSessionId(userSessionId: UserSession['id']): Promise<number> {
         const {affected} =  await this.keywordsRepository.update({ userSession: { id: userSessionId } }, { count: 0 });
         return affected;

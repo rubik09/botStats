@@ -23,11 +23,7 @@ export class UserSessionRepository {
   }
 
   async getUserSessions(): Promise<UserSession[]> {
-    return await this.userSessionRepository.find({
-      relations: {
-        keywords: true,
-      }
-    });
+    return await this.userSessionRepository.find();
   }
 
   async createUserSession(
@@ -40,9 +36,6 @@ export class UserSessionRepository {
   async getKeywordsFromUserSessionByApiId(apiId: UserSession['apiId']): Promise<UserSession> {
     return await this.userSessionRepository.findOne({
       where: { apiId },
-      relations: {
-        keywords: true,
-      }
     });
   }
 

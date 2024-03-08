@@ -98,7 +98,7 @@ export class KeywordsService {
     async increaseKeywordCountById(id: Keywords['id']): Promise<number> {
         this.logger.log(`Trying to increase count by id: ${id}`);
 
-        const keyword = await this.keywordsRepository.getKeywordById(id);
+        const keyword = await this.keywordsRepository.getKeywordsByUserSessionId(id);
 
         if (!keyword) {
             this.logger.error(`keyword with id: ${id} not exist`);
@@ -110,5 +110,39 @@ export class KeywordsService {
         this.logger.debug(`count successfully increased`);
 
         return resetKeywords;
+    }
+
+    async getKeywordsByUserSessionId(userSessionId: UserSession['id']): Promise<Keywords[]> {
+        this.logger.log(`Trying to get keywords by id: ${userSessionId}`);
+
+        const userSession = await this.userSessionRepository.getUserSessionById(userSessionId);
+
+        if (!userSession) {
+            this.logger.error(`keywords with id: ${userSessionId} not found`);
+            throw new HttpException(`keywords with id: ${userSessionId} not found`, HttpStatus.NOT_FOUND);
+        }
+
+        const keywords = await this.keywordsRepository.getKeywordsByUserSessionId(userSessionId);
+
+        this.logger.debug(`keywords successfully get`);
+
+        return keywords;
+    }
+
+    async getKeywordsByMessage(message: string, userSessionId: UserSession['id']): Promise<Keywords> {
+        this.logger.log(`Trying to get keywords by userSessionId: ${userSessionId} and message: ${message} `);
+
+        const userSession = await this.userSessionRepository.getUserSessionById(userSessionId);
+
+        if (!userSession) {
+            this.logger.error(`keywords with id: ${userSessionId} not found`);
+            throw new HttpException(`keywords with id: ${userSessionId} not found`, HttpStatus.NOT_FOUND);
+        }
+
+        const keywords = await this.keywordsRepository.getKeywordsByMessage(message, userSessionId);
+
+        this.logger.debug(`keywords successfully get`);
+
+        return keywords;
     }
 }

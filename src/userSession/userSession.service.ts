@@ -61,23 +61,6 @@ export class UserSessionService {
     return personalInfo;
   }
 
-  async getKeywordsFromUserSessionByApiId(apiId: UserSession['apiId']): Promise<UserSession> {
-    this.logger.log(`Trying to get keywords by apiId: ${apiId}`);
-
-    const userSession = await this.userSessionRepository.getUserSessionByApiId(apiId);
-
-    if (!userSession) {
-      this.logger.error(`keywords with apiId: ${apiId} not found`);
-      throw new HttpException(`keywords with apiId: ${apiId} not found`, HttpStatus.NOT_FOUND);
-    }
-
-    const keywords = await this.userSessionRepository.getKeywordsFromUserSessionByApiId(apiId);
-
-    this.logger.debug(`keywords successfully get`);
-
-    return keywords;
-  }
-
   async getActiveUserSessions(): Promise<UserSession[]> {
     this.logger.log(`Trying to get Active User Sessions`);
 
