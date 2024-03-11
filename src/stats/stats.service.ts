@@ -11,6 +11,7 @@ import { UsersService } from '../users/users.service';
 import { UserSessionService } from '../userSession/userSession.service';
 import { cronTimezone, time } from '../utils/consts';
 import {KeywordsService} from "../keywords/keywords.service";
+import {combineKeywords} from "../utils/combineKeywords";
 
 @Injectable()
 export class StatsService implements OnModuleInit {
@@ -183,7 +184,7 @@ export class StatsService implements OnModuleInit {
         incomingMessagesCount,
         allUsers,
         Number(averageMessagesCount.toFixed(2)),
-        keywords,
+        combineKeywords(keywords),
         timeMessage,
       );
 

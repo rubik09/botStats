@@ -16,7 +16,7 @@ export class Keywords {
   @Column({ type: 'varchar'})
   activity: string;
 
-  @Column({ type: 'json'})
+  @Column({ type: 'jsonb'})
   keyword: string;
 
   @Column({ default: 0 })

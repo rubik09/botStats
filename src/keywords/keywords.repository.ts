@@ -53,4 +53,13 @@ export class KeywordsRepository {
         const { affected } = await this.keywordsRepository.increment({ id: keywordId }, 'count', 1);
         return affected;
     }
+
+    async getKeywordsByMessage(message: string, userSessionId: UserSession['id']): Promise<Keywords> {
+        return this.keywordsRepository.findOne({
+            where: {
+                keyword: JSON.stringify(message),
+                userSession: {id: userSessionId}
+            }
+        })
+    }
 }

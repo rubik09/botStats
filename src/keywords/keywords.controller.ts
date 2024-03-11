@@ -1,4 +1,4 @@
-import {Body, Controller, Delete, Param, Patch, Post, UseGuards} from '@nestjs/common';
+import {Body, Controller, Delete, Get, Param, Patch, Post, UseGuards} from '@nestjs/common';
 import {JwtGuard} from "../auth/jwtAuth.guard";
 import {KeywordsService} from "./keywords.service";
 import {Keywords} from "./entity/keywords.entity";
@@ -34,5 +34,11 @@ export class KeywordsController {
         @Param('id') keywordId: Keywords['id']
     ): Promise<number> {
         return this.keywordsService.deleteKeyword(keywordId);
+    }
+
+    @Get(':id')
+    @UseGuards(JwtGuard)
+    async getKeywordsByUserSessionId( @Param('id') userSessionId: UserSession['id']): Promise<Keywords[]> {
+        return this.keywordsService.getKeywordsByUserSessionId(userSessionId);
     }
 }
