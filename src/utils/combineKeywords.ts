@@ -1,7 +1,7 @@
-import {Keywords} from "../keywords/entity/keywords.entity";
+import {Keyword} from "../keywords/entity/keywords.entity";
 import {TUniqueActivities} from "./types";
 
-export const combineKeywords = (keywords: Keywords[]) => {
+export const combineKeywords = (keywords: Keyword[]) => {
     const uniqueActivities: TUniqueActivities = {};
 
     keywords.forEach(keyword => {

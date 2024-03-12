@@ -6,12 +6,10 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-  OneToMany,
 } from 'typeorm';
 
 import { PersonalInfo } from '../../personalInfo/entity/personalInfo.entity';
 import { bigintTransformer } from '../../utils/bigintTransformer';
-import {Keywords} from "../../keywords/entity/keywords.entity";
 
 export enum userSessionStatus {
   ACTIVE = 'active',
