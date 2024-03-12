@@ -1,4 +1,4 @@
-import {IsInt, IsString, MinLength} from 'class-validator';
+import {IsInt, IsString, Min, MinLength} from 'class-validator';
 import {Keywords} from "../entity/keywords.entity";
 
 export class KeywordsDto {
@@ -14,6 +14,7 @@ export class KeywordsDto {
   keyword: Keywords['keyword'];
 
   @IsInt()
+  @Min(0)
   count: Keywords['count'];
 
   userSession: Keywords['userSession'];

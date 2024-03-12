@@ -1,5 +1,5 @@
-import { PickType } from '@nestjs/mapped-types';
+import {PartialType, PickType} from '@nestjs/mapped-types';
 import {KeywordsDto} from "./keywords.dto";
 
 
-export class UpdateKeywordsDto extends PickType(KeywordsDto, ['activity', 'keyword']) {}
+export class UpdateKeywordsDto extends PartialType(PickType(KeywordsDto, ['activity', 'keyword'])) {}
