@@ -3,7 +3,7 @@ import {UserSession} from "../userSession/entity/userSession.entity";
 import {CreateKeywordsDto} from "./dto/createKeywords.dto";
 import {UserSessionRepository} from "../userSession/userSession.repository";
 import {KeywordsRepository} from "./keywords.repository";
-import {Keywords} from "./entity/keywords.entity";
+import {Keyword} from "./entity/keywords.entity";
 import {UpdateKeywordsDto} from "./dto/updateKeywords.dto";
 
 @Injectable()
@@ -17,7 +17,7 @@ export class KeywordsService {
     async createNewKeyword(
         telegramId: UserSession['telegramId'],
         createKeywordsDto: CreateKeywordsDto
-    ): Promise<Keywords> {
+    ): Promise<Keyword> {
         this.logger.log(`Trying to create keyword`);
 
         const userSession = await this.userSessionRepository.getUserSessionByTelegramId(telegramId);
@@ -40,7 +40,7 @@ export class KeywordsService {
     }
 
     async deleteKeyword(
-        keywordId: Keywords['id']
+        keywordId: Keyword['id']
     ): Promise<number> {
         this.logger.log(`Trying to delete keyword`);
 
@@ -59,7 +59,7 @@ export class KeywordsService {
     }
 
     async updateKeyword(
-        keywordId: Keywords['id'],
+        keywordId: Keyword['id'],
         updateKeywordsDto: UpdateKeywordsDto
     ): Promise<number> {
         this.logger.log(`Trying to update keyword`);
@@ -95,7 +95,7 @@ export class KeywordsService {
         return resetKeywords;
     }
 
-    async increaseKeywordCountById(id: Keywords['id']): Promise<number> {
+    async increaseKeywordCountById(id: Keyword['id']): Promise<number> {
         this.logger.log(`Trying to increase count by id: ${id}`);
 
         const keyword = await this.keywordsRepository.getKeywordsByUserSessionId(id);
@@ -112,7 +112,7 @@ export class KeywordsService {
         return resetKeywords;
     }
 
-    async getKeywordsByUserSessionId(userSessionId: UserSession['id']): Promise<Keywords[]> {
+    async getKeywordsByUserSessionId(userSessionId: UserSession['id']): Promise<Keyword[]> {
         this.logger.log(`Trying to get keywords by id: ${userSessionId}`);
 
         const userSession = await this.userSessionRepository.getUserSessionById(userSessionId);
@@ -129,7 +129,7 @@ export class KeywordsService {
         return keywords;
     }
 
-    async getKeywordsByMessage(message: string, userSessionId: UserSession['id']): Promise<Keywords> {
+    async getKeywordsByMessage(message: string, userSessionId: UserSession['id']): Promise<Keyword> {
         this.logger.log(`Trying to get keywords by userSessionId: ${userSessionId} and message: ${message} `);
 
         const userSession = await this.userSessionRepository.getUserSessionById(userSessionId);

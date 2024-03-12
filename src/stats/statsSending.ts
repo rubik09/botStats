@@ -1,14 +1,14 @@
 import { PersonalInfo } from '../personalInfo/entity/personalInfo.entity';
 import { sheetId, spreadSheetId } from '../utils/consts';
 import { googleSheets } from '../utils/googleClient';
-import {Keywords} from "../keywords/entity/keywords.entity";
+import {Keyword} from "../keywords/entity/keywords.entity";
 
 const StatsSending = async (
   username: PersonalInfo['username'],
   incomingMessagesStats: number,
   newUsersCount: number,
   averageMessagesCount: number,
-  keywordsDiffArr: Keywords[],
+  keywordsDiffArr: Keyword[],
   time: string,
 ) => {
   try {
@@ -18,7 +18,7 @@ const StatsSending = async (
     const activityToInsert: { userEnteredValue: { stringValue: string } }[] = [];
     const countToInsert: { userEnteredValue: { numberValue: number } }[] = [];
 
-    keywordsDiffArr.forEach((item: Keywords) => {
+    keywordsDiffArr.forEach((item: Keyword) => {
       activityToInsert.push({
         userEnteredValue: {
           stringValue: item.activity,

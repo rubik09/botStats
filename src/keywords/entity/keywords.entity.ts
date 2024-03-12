@@ -9,7 +9,7 @@ import {
 import {UserSession} from "../../userSession/entity/userSession.entity";
 
 @Entity({ name: 'keywords' })
-export class Keywords {
+export class Keyword {
   @PrimaryGeneratedColumn()
   id: number;
 

@@ -4,7 +4,7 @@ import { IsNumber, IsOptional, IsString, Length, Max, Min } from 'class-validato
 import { TelegramConnectDto } from './telegramConnect.dto';
 import { PersonalInfo } from '../../personalInfo/entity/personalInfo.entity';
 import { setupSteps } from '../../utils/consts';
-import {Keywords} from "../../keywords/entity/keywords.entity";
+import {Keyword} from "../../keywords/entity/keywords.entity";
 
 export class CreateTelegramConnectionDto extends PartialType(
   PickType(TelegramConnectDto, ['telegramId', 'apiId', 'apiHash']),
@@ -30,8 +30,8 @@ export class CreateTelegramConnectionDto extends PartialType(
   phoneNumber?: PersonalInfo['phoneNumber'];
 
   @IsOptional()
-  keyword?: Keywords['keyword'];
+  keyword?: Keyword['keyword'];
 
   @IsOptional()
-  activity?: Keywords['activity'];
+  activity?: Keyword['activity'];
 }

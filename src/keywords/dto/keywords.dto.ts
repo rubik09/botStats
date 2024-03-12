@@ -1,21 +1,21 @@
 import {IsInt, IsString, Min, MinLength} from 'class-validator';
-import {Keywords} from "../entity/keywords.entity";
+import {Keyword} from "../entity/keywords.entity";
 
 export class KeywordsDto {
   @IsInt()
-  id: Keywords['id'];
+  id: Keyword['id'];
 
   @IsString()
   @MinLength(2)
-  activity: Keywords['activity'];
+  activity: Keyword['activity'];
 
   @IsString()
   @MinLength(1)
-  keyword: Keywords['keyword'];
+  keyword: Keyword['keyword'];
 
   @IsInt()
   @Min(0)
-  count: Keywords['count'];
+  count: Keyword['count'];
 
-  userSession: Keywords['userSession'];
+  userSession: Keyword['userSession'];
 }

@@ -1,7 +1,7 @@
 import {Body, Controller, Delete, Get, Param, Patch, Post, UseGuards} from '@nestjs/common';
 import {JwtGuard} from "../auth/jwtAuth.guard";
 import {KeywordsService} from "./keywords.service";
-import {Keywords} from "./entity/keywords.entity";
+import {Keyword} from "./entity/keywords.entity";
 import {CreateKeywordsDto} from "./dto/createKeywords.dto";
 import {UserSession} from "../userSession/entity/userSession.entity";
 import {UpdateKeywordsDto} from "./dto/updateKeywords.dto";
@@ -15,14 +15,14 @@ export class KeywordsController {
     async addKeywordsByTelegramId(
         @Param('id') telegramId: UserSession['telegramId'],
         @Body() createKeywordsDto: CreateKeywordsDto,
-    ): Promise<Keywords> {
+    ): Promise<Keyword> {
         return this.keywordsService.createNewKeyword(telegramId, createKeywordsDto);
     }
 
     @Patch(':id')
     @UseGuards(JwtGuard)
     async editKeywordsByTelegramId(
-        @Param('id') keywordId: Keywords['id'],
+        @Param('id') keywordId: Keyword['id'],
         @Body() updateKeywordsDto: UpdateKeywordsDto,
     ): Promise<number> {
         return this.keywordsService.updateKeyword(keywordId, updateKeywordsDto);
@@ -31,14 +31,14 @@ export class KeywordsController {
     @Delete(':id')
     @UseGuards(JwtGuard)
     async deleteKeywordsByTelegramId(
-        @Param('id') keywordId: Keywords['id']
+        @Param('id') keywordId: Keyword['id']
     ): Promise<number> {
         return this.keywordsService.deleteKeyword(keywordId);
     }
 
     @Get(':id')
     @UseGuards(JwtGuard)
-    async getKeywordsByUserSessionId( @Param('id') userSessionId: UserSession['id']): Promise<Keywords[]> {
+    async getKeywordsByUserSessionId( @Param('id') userSessionId: UserSession['id']): Promise<Keyword[]> {
         return this.keywordsService.getKeywordsByUserSessionId(userSessionId);
     }
 }
