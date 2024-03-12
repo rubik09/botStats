@@ -7,9 +7,10 @@ import { StatsRepository } from './stats.repository';
 import { StatsService } from './stats.service';
 import { UsersModule } from '../users/users.module';
 import { UserSessionModule } from '../userSession/userSession.module';
+import {KeywordsModule} from "../keywords/keywords.module";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Stats]), UserSessionModule, UsersModule],
+  imports: [TypeOrmModule.forFeature([Stats]), UserSessionModule, UsersModule, KeywordsModule],
   providers: [StatsService, StatsRepository],
   controllers: [StatsController],
   exports: [StatsService],

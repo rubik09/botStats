@@ -29,6 +29,21 @@ export class UserSessionService {
     return personalInfo;
   }
 
+  async getUserSessionByTelegramId(telegramId: UserSession['telegramId']): Promise<UserSession> {
+    this.logger.log(`Trying to get UserSession by telegramId: ${telegramId}`);
+
+    const userSession = this.userSessionRepository.getUserSessionByTelegramId(telegramId);
+
+    if (!userSession) {
+      this.logger.error(`UserSession with telegramId: ${telegramId} not found`);
+      throw new HttpException(`UserSession with telegramId: ${telegramId} not found`, HttpStatus.NOT_FOUND);
+    }
+
+    this.logger.debug(`UserSession successfully get`);
+
+    return userSession;
+  }
+
   async getPersonalInfoByApiId(apiId: UserSession['apiId']): Promise<UserSession> {
     this.logger.log(`Trying to get personal info by apiId: ${apiId}`);
 
@@ -44,23 +59,6 @@ export class UserSessionService {
     this.logger.debug(`personal info successfully get`);
 
     return personalInfo;
-  }
-
-  async getKeywordsFromUserSessionByApiId(apiId: UserSession['apiId']): Promise<UserSession> {
-    this.logger.log(`Trying to get keywords by apiId: ${apiId}`);
-
-    const userSession = await this.userSessionRepository.getUserSessionByApiId(apiId);
-
-    if (!userSession) {
-      this.logger.error(`keywords with apiId: ${apiId} not found`);
-      throw new HttpException(`keywords with apiId: ${apiId} not found`, HttpStatus.NOT_FOUND);
-    }
-
-    const keywords = await this.userSessionRepository.getKeywordsFromUserSessionByApiId(apiId);
-
-    this.logger.debug(`keywords successfully get`);
-
-    return keywords;
   }
 
   async getActiveUserSessions(): Promise<UserSession[]> {

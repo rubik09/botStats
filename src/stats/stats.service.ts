@@ -8,10 +8,10 @@ import { StatsRepository } from './stats.repository';
 import statsSending from './statsSending';
 import { CreateUserDto } from '../users/dto/createUser.dto';
 import { UsersService } from '../users/users.service';
-import { UpdateUserSessionInfoDto } from '../userSession/dto/updateUserSession.dto';
 import { UserSessionService } from '../userSession/userSession.service';
 import { cronTimezone, time } from '../utils/consts';
-import zeroOutCounts from '../utils/zeroOutCounts';
+import {KeywordsService} from "../keywords/keywords.service";
+import {combineKeywords} from "../utils/combineKeywords";
 
 @Injectable()
 export class StatsService implements OnModuleInit {
@@ -21,6 +21,7 @@ export class StatsService implements OnModuleInit {
     private readonly usersService: UsersService,
     private readonly userSessionService: UserSessionService,
     private readonly configService: ConfigService,
+    private readonly keywordsService: KeywordsService,
   ) {}
 
   async getStatsByApiId(apiId: Stats['apiIdClient']): Promise<Stats> {
@@ -137,9 +138,7 @@ export class StatsService implements OnModuleInit {
     const clientInfoObj = JSON.parse(clientInfoStr);
     const { apiId, message } = clientInfoObj;
 
-    const { keywords } = await this.userSessionService.getKeywordsFromUserSessionByApiId(apiId);
-    const parsedKeywords = JSON.parse(keywords);
-    const { personalInfo } = await this.userSessionService.getPersonalInfoByApiId(apiId);
+    const { personalInfo, id } = await this.userSessionService.getPersonalInfoByApiId(apiId);
     const { username } = personalInfo;
     const statsArr = await this.getStatsByApiId(apiId);
 
@@ -150,70 +149,25 @@ export class StatsService implements OnModuleInit {
     this.logger.debug({ username, apiId, date: new Date() });
 
     const msgLowerCase = message.toLowerCase().trim();
-    for (const [i, elem] of parsedKeywords.entries()) {
-      const { keyword } = elem;
 
-      if (!keyword) continue;
+    const keywords = await this.keywordsService.getKeywordsByMessage(msgLowerCase, id);
 
-      const keywordsList = keyword.split(';');
-
-      for (const item of keywordsList) {
-        const keywordLowerCase = item.toLowerCase().trim();
-
-        this.logger.debug(`keyword: ${keyword} matched?`, msgLowerCase.indexOf(keywordLowerCase) >= 0);
-
-        if (!(msgLowerCase.indexOf(keywordLowerCase) >= 0)) continue;
-
-        parsedKeywords[i].count++;
-      }
-    }
-    const stringifyKeywords = JSON.stringify(parsedKeywords);
-
-    this.logger.debug({ arraySame: keywords === stringifyKeywords, message });
-
-    if (keywords === stringifyKeywords) return;
-
-    const updateUserSessionInfoDto: UpdateUserSessionInfoDto = <UpdateUserSessionInfoDto>{
-      keywords: stringifyKeywords,
-    };
-
-    await this.userSessionService.updateUserSessionByApiId(apiId, updateUserSessionInfoDto);
+    if (keywords) await this.keywordsService.increaseKeywordCountById(keywords.id);
 
     this.logger.debug(`outgoing message successfully add to stats`);
   }
 
   async PreSendCalculation(timeMessage: string) {
-    this.logger.debug(`run PreSendCalculation`);
-
     const activeAccounts = await this.userSessionService.getActiveUserSessions();
 
-    this.logger.debug(`active accounts arr: ${activeAccounts}`);
-
     for (const account of activeAccounts) {
-      this.logger.debug(`run for cycle`);
-
-      const { apiId } = account;
+      const { apiId, id } = account;
       const statsArr = await this.getStatsByApiId(apiId);
       if (!statsArr) await this.createStats(apiId);
       const allUsers = await this.usersService.getCountUsersByApiId(apiId);
       const { incomingMessagesCount, outgoingMessagesCount } = await this.getStatsByApiId(apiId);
-
-      this.logger.debug(`run getKeywordsFromUserSessionByApiId`);
-
-      const { keywords } = await this.userSessionService.getKeywordsFromUserSessionByApiId(apiId);
-
-      this.logger.debug(`run JSON.parse(keywords)`);
-
-      const parsedKeywords = JSON.parse(keywords);
-
-      this.logger.debug(`JSON.parse(keywords) ended`);
-
-      this.logger.debug(`run getPersonalInfoByApiId`);
-
+      const keywords  = await this.keywordsService.getKeywordsByUserSessionId(id);
       const { personalInfo } = await this.userSessionService.getPersonalInfoByApiId(apiId);
-
-      this.logger.debug(`getPersonalInfoByApiId ended`);
-
       const { username } = personalInfo;
       let averageMessagesCount = incomingMessagesCount / allUsers;
       if (incomingMessagesCount < 1 || allUsers < 1) averageMessagesCount = 0;
@@ -230,12 +184,9 @@ export class StatsService implements OnModuleInit {
         incomingMessagesCount,
         allUsers,
         Number(averageMessagesCount.toFixed(2)),
-        parsedKeywords,
+        combineKeywords(keywords),
         timeMessage,
       );
-
-      const newArr = zeroOutCounts(parsedKeywords);
-      const stringifyNewArr = JSON.stringify(newArr);
 
       const updateStatsDto: UpdateStatsDto = <UpdateStatsDto>{
         incomingMessagesCount: 0,
@@ -247,11 +198,7 @@ export class StatsService implements OnModuleInit {
 
       await this.usersService.cleanTableByApiId(apiId);
 
-      const updateUserSessionInfoDto: UpdateUserSessionInfoDto = <UpdateUserSessionInfoDto>{
-        keywords: stringifyNewArr,
-      };
-
-      await this.userSessionService.updateUserSessionByApiId(apiId, updateUserSessionInfoDto);
+      await this.keywordsService.resetCountByUserSessionId(id);
     }
   }
 

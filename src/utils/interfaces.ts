@@ -2,6 +2,7 @@ import { TelegramClient } from 'telegram';
 
 import { PersonalInfo } from '../personalInfo/entity/personalInfo.entity';
 import { UserSession } from '../userSession/entity/userSession.entity';
+import {Keywords} from "../keywords/entity/keywords.entity";
 
 export interface IClients {
   [userId: number]: TelegramClient;
@@ -40,7 +41,8 @@ export interface ISecondStep extends IGeneralStep {
 }
 
 export interface IThirdStep extends IGeneralStep {
-  keywords: UserSession['keywords'];
+  keyword: Keywords['keyword'],
+  activity: Keywords['activity'],
 }
 
 export interface ICreateClient {

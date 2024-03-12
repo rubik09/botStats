@@ -36,7 +36,6 @@ export class UserSessionRepository {
   async getKeywordsFromUserSessionByApiId(apiId: UserSession['apiId']): Promise<UserSession> {
     return await this.userSessionRepository.findOne({
       where: { apiId },
-      select: ['id', 'keywords'],
     });
   }
 

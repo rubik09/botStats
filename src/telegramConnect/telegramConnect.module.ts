@@ -5,9 +5,10 @@ import { TelegramConnectService } from './telegramConnect.service';
 import { TelegramStartService } from './telegramStart.service';
 import { KafkaModule } from '../kafka/kafka.module';
 import { UserSessionModule } from '../userSession/userSession.module';
+import {KeywordsModule} from "../keywords/keywords.module";
 
 @Module({
-  imports: [UserSessionModule, KafkaModule],
+  imports: [UserSessionModule, KafkaModule, KeywordsModule],
   providers: [TelegramConnectService, TelegramStartService],
   controllers: [TelegramConnectController],
 })
