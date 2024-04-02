@@ -19,7 +19,7 @@ export class AdminsService {
       throw new HttpException(`admin with id: ${id} not found`, HttpStatus.NOT_FOUND);
     }
 
-    this.logger.debug(`admin successfully get`);
+    this.logger.debug(`admin successfully get by id: ${id}`);
 
     return admin;
   }
@@ -34,15 +34,15 @@ export class AdminsService {
       throw new HttpException(`admin with email: ${email} not found`, HttpStatus.NOT_FOUND);
     }
 
-    this.logger.debug(`admin successfully get`);
+    this.logger.debug(`admin successfully get by email: ${email}`);
 
     return admin;
   }
 
-  async createAdmin(createAdminDto: CreateAdminDto): Promise<Admins> {
-    this.logger.log(`Trying to create admin`);
-
+  async createAdmin(createAdminDto: CreateAdminDto) {
     const { email } = createAdminDto;
+
+    this.logger.log(`Trying to create admin with email: ${email}`);
 
     const admin = await this.adminsRepository.findOneByEmail(email);
 
@@ -51,10 +51,8 @@ export class AdminsService {
       throw new HttpException(`admin with email: ${email} already exist`, HttpStatus.BAD_REQUEST);
     }
 
-    const newAdmin = this.adminsRepository.createAdmin(createAdminDto);
+    await this.adminsRepository.createAdmin(createAdminDto);
 
-    this.logger.debug(`admin successfully created`);
-
-    return newAdmin;
+    this.logger.debug(`admin successfully created with email: ${email}`);
   }
 }

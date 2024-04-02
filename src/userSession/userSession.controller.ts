@@ -20,7 +20,7 @@ export class UserSessionController {
   async updateUserSessionByTelegramId(
     @Param('id') telegramId: UserSession['telegramId'],
     @Body() body: UpdateUserSessionInfoDto,
-  ): Promise<number> {
-    return this.userSessionService.updateUserSessionByTelegramId(telegramId, body);
+  ) {
+    await this.userSessionService.updateUserSessionByTelegramId(telegramId, body);
   }
 }

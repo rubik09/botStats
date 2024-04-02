@@ -20,8 +20,8 @@ export class PersonalInfoController {
   async createPersonalInfo(
     @Param('id') telegramId: UserSession['telegramId'],
     @Body() createPersonalInfoDto: CreatePersonalInfoDto,
-  ): Promise<UserSession> {
-    return this.userSessionService.createUserSession(telegramId, createPersonalInfoDto);
+  ) {
+    await this.userSessionService.createUserSession(telegramId, createPersonalInfoDto);
   }
 
   @Patch(':id')
@@ -29,13 +29,13 @@ export class PersonalInfoController {
   async updatePersonalInfoByTelegramId(
     @Param('id') id: PersonalInfo['id'],
     @Body() updatePersonalInfoDto: UpdatePersonalInfoDto,
-  ): Promise<number> {
-    return this.personalInfoService.updatePersonalInfoByTelegramId(id, updatePersonalInfoDto);
+  ) {
+    await this.personalInfoService.updatePersonalInfoByTelegramId(id, updatePersonalInfoDto);
   }
 
   @Delete(':id')
   @UseGuards(JwtGuard)
-  async deletePersonalInfoById(@Param('id') id: PersonalInfo['id']): Promise<number> {
-    return this.personalInfoService.deletePersonalInfoById(id);
+  async deletePersonalInfoById(@Param('id') id: PersonalInfo['id']) {
+    await this.personalInfoService.deletePersonalInfoById(id);
   }
 }

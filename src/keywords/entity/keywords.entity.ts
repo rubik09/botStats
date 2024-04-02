@@ -13,7 +13,7 @@ export class Keyword {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'varchar'})
+  @Column({ type: 'varchar', length: 20})
   activity: string;
 
   @Column({ type: 'jsonb'})

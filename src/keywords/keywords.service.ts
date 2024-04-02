@@ -17,8 +17,8 @@ export class KeywordsService {
     async createNewKeyword(
         telegramId: UserSession['telegramId'],
         createKeywordsDto: CreateKeywordsDto
-    ): Promise<Keyword> {
-        this.logger.log(`Trying to create keyword`);
+    ){
+        this.logger.log(`Trying to create keyword by id: ${telegramId}`);
 
         const userSession = await this.userSessionRepository.getUserSessionByTelegramId(telegramId);
 
@@ -32,17 +32,15 @@ export class KeywordsService {
             userSession
         };
 
-        const newKeyword = await this.keywordsRepository.createNewKeyword(keywordDto);
+        await this.keywordsRepository.createNewKeyword(keywordDto);
 
-        this.logger.debug(`keyword successfully created`);
-
-        return newKeyword;
+        this.logger.debug(`keyword successfully created by id: ${telegramId}`);
     }
 
     async deleteKeyword(
         keywordId: Keyword['id']
-    ): Promise<number> {
-        this.logger.log(`Trying to delete keyword`);
+    ) {
+        this.logger.log(`Trying to delete keyword by id: ${keywordId}`);
 
         const keyword = await this.keywordsRepository.getKeywordById(keywordId);
 
@@ -51,18 +49,16 @@ export class KeywordsService {
             throw new HttpException(`keyword with keywordId: ${keywordId} not exist`, HttpStatus.BAD_REQUEST);
         }
 
-        const deletedKeyword = await this.keywordsRepository.deleteKeyword(keywordId);
+        await this.keywordsRepository.deleteKeyword(keywordId);
 
-        this.logger.debug(`keyword successfully deleted`);
-
-        return deletedKeyword;
+        this.logger.debug(`keyword successfully deleted by id: ${keywordId}`);
     }
 
     async updateKeyword(
         keywordId: Keyword['id'],
         updateKeywordsDto: UpdateKeywordsDto
-    ): Promise<number> {
-        this.logger.log(`Trying to update keyword`);
+    ) {
+        this.logger.log(`Trying to update keyword by id: ${keywordId}`);
 
         const keyword = await this.keywordsRepository.getKeywordById(keywordId);
 
@@ -71,14 +67,12 @@ export class KeywordsService {
             throw new HttpException(`keyword with keywordId: ${keywordId} not exist`, HttpStatus.BAD_REQUEST);
         }
 
-        const newKeyword = await this.keywordsRepository.updateNewKeyword(keywordId, updateKeywordsDto);
+        await this.keywordsRepository.updateNewKeyword(keywordId, updateKeywordsDto);
 
-        this.logger.debug(`keyword successfully updated`);
-
-        return newKeyword;
+        this.logger.debug(`keyword successfully updated by id: ${keywordId}`);
     }
 
-    async resetCountByUserSessionId(userSessionId: UserSession['id']): Promise<number> {
+    async resetCountByUserSessionId(userSessionId: UserSession['id']) {
         this.logger.log(`Trying to reset count by userSessionId: ${userSessionId}`);
 
         const userSession = await this.userSessionRepository.getUserSessionById(userSessionId);
@@ -88,14 +82,13 @@ export class KeywordsService {
             throw new HttpException(`session with userSessionId: ${userSessionId} not exist`, HttpStatus.BAD_REQUEST);
         }
 
-        const resetKeywords = this.keywordsRepository.resetCountByUserSessionId(userSessionId);
+        await this.keywordsRepository.resetCountByUserSessionId(userSessionId);
 
-        this.logger.debug(`count successfully reset`);
+        this.logger.debug(`count successfully reset by id: ${userSessionId}`);
 
-        return resetKeywords;
     }
 
-    async increaseKeywordCountById(id: Keyword['id']): Promise<number> {
+    async increaseKeywordCountById(id: Keyword['id']) {
         this.logger.log(`Trying to increase count by id: ${id}`);
 
         const keyword = await this.keywordsRepository.getKeywordsByUserSessionId(id);
@@ -105,11 +98,9 @@ export class KeywordsService {
             throw new HttpException(`keyword with id: ${id} not exist`, HttpStatus.BAD_REQUEST);
         }
 
-        const resetKeywords = this.keywordsRepository.increaseKeywordCountById(id);
+        await this.keywordsRepository.increaseKeywordCountById(id);
 
-        this.logger.debug(`count successfully increased`);
-
-        return resetKeywords;
+        this.logger.debug(`count successfully increased by id: ${id}`);
     }
 
     async getKeywordsByUserSessionId(userSessionId: UserSession['id']): Promise<Keyword[]> {
@@ -124,7 +115,7 @@ export class KeywordsService {
 
         const keywords = await this.keywordsRepository.getKeywordsByUserSessionId(userSessionId);
 
-        this.logger.debug(`keywords successfully get`);
+        this.logger.debug(`keywords successfully get by id: ${userSessionId}`);
 
         return keywords;
     }
@@ -141,7 +132,7 @@ export class KeywordsService {
 
         const keywords = await this.keywordsRepository.getKeywordsByMessage(message, userSessionId);
 
-        this.logger.debug(`keywords successfully get`);
+        this.logger.debug(`keywords successfully get by id: ${userSessionId}`);
 
         return keywords;
     }

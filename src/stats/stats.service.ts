@@ -33,7 +33,7 @@ export class StatsService implements OnModuleInit {
       this.logger.error(`stats with apiId: ${apiId} not found`);
     }
 
-    this.logger.debug(`stats successfully get`);
+    this.logger.debug(`stats successfully get by apiId: ${apiId}`);
 
     return stats;
   }
@@ -50,12 +50,12 @@ export class StatsService implements OnModuleInit {
 
     const newStats = await this.statsRepository.createStats(apiId);
 
-    this.logger.debug(`stats successfully created`);
+    this.logger.debug(`stats successfully created by apiId: ${apiId}`);
 
     return newStats;
   }
 
-  async updateStatsByApiId(updateStatsDto: UpdateStatsDto, apiId: Stats['apiIdClient']): Promise<number> {
+  async updateStatsByApiId(updateStatsDto: UpdateStatsDto, apiId: Stats['apiIdClient']) {
     this.logger.log(`Trying to update stats by apiId: ${apiId}`);
 
     const userSession = await this.getStatsByApiId(apiId);
@@ -65,14 +65,12 @@ export class StatsService implements OnModuleInit {
       throw new HttpException(`stats with apiId: ${apiId} not found`, HttpStatus.NOT_FOUND);
     }
 
-    const stats = await this.statsRepository.updateStatsByApiId(updateStatsDto, apiId);
+    await this.statsRepository.updateStatsByApiId(updateStatsDto, apiId);
 
-    this.logger.debug(`stats successfully updated`);
-
-    return stats;
+    this.logger.debug(`stats successfully updated by apiId: ${apiId}`);
   }
 
-  async increaseIncomingMessagesCountToSessionByApiId(apiId: Stats['apiIdClient']): Promise<number> {
+  async increaseIncomingMessagesCountToSessionByApiId(apiId: Stats['apiIdClient']) {
     this.logger.log(`Trying to increase incoming messages count by apiId: ${apiId}`);
 
     const userSession = this.getStatsByApiId(apiId);
@@ -82,14 +80,12 @@ export class StatsService implements OnModuleInit {
       throw new HttpException(`stats with apiId: ${apiId} not found`, HttpStatus.NOT_FOUND);
     }
 
-    const stats = this.statsRepository.increaseIncomingMessagesCountToSessionByApiId(apiId);
+    await this.statsRepository.increaseIncomingMessagesCountToSessionByApiId(apiId);
 
-    this.logger.debug(`incoming messages count successfully increased`);
-
-    return stats;
+    this.logger.debug(`incoming messages count successfully increased by apiId: ${apiId}`);
   }
 
-  async increaseOutgoingMessagesCountToSessionByApiId(apiId: Stats['apiIdClient']): Promise<number> {
+  async increaseOutgoingMessagesCountToSessionByApiId(apiId: Stats['apiIdClient']) {
     this.logger.log(`Trying to increase outgoing messages count by apiId: ${apiId}`);
 
     const userSession = await this.getStatsByApiId(apiId);
@@ -99,11 +95,9 @@ export class StatsService implements OnModuleInit {
       throw new HttpException(`stats with apiId: ${apiId} not found`, HttpStatus.NOT_FOUND);
     }
 
-    const stats = await this.statsRepository.increaseOutgoingMessagesCountToSessionByApiId(apiId);
+    await this.statsRepository.increaseOutgoingMessagesCountToSessionByApiId(apiId);
 
-    this.logger.debug(`outgoing messages count successfully increased`);
-
-    return stats;
+    this.logger.debug(`outgoing messages count successfully increased by apiId: ${apiId}`);
   }
 
   async incomingMessages(clientInfoStr: string): Promise<void> {
@@ -128,7 +122,7 @@ export class StatsService implements OnModuleInit {
 
     await this.increaseIncomingMessagesCountToSessionByApiId(apiId);
 
-    this.logger.debug(`incoming message successfully add to stats`);
+    this.logger.debug(`incoming message successfully add to stats by apiId: ${apiId}`);
   }
 
   async outgoingMessages(clientInfoStr: string) {

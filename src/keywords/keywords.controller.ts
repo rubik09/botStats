@@ -15,8 +15,8 @@ export class KeywordsController {
     async addKeywordsByTelegramId(
         @Param('id') telegramId: UserSession['telegramId'],
         @Body() createKeywordsDto: CreateKeywordsDto,
-    ): Promise<Keyword> {
-        return this.keywordsService.createNewKeyword(telegramId, createKeywordsDto);
+    ) {
+        await this.keywordsService.createNewKeyword(telegramId, createKeywordsDto);
     }
 
     @Patch(':id')
@@ -24,16 +24,16 @@ export class KeywordsController {
     async editKeywordsByTelegramId(
         @Param('id') keywordId: Keyword['id'],
         @Body() updateKeywordsDto: UpdateKeywordsDto,
-    ): Promise<number> {
-        return this.keywordsService.updateKeyword(keywordId, updateKeywordsDto);
+    ) {
+        await this.keywordsService.updateKeyword(keywordId, updateKeywordsDto);
     }
 
     @Delete(':id')
     @UseGuards(JwtGuard)
     async deleteKeywordsByTelegramId(
         @Param('id') keywordId: Keyword['id']
-    ): Promise<number> {
-        return this.keywordsService.deleteKeyword(keywordId);
+    ){
+        await this.keywordsService.deleteKeyword(keywordId);
     }
 
     @Get(':id')

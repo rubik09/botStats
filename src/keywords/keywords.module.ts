@@ -1,4 +1,4 @@
-import {forwardRef, Module} from '@nestjs/common';
+import {Module} from '@nestjs/common';
 import { KeywordsService } from './keywords.service';
 import {TypeOrmModule} from "@nestjs/typeorm";
 import {Keyword} from "./entity/keywords.entity";
@@ -7,7 +7,7 @@ import {UserSessionModule} from "../userSession/userSession.module";
 import { KeywordsController } from './keywords.controller';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Keyword]), forwardRef(() => UserSessionModule)],
+  imports: [TypeOrmModule.forFeature([Keyword]), UserSessionModule],
   providers: [KeywordsService, KeywordsRepository],
   exports: [KeywordsService],
   controllers: [KeywordsController],
