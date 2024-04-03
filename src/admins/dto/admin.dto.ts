@@ -1,15 +1,15 @@
 import { IsEmail, IsInt, IsString, Length } from 'class-validator';
 
-import { Admins } from '../entity/admins.entity';
+import { Admin } from '../entity/admins.entity';
 
 export class AdminDto {
   @IsInt()
-  id: Admins['id'];
+  id: Admin['id'];
 
   @IsEmail()
-  email: Admins['email'];
+  email: Admin['email'];
 
   @IsString()
   @Length(8, 40)
-  password: Admins['password'];
+  password: Admin['password'];
 }

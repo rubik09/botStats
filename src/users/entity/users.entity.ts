@@ -2,8 +2,8 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 import { bigintTransformer } from '../../utils/bigintTransformer';
 
-@Entity({ name: 'users' })
-export class Users {
+@Entity({ name: 'user' })
+export class User {
   @PrimaryGeneratedColumn()
   id: number;
 

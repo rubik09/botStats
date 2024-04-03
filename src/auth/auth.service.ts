@@ -4,7 +4,7 @@ import * as bcrypt from 'bcrypt';
 
 import { AdminsService } from '../admins/admins.service';
 import { CreateAdminDto } from '../admins/dto/createAdmin.dto';
-import { Admins } from '../admins/entity/admins.entity';
+import { Admin } from '../admins/entity/admins.entity';
 
 @Injectable()
 export class AuthService {
@@ -14,8 +14,8 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async validateAdmin(email: Admins['email'], password: Admins['password']): Promise<void> {
-    const admin: Admins = await this.adminsService.findAdminByEmail(email);
+  async validateAdmin(email: Admin['email'], password: Admin['password']): Promise<void> {
+    const admin: Admin = await this.adminsService.findAdminByEmail(email);
     if (!admin) {
       throw new BadRequestException('password or email incorrect');
     }
@@ -25,7 +25,7 @@ export class AuthService {
     }
   }
 
-  async login(admin: { password: Admins['password']; email: Admins['email'] }) {
+  async login(admin: { password: Admin['password']; email: Admin['email'] }) {
     const { email, password } = admin;
 
     this.logger.log(`Trying to login admin with email: ${email}`);

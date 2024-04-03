@@ -2,8 +2,8 @@ import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateCol
 
 import { bigintTransformer } from '../../utils/bigintTransformer';
 
-@Entity({ name: 'stats' })
-export class Stats {
+@Entity({ name: 'stat' })
+export class Stat {
   @PrimaryGeneratedColumn()
   id: number;
 

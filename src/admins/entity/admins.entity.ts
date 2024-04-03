@@ -2,8 +2,8 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 import { AdminRoles } from '../admins.constants';
 
-@Entity({ name: 'admins' })
-export class Admins {
+@Entity({ name: 'admin' })
+export class Admin {
   @PrimaryGeneratedColumn()
   id: number;
 

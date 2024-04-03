@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import * as cron from 'node-cron';
 
 import { UpdateStatsDto } from './dto/updateStats.dto';
-import { Stats } from './entity/stats.entity';
+import { Stat } from './entity/stats.entity';
 import { StatsRepository } from './stats.repository';
 import statsSending from './statsSending';
 import { CreateUserDto } from '../users/dto/createUser.dto';
@@ -24,7 +24,7 @@ export class StatsService implements OnModuleInit {
     private readonly keywordsService: KeywordsService,
   ) {}
 
-  async getStatsByApiId(apiId: Stats['apiIdClient']): Promise<Stats> {
+  async getStatsByApiId(apiId: Stat['apiIdClient']): Promise<Stat> {
     this.logger.log(`Trying to get stats by apiId: ${apiId}`);
 
     const stats = await this.statsRepository.getStatsByApiId(apiId);
@@ -38,7 +38,7 @@ export class StatsService implements OnModuleInit {
     return stats;
   }
 
-  async createStats(apiId: Stats['apiIdClient']): Promise<Stats> {
+  async createStats(apiId: Stat['apiIdClient']): Promise<Stat> {
     this.logger.log(`Trying to create stats by apiId: ${apiId}`);
 
     const stats = await this.statsRepository.getStatsByApiId(apiId);
@@ -55,7 +55,7 @@ export class StatsService implements OnModuleInit {
     return newStats;
   }
 
-  async updateStatsByApiId(updateStatsDto: UpdateStatsDto, apiId: Stats['apiIdClient']) {
+  async updateStatsByApiId(updateStatsDto: UpdateStatsDto, apiId: Stat['apiIdClient']) {
     this.logger.log(`Trying to update stats by apiId: ${apiId}`);
 
     const userSession = await this.getStatsByApiId(apiId);
@@ -70,7 +70,7 @@ export class StatsService implements OnModuleInit {
     this.logger.debug(`stats successfully updated by apiId: ${apiId}`);
   }
 
-  async increaseIncomingMessagesCountToSessionByApiId(apiId: Stats['apiIdClient']) {
+  async increaseIncomingMessagesCountToSessionByApiId(apiId: Stat['apiIdClient']) {
     this.logger.log(`Trying to increase incoming messages count by apiId: ${apiId}`);
 
     const userSession = this.getStatsByApiId(apiId);
@@ -85,7 +85,7 @@ export class StatsService implements OnModuleInit {
     this.logger.debug(`incoming messages count successfully increased by apiId: ${apiId}`);
   }
 
-  async increaseOutgoingMessagesCountToSessionByApiId(apiId: Stats['apiIdClient']) {
+  async increaseOutgoingMessagesCountToSessionByApiId(apiId: Stat['apiIdClient']) {
     this.logger.log(`Trying to increase outgoing messages count by apiId: ${apiId}`);
 
     const userSession = await this.getStatsByApiId(apiId);

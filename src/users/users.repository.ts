@@ -5,27 +5,27 @@ import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/createUser.dto';
 import { DeleteUserDto } from './dto/deleteUser.dto';
 import { UpdateUserDto } from './dto/updateUser.dto';
-import { Users } from './entity/users.entity';
+import { User } from './entity/users.entity';
 import { UserSession } from '../userSession/entity/userSession.entity';
 
 @Injectable()
 export class UsersRepository {
   constructor(
-    @InjectRepository(Users)
-    private readonly usersRepository: Repository<Users>,
+    @InjectRepository(User)
+    private readonly usersRepository: Repository<User>,
   ) {}
 
-  async findUserByApiIdAndTelegramId(createUserDto: CreateUserDto): Promise<Users> {
+  async findUserByApiIdAndTelegramId(createUserDto: CreateUserDto): Promise<User> {
     return await this.usersRepository.findOne({
       where: createUserDto,
     });
   }
 
-  async createUser(createUserDto: CreateUserDto): Promise<Users> {
+  async createUser(createUserDto: CreateUserDto): Promise<User> {
     return await this.usersRepository.save(createUserDto);
   }
 
-  async getCountUsersByApiId(apiIdClient: Users['apiIdClient']): Promise<number> {
+  async getCountUsersByApiId(apiIdClient: User['apiIdClient']): Promise<number> {
     return await this.usersRepository.count({ where: { apiIdClient } });
   }
 
@@ -34,7 +34,7 @@ export class UsersRepository {
     return affected;
   }
 
-  async cleanTableByApiId(apiIdClient: Users['apiIdClient']): Promise<number> {
+  async cleanTableByApiId(apiIdClient: User['apiIdClient']): Promise<number> {
     const { affected } = await this.usersRepository.delete({ apiIdClient });
     return affected;
   }

@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 
 import { CreateUserDto } from './dto/createUser.dto';
-import { Users } from './entity/users.entity';
+import { User } from './entity/users.entity';
 import { UsersRepository } from './users.repository';
 
 @Injectable()
@@ -24,7 +24,7 @@ export class UsersService {
     return user;
   }
 
-  async createUser(createUserDto: CreateUserDto): Promise<Users> {
+  async createUser(createUserDto: CreateUserDto): Promise<User> {
     const { apiIdClient, telegramId } = createUserDto;
     this.logger.log(`Trying to create user by apiId: ${apiIdClient} and telegramId: ${telegramId}`);
 
@@ -45,7 +45,7 @@ export class UsersService {
     return newUser;
   }
 
-  async getCountUsersByApiId(apiIdClient: Users['apiIdClient']): Promise<number> {
+  async getCountUsersByApiId(apiIdClient: User['apiIdClient']): Promise<number> {
     this.logger.log(`Trying to get users count by apiId: ${apiIdClient}`);
 
     const count = await this.usersRepository.getCountUsersByApiId(apiIdClient);
@@ -65,7 +65,7 @@ export class UsersService {
     return cleanTable;
   }
 
-  async cleanTableByApiId(apiIdClient: Users['apiIdClient']): Promise<number> {
+  async cleanTableByApiId(apiIdClient: User['apiIdClient']): Promise<number> {
     this.logger.log(`Trying to clean users table`);
 
     const cleanTable = this.usersRepository.cleanTableByApiId(apiIdClient);

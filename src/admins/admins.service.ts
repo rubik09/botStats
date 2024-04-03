@@ -2,14 +2,14 @@ import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 
 import { AdminsRepository } from './admins.repository';
 import { CreateAdminDto } from './dto/createAdmin.dto';
-import { Admins } from './entity/admins.entity';
+import { Admin } from './entity/admins.entity';
 
 @Injectable()
 export class AdminsService {
   private readonly logger = new Logger(AdminsService.name);
   constructor(private adminsRepository: AdminsRepository) {}
 
-  async findAdminById(id: Admins['id']): Promise<Admins> {
+  async findAdminById(id: Admin['id']): Promise<Admin> {
     this.logger.log(`Trying to get personal info by id: ${id}`);
 
     const admin = this.adminsRepository.findOneById(id);
@@ -24,7 +24,7 @@ export class AdminsService {
     return admin;
   }
 
-  async findAdminByEmail(email: Admins['email']): Promise<Admins> {
+  async findAdminByEmail(email: Admin['email']): Promise<Admin> {
     this.logger.log(`Trying to get personal info by email: ${email}`);
 
     const admin = this.adminsRepository.findOneByEmail(email);
