@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import {Body, Controller, Delete, HttpException, HttpStatus, Param, Patch, Post, UseGuards} from '@nestjs/common';
 
 import { CreatePersonalInfoDto } from './dto/createPersonalInfo.dto';
 import { UpdatePersonalInfoDto } from './dto/updatePersonalInfo.dto';
@@ -22,6 +22,7 @@ export class PersonalInfoController {
     @Body() createPersonalInfoDto: CreatePersonalInfoDto,
   ) {
     await this.userSessionService.createUserSession(telegramId, createPersonalInfoDto);
+    throw new HttpException('Персональная информация успешно создана', HttpStatus.CREATED);
   }
 
   @Patch(':id')
@@ -31,11 +32,15 @@ export class PersonalInfoController {
     @Body() updatePersonalInfoDto: UpdatePersonalInfoDto,
   ) {
     await this.personalInfoService.updatePersonalInfoByTelegramId(id, updatePersonalInfoDto);
+    throw new HttpException('Персональная информация успешно обновлена', HttpStatus.OK);
+
   }
 
   @Delete(':id')
   @UseGuards(JwtGuard)
   async deletePersonalInfoById(@Param('id') id: PersonalInfo['id']) {
     await this.personalInfoService.deletePersonalInfoById(id);
+    throw new HttpException('Персональная информация успешно удалена', HttpStatus.OK);
+
   }
 }

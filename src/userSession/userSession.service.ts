@@ -172,8 +172,8 @@ export class UserSessionService {
       throw new HttpException(`session with telegramId: ${telegramId} already exist`, HttpStatus.BAD_REQUEST);
     }
 
-    await this.userSessionRepository.createUserSession(telegramId, personalInfo);
+    const {id} = await this.userSessionRepository.createUserSession(telegramId, personalInfo);
 
-    this.logger.debug(`admin successfully created by telegramId: ${telegramId}`);
+    this.logger.debug(`admin successfully created with id: ${id}`);
   }
 }

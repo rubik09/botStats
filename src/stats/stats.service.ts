@@ -50,7 +50,7 @@ export class StatsService implements OnModuleInit {
 
     const newStats = await this.statsRepository.createStats(apiId);
 
-    this.logger.debug(`stats successfully created by apiId: ${apiId}`);
+    this.logger.debug(`stats successfully created with id: ${newStats.id}`);
 
     return newStats;
   }

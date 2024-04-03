@@ -1,4 +1,4 @@
-import {Body, Controller, Delete, Get, Param, Patch, Post, UseGuards} from '@nestjs/common';
+import {Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Patch, Post, UseGuards} from '@nestjs/common';
 import {JwtGuard} from "../auth/jwtAuth.guard";
 import {KeywordsService} from "./keywords.service";
 import {Keyword} from "./entity/keywords.entity";
@@ -17,6 +17,7 @@ export class KeywordsController {
         @Body() createKeywordsDto: CreateKeywordsDto,
     ) {
         await this.keywordsService.createNewKeyword(telegramId, createKeywordsDto);
+        throw new HttpException('Ключевое слово успешно создано', HttpStatus.CREATED);
     }
 
     @Patch(':id')
@@ -26,6 +27,7 @@ export class KeywordsController {
         @Body() updateKeywordsDto: UpdateKeywordsDto,
     ) {
         await this.keywordsService.updateKeyword(keywordId, updateKeywordsDto);
+        throw new HttpException('Ключевое слово успешно изменено', HttpStatus.OK);
     }
 
     @Delete(':id')
@@ -34,6 +36,7 @@ export class KeywordsController {
         @Param('id') keywordId: Keyword['id']
     ){
         await this.keywordsService.deleteKeyword(keywordId);
+        throw new HttpException('Ключевое слово успешно удалено', HttpStatus.OK);
     }
 
     @Get(':id')

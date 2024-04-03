@@ -51,8 +51,8 @@ export class AdminsService {
       throw new HttpException(`admin with email: ${email} already exist`, HttpStatus.BAD_REQUEST);
     }
 
-    await this.adminsRepository.createAdmin(createAdminDto);
+    const {id} = await this.adminsRepository.createAdmin(createAdminDto);
 
-    this.logger.debug(`admin successfully created with email: ${email}`);
+    this.logger.debug(`admin successfully created with id: ${id}`);
   }
 }

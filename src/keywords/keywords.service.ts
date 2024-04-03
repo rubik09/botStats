@@ -32,9 +32,9 @@ export class KeywordsService {
             userSession
         };
 
-        await this.keywordsRepository.createNewKeyword(keywordDto);
+        const {id} = await this.keywordsRepository.createNewKeyword(keywordDto);
 
-        this.logger.debug(`keyword successfully created by id: ${telegramId}`);
+        this.logger.debug(`keyword successfully created with id: ${id}`);
     }
 
     async deleteKeyword(

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, UseGuards } from '@nestjs/common';
+import {Body, Controller, Get, HttpException, HttpStatus, Param, Patch, UseGuards} from '@nestjs/common';
 
 import { UpdateUserSessionInfoDto } from './dto/updateUserSession.dto';
 import { UserSession } from './entity/userSession.entity';
@@ -22,5 +22,7 @@ export class UserSessionController {
     @Body() body: UpdateUserSessionInfoDto,
   ) {
     await this.userSessionService.updateUserSessionByTelegramId(telegramId, body);
+    throw new HttpException('Сессия успешно обновлена', HttpStatus.OK);
+
   }
 }
