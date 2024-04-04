@@ -9,7 +9,7 @@ export class UsersService {
   private readonly logger = new Logger(UsersService.name);
   constructor(private readonly usersRepository: UsersRepository) {}
 
-  async getUserByApiIdAndTelegramId(createUserDto: CreateUserDto) {
+  async getUserByApiIdAndTelegramId(createUserDto: CreateUserDto): Promise<User> {
     const { apiIdClient, telegramId } = createUserDto;
     this.logger.log(`Trying to get user by apiId: ${apiIdClient} and telegramId: ${telegramId}`);
 
@@ -19,12 +19,12 @@ export class UsersService {
       this.logger.error(`user with apiId: ${apiIdClient} and telegramId: ${telegramId} not found`);
     }
 
-    this.logger.debug(`user successfully get`);
+    this.logger.debug(`user successfully get with id: ${user.id}`);
 
     return user;
   }
 
-  async createUser(createUserDto: CreateUserDto): Promise<User> {
+  async createUser(createUserDto: CreateUserDto) {
     const { apiIdClient, telegramId } = createUserDto;
     this.logger.log(`Trying to create user by apiId: ${apiIdClient} and telegramId: ${telegramId}`);
 
@@ -38,11 +38,9 @@ export class UsersService {
       );
     }
 
-    const newUser = await this.usersRepository.createUser(createUserDto);
+    const {id} = await this.usersRepository.createUser(createUserDto);
 
-    this.logger.debug(`user successfully created`);
-
-    return newUser;
+    this.logger.debug(`user successfully created with id: ${id}`);
   }
 
   async getCountUsersByApiId(apiIdClient: User['apiIdClient']): Promise<number> {
@@ -50,28 +48,16 @@ export class UsersService {
 
     const count = await this.usersRepository.getCountUsersByApiId(apiIdClient);
 
-    this.logger.debug(`users count successfully get`);
+    this.logger.debug(`users count successfully get: ${count}`);
 
     return count;
   }
 
-  async cleanTable(): Promise<number> {
-    this.logger.log(`Trying to clean users table`);
+  async cleanTableByApiId(apiIdClient: User['apiIdClient']) {
+    this.logger.log(`Trying to clean users table by apiId: ${apiIdClient}`);
 
-    const cleanTable = this.usersRepository.cleanTable();
-
-    this.logger.debug(`users table successfully cleaned`);
-
-    return cleanTable;
-  }
-
-  async cleanTableByApiId(apiIdClient: User['apiIdClient']): Promise<number> {
-    this.logger.log(`Trying to clean users table`);
-
-    const cleanTable = this.usersRepository.cleanTableByApiId(apiIdClient);
+    await this.usersRepository.cleanTableByApiId(apiIdClient);
 
     this.logger.debug(`users table successfully cleaned`);
-
-    return cleanTable;
   }
 }

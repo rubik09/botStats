@@ -8,7 +8,7 @@ import {
 } from 'typeorm';
 import {UserSession} from "../../userSession/entity/userSession.entity";
 
-@Entity({ name: 'keyword' })
+@Entity({ name: 'keywords' })
 export class Keyword {
   @PrimaryGeneratedColumn()
   id: number;

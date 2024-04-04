@@ -38,7 +38,7 @@ export class StatsService implements OnModuleInit {
     return stats;
   }
 
-  async createStats(apiId: Stat['apiIdClient']): Promise<Stat> {
+  async createStats(apiId: Stat['apiIdClient']) {
     this.logger.log(`Trying to create stats by apiId: ${apiId}`);
 
     const stats = await this.statsRepository.getStatsByApiId(apiId);
@@ -48,11 +48,9 @@ export class StatsService implements OnModuleInit {
       throw new HttpException(`stats with apiId: ${apiId}  already exist`, HttpStatus.BAD_REQUEST);
     }
 
-    const newStats = await this.statsRepository.createStats(apiId);
+    const {id} = await this.statsRepository.createStats(apiId);
 
-    this.logger.debug(`stats successfully created with id: ${newStats.id}`);
-
-    return newStats;
+    this.logger.debug(`stats successfully created with id: ${id}`);
   }
 
   async updateStatsByApiId(updateStatsDto: UpdateStatsDto, apiId: Stat['apiIdClient']) {

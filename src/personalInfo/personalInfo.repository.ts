@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, DeleteResult, UpdateResult } from 'typeorm';
 
 import { CreatePersonalInfoDto } from './dto/createPersonalInfo.dto';
 import { UpdatePersonalInfoDto } from './dto/updatePersonalInfo.dto';
@@ -17,41 +17,39 @@ export class PersonalInfoRepository {
     return await this.personalInfoRepository.save(createPersonalInfoDto);
   }
 
-  async updatePersonalInfo(id: PersonalInfo['id'], updatePersonalInfoDto: UpdatePersonalInfoDto): Promise<number> {
-    const { affected } = await this.personalInfoRepository.update({ id }, updatePersonalInfoDto);
-    return affected;
+  async updatePersonalInfo(id: number, updatePersonalInfoDto: UpdatePersonalInfoDto): Promise<UpdateResult> {
+    return await this.personalInfoRepository.update({ id }, updatePersonalInfoDto);
   }
 
-  async getByPhone(phoneNumber: PersonalInfo['phoneNumber']): Promise<PersonalInfo> {
+  async getByPhone(phoneNumber: string): Promise<PersonalInfo> {
     return await this.personalInfoRepository.findOne({
       where: { phoneNumber },
     });
   }
 
-  async getByUserId(id: PersonalInfo['id']): Promise<PersonalInfo> {
+  async getByUserId(id: number): Promise<PersonalInfo> {
     return await this.personalInfoRepository.findOne({ where: { id } });
   }
 
-  async getByUsername(username: PersonalInfo['username']): Promise<PersonalInfo> {
+  async getByUsername(username: string): Promise<PersonalInfo> {
     return await this.personalInfoRepository.findOne({ where: { username } });
   }
 
-  async getUsernameById(id: PersonalInfo['id']): Promise<PersonalInfo> {
+  async getUsernameById(id: number): Promise<PersonalInfo> {
     return await this.personalInfoRepository.findOne({
       where: { id },
       select: ['id', 'username'],
     });
   }
 
-  async getPhoneById(id: PersonalInfo['id']): Promise<PersonalInfo> {
+  async getPhoneById(id: number): Promise<PersonalInfo> {
     return await this.personalInfoRepository.findOne({
       where: { id },
       select: ['id', 'phoneNumber'],
     });
   }
 
-  async deletePersonalInfoById(id: PersonalInfo['id']): Promise<number> {
-    const { affected } = await this.personalInfoRepository.delete({ id });
-    return affected;
+  async deletePersonalInfoById(id: number): Promise<DeleteResult> {
+    return await this.personalInfoRepository.delete({ id });
   }
 }

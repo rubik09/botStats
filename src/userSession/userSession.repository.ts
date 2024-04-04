@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import {DeleteResult, Repository, UpdateResult} from 'typeorm';
 
 import { DeleteUserSessionDto } from './dto/deleteUserSession.dto';
 import { UpdateApiInfoDto } from './dto/updateApiInfo.dto';
@@ -15,7 +15,7 @@ export class UserSessionRepository {
     private readonly userSessionRepository: Repository<UserSession>,
   ) {}
 
-  async getStatusById(id: UserSession['id']): Promise<UserSession> {
+  async getStatusById(id: number): Promise<UserSession> {
     return await this.userSessionRepository.findOne({
       where: { id },
       select: ['id', 'status'],
@@ -27,93 +27,87 @@ export class UserSessionRepository {
   }
 
   async createUserSession(
-    telegramId: UserSession['telegramId'],
+    telegramId: number,
     personalInfo: CreatePersonalInfoDto,
   ): Promise<UserSession> {
     return await this.userSessionRepository.save({ telegramId, personalInfo });
   }
 
-  async getKeywordsFromUserSessionByApiId(apiId: UserSession['apiId']): Promise<UserSession> {
+  async getKeywordsFromUserSessionByApiId(apiId: number): Promise<UserSession> {
     return await this.userSessionRepository.findOne({
       where: { apiId },
     });
   }
 
-  async getMainInfoById(id: UserSession['id']): Promise<UserSession> {
+  async getMainInfoById(id: number): Promise<UserSession> {
     return this.userSessionRepository.findOne({
       where: { id },
       select: ['id', 'apiId', 'apiHash', 'logSession', 'telegramId'],
     });
   }
 
-  async getPersonalInfoByTelegramId(telegramId: UserSession['telegramId']): Promise<UserSession> {
+  async getPersonalInfoByTelegramId(telegramId: number): Promise<UserSession> {
     return await this.userSessionRepository.findOne({
       where: { telegramId },
       select: ['personalInfo'],
     });
   }
 
-  async getPersonalInfoByApiId(apiId: UserSession['apiId']): Promise<UserSession> {
+  async getPersonalInfoByApiId(apiId: number): Promise<UserSession> {
     return await this.userSessionRepository.findOne({
       where: { apiId },
       select: ['personalInfo'],
     });
   }
 
-  async deleteUserSessionById(deleteUserSessionDto: DeleteUserSessionDto): Promise<number> {
-    const { affected } = await this.userSessionRepository.delete(deleteUserSessionDto);
-    return affected;
+  async deleteUserSessionById(deleteUserSessionDto: DeleteUserSessionDto): Promise<DeleteResult> {
+    return await this.userSessionRepository.delete(deleteUserSessionDto);
   }
 
-  async deleteUserSessionByTelegramId(telegramId: UserSession['telegramId']): Promise<number> {
-    const { affected } = await this.userSessionRepository.delete({
+  async deleteUserSessionByTelegramId(telegramId: number): Promise<DeleteResult> {
+    return await this.userSessionRepository.delete({
       telegramId,
     });
-    return affected;
   }
 
-  async getUserSessionById(id: UserSession['id']): Promise<UserSession> {
+  async getUserSessionById(id: number): Promise<UserSession> {
     return await this.userSessionRepository.findOne({ where: { id } });
   }
 
-  async getUserSessionByTelegramId(telegramId: UserSession['telegramId']): Promise<UserSession> {
+  async getUserSessionByTelegramId(telegramId: number): Promise<UserSession> {
     return await this.userSessionRepository.findOne({ where: { telegramId } });
   }
 
-  async getUserSessionByApiId(apiId: UserSession['apiId']): Promise<UserSession> {
+  async getUserSessionByApiId(apiId: number): Promise<UserSession> {
     return await this.userSessionRepository.findOne({ where: { apiId } });
   }
 
   async updateUserSessionById(
-    id: UserSession['id'],
+    id: number,
     updateUserSessionInfoDto: UpdateUserSessionInfoDto,
-  ): Promise<number> {
-    const { affected } = await this.userSessionRepository.update({ id }, updateUserSessionInfoDto);
-    return affected;
+  ): Promise<UpdateResult> {
+    return await this.userSessionRepository.update({ id }, updateUserSessionInfoDto);
   }
 
   async updateUserSessionByTelegramId(
-    telegramId: UserSession['telegramId'],
+    telegramId: number,
     updateUserSessionInfoDto: UpdateUserSessionInfoDto,
-  ): Promise<number> {
-    const { affected } = await this.userSessionRepository.update({ telegramId }, updateUserSessionInfoDto);
-    return affected;
+  ): Promise<UpdateResult> {
+    return await this.userSessionRepository.update({ telegramId }, updateUserSessionInfoDto);
   }
 
   async updateUserSessionByApiId(
-    apiId: UserSession['apiId'],
+    apiId: number,
     updateUserSessionInfoDto: UpdateUserSessionInfoDto,
-  ): Promise<number> {
-    const { affected } = await this.userSessionRepository.update({ apiId }, updateUserSessionInfoDto);
-    return affected;
+  ): Promise<UpdateResult> {
+    return await this.userSessionRepository.update({ apiId }, updateUserSessionInfoDto);
   }
 
   async updateApiInfoByTelegramId(
-    telegramId: UserSession['telegramId'],
+    telegramId: number,
     updateApiInfoDto: UpdateApiInfoDto,
-  ): Promise<number> {
-    const { affected } = await this.userSessionRepository.update({ telegramId }, updateApiInfoDto);
-    return affected;
+  ): Promise<UpdateResult> {
+    return await this.userSessionRepository.update({ telegramId }, updateApiInfoDto);
   }
 
   async getActiveUserSessions(): Promise<UserSession[]> {

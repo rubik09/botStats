@@ -16,7 +16,7 @@ export enum userSessionStatus {
   DISABLED = 'disabled',
 }
 
-@Entity({ name: 'session' })
+@Entity({ name: 'sessions' })
 export class UserSession {
   @PrimaryGeneratedColumn()
   id: number;

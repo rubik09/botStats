@@ -2,7 +2,7 @@ import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateCol
 
 import { bigintTransformer } from '../../utils/bigintTransformer';
 
-@Entity({ name: 'stat' })
+@Entity({ name: 'stats' })
 export class Stat {
   @PrimaryGeneratedColumn()
   id: number;

@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import {InjectRepository} from "@nestjs/typeorm";
-import {Repository} from "typeorm";
+import {DeleteResult, Repository, UpdateResult} from 'typeorm';
 import {Keyword} from "./entity/keywords.entity";
 import {CreateKeywordsDto} from "./dto/createKeywords.dto";
 import {UpdateKeywordsDto} from "./dto/updateKeywords.dto";
-import {UserSession} from "../userSession/entity/userSession.entity";
 
 @Injectable()
 export class KeywordsRepository {
@@ -20,22 +19,20 @@ export class KeywordsRepository {
     }
 
     async updateNewKeyword(
-        keywordId: Keyword['id'],
+        keywordId: number,
         updateKeywordsDto: UpdateKeywordsDto,
-    ): Promise<number> {
-        const {affected} = await this.keywordsRepository.update(keywordId, updateKeywordsDto);
-        return affected
+    ): Promise<UpdateResult> {
+        return await this.keywordsRepository.update(keywordId, updateKeywordsDto);
     }
 
     async deleteKeyword(
-        keywordId: Keyword['id'],
-    ): Promise<number> {
-        const {affected} = await this.keywordsRepository.delete(keywordId);
-        return affected;
+        keywordId: number,
+    ): Promise<DeleteResult> {
+        return await this.keywordsRepository.delete(keywordId);
     }
 
     async getKeywordById(
-        keywordId: Keyword['id'],
+        keywordId: number,
     ): Promise<Keyword> {
         return await this.keywordsRepository.findOne({where: {id: keywordId}});
     }
@@ -44,17 +41,15 @@ export class KeywordsRepository {
         return this.keywordsRepository.find({where: {userSession: { id: userSessionId }}});
     }
 
-    async resetCountByUserSessionId(userSessionId: UserSession['id']): Promise<number> {
-        const {affected} =  await this.keywordsRepository.update({ userSession: { id: userSessionId } }, { count: 0 });
-        return affected;
+    async resetCountByUserSessionId(userSessionId: number): Promise<UpdateResult> {
+        return await this.keywordsRepository.update({ userSession: { id: userSessionId } }, { count: 0 });
     }
 
-    async increaseKeywordCountById(keywordId: Keyword['id']): Promise<number> {
-        const { affected } = await this.keywordsRepository.increment({ id: keywordId }, 'count', 1);
-        return affected;
+    async increaseKeywordCountById(keywordId: number): Promise<UpdateResult> {
+        return await this.keywordsRepository.increment({ id: keywordId }, 'count', 1);
     }
 
-    async getKeywordsByMessage(message: string, userSessionId: UserSession['id']): Promise<Keyword> {
+    async getKeywordsByMessage(message: string, userSessionId: number): Promise<Keyword> {
         return this.keywordsRepository.findOne({
             where: {
                 keyword: JSON.stringify(message),

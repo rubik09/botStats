@@ -1,12 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, DeleteResult, UpdateResult } from 'typeorm';
 
 import { CreateAdminDto } from './dto/createAdmin.dto';
 import { DeleteAdminDto } from './dto/deleteAdmin.dto';
 import { UpdateAdminDto } from './dto/updateAdmin.dto';
 import { Admin } from './entity/admins.entity';
-import { UserSession } from '../userSession/entity/userSession.entity';
 
 @Injectable()
 export class AdminsRepository {
@@ -19,25 +18,23 @@ export class AdminsRepository {
     return await this.adminsRepository.save(createAdminDto);
   }
 
-  async findOneByEmail(email: Admin['email']): Promise<Admin> {
+  async findOneByEmail(email: string): Promise<Admin> {
     return await this.adminsRepository.findOne({
       where: { email },
     });
   }
 
-  async findOneById(id: Admin['id']): Promise<Admin> {
+  async findOneById(id: number): Promise<Admin> {
     return await this.adminsRepository.findOne({
       where: { id },
     });
   }
 
-  async deleteAdminById(deleteAdminDto: DeleteAdminDto): Promise<number> {
-    const { affected } = await this.adminsRepository.delete(deleteAdminDto);
-    return affected;
+  async deleteAdminById(deleteAdminDto: DeleteAdminDto): Promise<DeleteResult> {
+    return await this.adminsRepository.delete(deleteAdminDto);
   }
 
-  async updateAdmin(id: UserSession['id'], updateAdminDto: UpdateAdminDto): Promise<number> {
-    const { affected } = await this.adminsRepository.update({ id }, updateAdminDto);
-    return affected;
+  async updateAdmin(id: number, updateAdminDto: UpdateAdminDto): Promise<UpdateResult> {
+    return await this.adminsRepository.update({ id }, updateAdminDto);
   }
 }
