@@ -3,23 +3,20 @@ import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { CreateUserDto } from './dto/createUser.dto';
 import { User } from './entity/users.entity';
 import { UsersRepository } from './users.repository';
+import {FindByApiIdAndTgIdDto} from "./dto/findByApiIdAndTgId.dto";
 
 @Injectable()
 export class UsersService {
   private readonly logger = new Logger(UsersService.name);
   constructor(private readonly usersRepository: UsersRepository) {}
 
-  async getUserByApiIdAndTelegramId(createUserDto: CreateUserDto): Promise<User> {
-    const { apiIdClient, telegramId } = createUserDto;
+  async getUserByApiIdAndTelegramId(findByApiIdAndTgIdDto: FindByApiIdAndTgIdDto): Promise<User> {
+    const { apiIdClient, telegramId } = findByApiIdAndTgIdDto;
     this.logger.log(`Trying to get user by apiId: ${apiIdClient} and telegramId: ${telegramId}`);
 
-    const user = await this.usersRepository.findUserByApiIdAndTelegramId(createUserDto);
+    const user = await this.usersRepository.findUserByApiIdAndTelegramId(findByApiIdAndTgIdDto);
 
-    if (!user) {
-      this.logger.error(`user with apiId: ${apiIdClient} and telegramId: ${telegramId} not found`);
-    }
-
-    this.logger.debug(`user successfully get with id: ${user.id}`);
+    this.logger.debug(`user successfully get with id: ${user?.id}`);
 
     return user;
   }
@@ -38,9 +35,9 @@ export class UsersService {
       );
     }
 
-    const {id} = await this.usersRepository.createUser(createUserDto);
+    const {raw} = await this.usersRepository.createUser(createUserDto);
 
-    this.logger.debug(`user successfully created with id: ${id}`);
+    this.logger.debug(`user successfully created with id: ${raw[0].id}`);
   }
 
   async getCountUsersByApiId(apiIdClient: User['apiIdClient']): Promise<number> {

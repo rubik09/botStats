@@ -8,8 +8,9 @@ import { PersonalInfoService } from './personalInfo.service';
 import { UserSessionModule } from '../userSession/userSession.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([PersonalInfo]), UserSessionModule],
+  imports: [TypeOrmModule.forFeature([PersonalInfo])],
   providers: [PersonalInfoService, PersonalInfoRepository],
   controllers: [PersonalInfoController],
+  exports: [PersonalInfoRepository, PersonalInfo]
 })
 export class PersonalInfoModule {}

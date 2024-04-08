@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import {DeleteResult, Repository, UpdateResult} from 'typeorm';
+import { InsertResult, Repository, UpdateResult, getManager } from 'typeorm';
+import { PersonalInfo } from "../personalInfo/entity/personalInfo.entity";
 
-import { DeleteUserSessionDto } from './dto/deleteUserSession.dto';
 import { UpdateApiInfoDto } from './dto/updateApiInfo.dto';
 import { UpdateUserSessionInfoDto } from './dto/updateUserSession.dto';
 import { UserSession, userSessionStatus } from './entity/userSession.entity';
@@ -13,17 +13,15 @@ export class UserSessionRepository {
   constructor(
     @InjectRepository(UserSession)
     private readonly userSessionRepository: Repository<UserSession>,
+    private readonly personalInfoRepository: Repository<PersonalInfo>,
+
   ) {}
 
-  async getStatusById(id: number): Promise<UserSession> {
-    return await this.userSessionRepository.findOne({
-      where: { id },
-      select: ['id', 'status'],
-    });
-  }
-
   async getUserSessions(): Promise<UserSession[]> {
-    return await this.userSessionRepository.find();
+    return await this.userSessionRepository
+      .createQueryBuilder('userSessions')
+      .leftJoinAndSelect('userSessions.personalInfo', 'personalInfo')
+      .getMany();
   }
 
   async createUserSession(
@@ -33,86 +31,70 @@ export class UserSessionRepository {
     return await this.userSessionRepository.save({ telegramId, personalInfo });
   }
 
-  async getKeywordsFromUserSessionByApiId(apiId: number): Promise<UserSession> {
-    return await this.userSessionRepository.findOne({
-      where: { apiId },
-    });
-  }
-
-  async getMainInfoById(id: number): Promise<UserSession> {
-    return this.userSessionRepository.findOne({
-      where: { id },
-      select: ['id', 'apiId', 'apiHash', 'logSession', 'telegramId'],
-    });
-  }
-
   async getPersonalInfoByTelegramId(telegramId: number): Promise<UserSession> {
-    return await this.userSessionRepository.findOne({
-      where: { telegramId },
-      select: ['personalInfo'],
-    });
+    return await this.userSessionRepository
+      .createQueryBuilder('userSessions')
+      .leftJoinAndSelect('userSessions.personalInfo', 'personalInfo')
+      .where("telegram_id = :telegramId", { telegramId })
+      .getOne();
   }
 
   async getPersonalInfoByApiId(apiId: number): Promise<UserSession> {
-    return await this.userSessionRepository.findOne({
-      where: { apiId },
-      select: ['personalInfo'],
-    });
-  }
-
-  async deleteUserSessionById(deleteUserSessionDto: DeleteUserSessionDto): Promise<DeleteResult> {
-    return await this.userSessionRepository.delete(deleteUserSessionDto);
-  }
-
-  async deleteUserSessionByTelegramId(telegramId: number): Promise<DeleteResult> {
-    return await this.userSessionRepository.delete({
-      telegramId,
-    });
+    return await this.userSessionRepository
+      .createQueryBuilder()
+      .select("personalInfo")
+      .where("api_id = :apiId", { apiId })
+      .getOne();
   }
 
   async getUserSessionById(id: number): Promise<UserSession> {
-    return await this.userSessionRepository.findOne({ where: { id } });
+    return await this.userSessionRepository
+      .createQueryBuilder()
+      .where("id = :id", { id })
+      .getOne();
   }
 
   async getUserSessionByTelegramId(telegramId: number): Promise<UserSession> {
-    return await this.userSessionRepository.findOne({ where: { telegramId } });
+    return await this.userSessionRepository
+      .createQueryBuilder('userSessions')
+      .where("userSessions.telegram_id = :telegramId", { telegramId })
+      .getOne();
   }
 
   async getUserSessionByApiId(apiId: number): Promise<UserSession> {
-    return await this.userSessionRepository.findOne({ where: { apiId } });
-  }
-
-  async updateUserSessionById(
-    id: number,
-    updateUserSessionInfoDto: UpdateUserSessionInfoDto,
-  ): Promise<UpdateResult> {
-    return await this.userSessionRepository.update({ id }, updateUserSessionInfoDto);
+    return await this.userSessionRepository
+      .createQueryBuilder()
+      .where("api_id = :apiId", { apiId })
+      .getOne();
   }
 
   async updateUserSessionByTelegramId(
     telegramId: number,
     updateUserSessionInfoDto: UpdateUserSessionInfoDto,
   ): Promise<UpdateResult> {
-    return await this.userSessionRepository.update({ telegramId }, updateUserSessionInfoDto);
-  }
-
-  async updateUserSessionByApiId(
-    apiId: number,
-    updateUserSessionInfoDto: UpdateUserSessionInfoDto,
-  ): Promise<UpdateResult> {
-    return await this.userSessionRepository.update({ apiId }, updateUserSessionInfoDto);
+    return await this.userSessionRepository
+      .createQueryBuilder()
+      .update(UserSession)
+      .set(updateUserSessionInfoDto)
+      .where("telegram_id = :telegramId", { telegramId })
+      .execute();
   }
 
   async updateApiInfoByTelegramId(
     telegramId: number,
     updateApiInfoDto: UpdateApiInfoDto,
   ): Promise<UpdateResult> {
-    return await this.userSessionRepository.update({ telegramId }, updateApiInfoDto);
+    return await this.userSessionRepository
+      .createQueryBuilder()
+      .update(UserSession).set(updateApiInfoDto)
+      .where("telegram_id = :telegramId", { telegramId })
+      .execute();
   }
 
   async getActiveUserSessions(): Promise<UserSession[]> {
-    return await this.userSessionRepository.find({
-      where: { status: userSessionStatus.ACTIVE },
-    });
+    return await this.userSessionRepository
+      .createQueryBuilder()
+      .where("status = :status", { status: userSessionStatus.ACTIVE })
+      .getMany();
   }
 }

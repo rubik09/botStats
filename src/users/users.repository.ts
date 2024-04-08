@@ -1,10 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DeleteResult, UpdateResult } from 'typeorm';
+import { Repository, DeleteResult, InsertResult } from 'typeorm';
 
 import { CreateUserDto } from './dto/createUser.dto';
-import { DeleteUserDto } from './dto/deleteUser.dto';
-import { UpdateUserDto } from './dto/updateUser.dto';
 import { User } from './entity/users.entity';
 import {FindByApiIdAndTgIdDto} from "./dto/findByApiIdAndTgId.dto";
 
@@ -16,28 +14,37 @@ export class UsersRepository {
   ) {}
 
   async findUserByApiIdAndTelegramId(findByApiIdAndTgIdDto: FindByApiIdAndTgIdDto): Promise<User> {
-    return await this.usersRepository.findOne({
-      where: findByApiIdAndTgIdDto,
-    });
+    return await this.usersRepository
+      .createQueryBuilder('users')
+      .where("users.api_id_client = :apiIdClient AND users.telegram_id = :telegramId", {
+        apiIdClient: findByApiIdAndTgIdDto.apiIdClient,
+        telegramId: findByApiIdAndTgIdDto.telegramId,
+      })
+      .getOne();
   }
 
-  async createUser(createUserDto: CreateUserDto): Promise<User> {
-    return await this.usersRepository.save(createUserDto);
+  async createUser(createUserDto: CreateUserDto): Promise<InsertResult> {
+    return await this.usersRepository
+      .createQueryBuilder()
+      .insert()
+      .into(User)
+      .values(createUserDto)
+      .execute();
   }
 
   async getCountUsersByApiId(apiIdClient: number): Promise<number> {
-    return await this.usersRepository.count({ where: { apiIdClient } });
+    return await this.usersRepository
+      .createQueryBuilder('users')
+      .where("users.api_id_client = :apiIdClient", { apiIdClient })
+      .getCount();
   }
 
   async cleanTableByApiId(apiIdClient: number): Promise<DeleteResult> {
-    return await this.usersRepository.delete({ apiIdClient });
-  }
-
-  async deleteUserByTelegramId(deleteUserDto: DeleteUserDto): Promise<DeleteResult> {
-    return await this.usersRepository.delete(deleteUserDto);
-  }
-
-  async updateUser(id: number, updateUserDto: UpdateUserDto): Promise<UpdateResult> {
-    return await this.usersRepository.update({ id }, updateUserDto);
+    return await this.usersRepository
+      .createQueryBuilder('users')
+      .delete()
+      .from(User)
+      .where("users.api_id_client = :apiIdClient", { apiIdClient })
+      .execute();
   }
 }

@@ -48,9 +48,9 @@ export class StatsService implements OnModuleInit {
       throw new HttpException(`stats with apiId: ${apiId}  already exist`, HttpStatus.BAD_REQUEST);
     }
 
-    const {id} = await this.statsRepository.createStats(apiId);
+    const {raw} = await this.statsRepository.createStats(apiId);
 
-    this.logger.debug(`stats successfully created with id: ${id}`);
+    this.logger.debug(`stats successfully created with id: ${raw[0].id}`);
   }
 
   async updateStatsByApiId(updateStatsDto: UpdateStatsDto, apiId: Stat['apiIdClient']) {
@@ -71,7 +71,7 @@ export class StatsService implements OnModuleInit {
   async increaseIncomingMessagesCountToSessionByApiId(apiId: Stat['apiIdClient']) {
     this.logger.log(`Trying to increase incoming messages count by apiId: ${apiId}`);
 
-    const userSession = this.getStatsByApiId(apiId);
+    const userSession = await this.getStatsByApiId(apiId);
 
     if (!userSession) {
       this.logger.error(`stats with apiId: ${apiId} not found`);
@@ -111,6 +111,8 @@ export class StatsService implements OnModuleInit {
     };
 
     const user = await this.usersService.getUserByApiIdAndTelegramId(createUserDto);
+
+    console.log(user)
 
     if (!user) await this.usersService.createUser(createUserDto);
 

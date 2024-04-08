@@ -81,24 +81,6 @@ export class UserSessionService {
     return activeSessions;
   }
 
-  async updateUserSessionById(
-    id: UserSession['id'],
-    updateUserSessionInfoDto: UpdateUserSessionInfoDto,
-  ) {
-    this.logger.log(`Trying to update user session by id: ${id}`);
-
-    const userSession = this.userSessionRepository.getUserSessionById(id);
-
-    if (!userSession) {
-      this.logger.error(`user session with id: ${id} not found`);
-      throw new HttpException(`user session with id: ${id} not found`, HttpStatus.NOT_FOUND);
-    }
-
-    await this.userSessionRepository.updateUserSessionById(id, updateUserSessionInfoDto);
-
-    this.logger.debug(`user session successfully updated by id: ${id}`);
-  }
-
   async updateUserSessionByTelegramId(
     telegramId: UserSession['telegramId'],
     updateUserSessionInfoDto: UpdateUserSessionInfoDto,
@@ -118,27 +100,6 @@ export class UserSessionService {
     );
 
     this.logger.debug(`user session successfully updated by telegramId: ${telegramId}`);
-  }
-
-  async updateUserSessionByApiId(
-    apiId: UserSession['apiId'],
-    updateUserSessionInfoDto: UpdateUserSessionInfoDto,
-  ) {
-    this.logger.log(`Trying to update user session by apiId: ${apiId}`);
-
-    const userSession = await this.userSessionRepository.getUserSessionByApiId(apiId);
-
-    if (!userSession) {
-      this.logger.error(`user session with apiId: ${apiId} not found`);
-      throw new HttpException(`user session with apiId: ${apiId} not found`, HttpStatus.NOT_FOUND);
-    }
-
-    await this.userSessionRepository.updateUserSessionByApiId(
-      apiId,
-      updateUserSessionInfoDto,
-    );
-
-    this.logger.debug(`user session successfully updated by apiId: ${apiId}`);
   }
 
   async updateApiInfoByTelegramId(
@@ -172,8 +133,8 @@ export class UserSessionService {
       throw new HttpException(`session with telegramId: ${telegramId} already exist`, HttpStatus.BAD_REQUEST);
     }
 
-    const {id} = await this.userSessionRepository.createUserSession(telegramId, personalInfo);
+    const {raw} = await this.userSessionRepository.createUserSession(telegramId, personalInfo);
 
-    this.logger.debug(`admin successfully created with id: ${id}`);
+    this.logger.debug(`admin successfully created with id: ${raw[0]?.id}`);
   }
 }

@@ -12,18 +12,7 @@ import { UserSessionService } from '../userSession/userSession.service';
 export class PersonalInfoController {
   constructor(
     private readonly personalInfoService: PersonalInfoService,
-    private readonly userSessionService: UserSessionService,
   ) {}
-
-  @Post(':id')
-  @UseGuards(JwtGuard)
-  async createPersonalInfo(
-    @Param('id') telegramId: UserSession['telegramId'],
-    @Body() createPersonalInfoDto: CreatePersonalInfoDto,
-  ) {
-    await this.userSessionService.createUserSession(telegramId, createPersonalInfoDto);
-    throw new HttpException('Персональная информация успешно создана', HttpStatus.CREATED);
-  }
 
   @Patch(':id')
   @UseGuards(JwtGuard)
