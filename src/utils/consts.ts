@@ -9,7 +9,7 @@ export const time = {
   NIGHT: '00:00-10:00 - night',
 };
 
-export const spreadSheetId = '17_9Rshwil98EN8FTfpBSnnUj4TMJrtJq50EFx89h86o';
+export const spreadSheetId = '1YJkDl9dg7FH9u0yyQt_LQwEwePblgZqoZZy9JGgrI4U';
 export const sheetId = 0;
 
 export const cronTimezone = 'Europe/Moscow';
