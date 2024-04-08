@@ -135,6 +135,6 @@ export class UserSessionService {
 
     const {raw} = await this.userSessionRepository.createUserSession(telegramId, personalInfo);
 
-    this.logger.debug(`admin successfully created with id: ${raw[0]?.id}`);
+    this.logger.debug(`admin successfully created with id: ${raw[0].id}`);
   }
 }

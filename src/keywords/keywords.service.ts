@@ -85,7 +85,6 @@ export class KeywordsService {
         await this.keywordsRepository.resetCountByUserSessionId(userSessionId);
 
         this.logger.debug(`count successfully reset by id: ${userSessionId}`);
-
     }
 
     async increaseKeywordCountById(id: Keyword['id']) {

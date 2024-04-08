@@ -1,12 +1,9 @@
-import {Body, Controller, Delete, HttpException, HttpStatus, Param, Patch, Post, UseGuards} from '@nestjs/common';
+import {Body, Controller, Delete, HttpException, HttpStatus, Param, Patch, UseGuards} from '@nestjs/common';
 
-import { CreatePersonalInfoDto } from './dto/createPersonalInfo.dto';
 import { UpdatePersonalInfoDto } from './dto/updatePersonalInfo.dto';
 import { PersonalInfo } from './entity/personalInfo.entity';
 import { PersonalInfoService } from './personalInfo.service';
 import { JwtGuard } from '../auth/jwtAuth.guard';
-import { UserSession } from '../userSession/entity/userSession.entity';
-import { UserSessionService } from '../userSession/userSession.service';
 
 @Controller('personalInfo')
 export class PersonalInfoController {
@@ -22,7 +19,6 @@ export class PersonalInfoController {
   ) {
     await this.personalInfoService.updatePersonalInfoByTelegramId(id, updatePersonalInfoDto);
     throw new HttpException('Персональная информация успешно обновлена', HttpStatus.OK);
-
   }
 
   @Delete(':id')
@@ -30,6 +26,5 @@ export class PersonalInfoController {
   async deletePersonalInfoById(@Param('id') id: PersonalInfo['id']) {
     await this.personalInfoService.deletePersonalInfoById(id);
     throw new HttpException('Персональная информация успешно удалена', HttpStatus.OK);
-
   }
 }

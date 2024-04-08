@@ -1,20 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { InsertResult, Repository, UpdateResult, getManager } from 'typeorm';
-import { PersonalInfo } from "../personalInfo/entity/personalInfo.entity";
+import {Repository, UpdateResult, InsertResult} from 'typeorm';
 
 import { UpdateApiInfoDto } from './dto/updateApiInfo.dto';
 import { UpdateUserSessionInfoDto } from './dto/updateUserSession.dto';
 import { UserSession, userSessionStatus } from './entity/userSession.entity';
 import { CreatePersonalInfoDto } from '../personalInfo/dto/createPersonalInfo.dto';
+import {PersonalInfoRepository} from "../personalInfo/personalInfo.repository";
 
 @Injectable()
 export class UserSessionRepository {
   constructor(
     @InjectRepository(UserSession)
     private readonly userSessionRepository: Repository<UserSession>,
-    private readonly personalInfoRepository: Repository<PersonalInfo>,
-
+    private readonly personalInfoRepository: PersonalInfoRepository,
   ) {}
 
   async getUserSessions(): Promise<UserSession[]> {
@@ -27,8 +26,20 @@ export class UserSessionRepository {
   async createUserSession(
     telegramId: number,
     personalInfo: CreatePersonalInfoDto,
-  ): Promise<UserSession> {
-    return await this.userSessionRepository.save({ telegramId, personalInfo });
+  ): Promise<InsertResult> {
+    const {identifiers} = await this.personalInfoRepository.createPersonalInfo(personalInfo);
+    const insertedPersonalInfoId = identifiers[0]?.id;
+    const personalInfoEntity = await this.personalInfoRepository.getByUserId(insertedPersonalInfoId);
+
+    return this.userSessionRepository
+        .createQueryBuilder()
+        .insert()
+        .into(UserSession)
+        .values({
+          telegramId,
+          personalInfo: personalInfoEntity,
+        })
+        .execute();
   }
 
   async getPersonalInfoByTelegramId(telegramId: number): Promise<UserSession> {
@@ -41,8 +52,8 @@ export class UserSessionRepository {
 
   async getPersonalInfoByApiId(apiId: number): Promise<UserSession> {
     return await this.userSessionRepository
-      .createQueryBuilder()
-      .select("personalInfo")
+      .createQueryBuilder('userSessions')
+        .leftJoinAndSelect('userSessions.personalInfo', 'personalInfo')
       .where("api_id = :apiId", { apiId })
       .getOne();
   }
