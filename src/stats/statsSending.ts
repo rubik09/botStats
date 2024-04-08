@@ -1,6 +1,11 @@
 import { PersonalInfo } from '../personalInfo/entity/personalInfo.entity';
-import { sheetId, spreadSheetId } from '../utils/consts';
 import { googleSheets } from '../utils/googleClient';
+import * as process from 'process';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
+
+export const { SPREAD_SHEET_ID, SHEET_ID } = process.env;
 import {Keyword} from "../keywords/entity/keywords.entity";
 
 const StatsSending = async (
@@ -34,18 +39,18 @@ const StatsSending = async (
 
     const sheets = await googleSheets();
     const res = await sheets.spreadsheets.values.get({
-      spreadsheetId: spreadSheetId,
+      spreadsheetId: SPREAD_SHEET_ID,
       range: 'A1:P',
     });
     const lastFilledCell = res.data.values.length;
     await sheets.spreadsheets.batchUpdate({
-      spreadsheetId: spreadSheetId,
+      spreadsheetId: SPREAD_SHEET_ID,
       requestBody: {
         requests: [
           {
             updateCells: {
               range: {
-                sheetId: sheetId,
+                sheetId: Number(SHEET_ID),
                 startRowIndex: lastFilledCell,
                 endRowIndex: lastFilledCell + 2,
                 startColumnIndex: 0,
