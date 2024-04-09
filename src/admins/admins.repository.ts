@@ -14,7 +14,7 @@ export class AdminsRepository {
 
   async createAdmin(createAdminDto: CreateAdminDto): Promise<InsertResult> {
     return await this.adminsRepository
-        .createQueryBuilder()
+        .createQueryBuilder('admins')
         .insert()
         .into(Admin)
         .values(createAdminDto)

@@ -13,35 +13,35 @@ export class KeywordsController {
     @Post(':id')
     @UseGuards(JwtGuard)
     async addKeywordsByTelegramId(
-        @Param('id') telegramId: UserSession['telegramId'],
+        @Param('id') id: UserSession['telegramId'],
         @Body() createKeywordsDto: CreateKeywordsDto,
     ) {
-        await this.keywordsService.createNewKeyword(telegramId, createKeywordsDto);
+        await this.keywordsService.createNewKeyword(id, createKeywordsDto);
         throw new HttpException('Ключевое слово успешно создано', HttpStatus.CREATED);
     }
 
     @Patch(':id')
     @UseGuards(JwtGuard)
     async editKeywordsByTelegramId(
-        @Param('id') keywordId: Keyword['id'],
+        @Param('id') id: Keyword['id'],
         @Body() updateKeywordsDto: UpdateKeywordsDto,
     ) {
-        await this.keywordsService.updateKeyword(keywordId, updateKeywordsDto);
+        await this.keywordsService.updateKeyword(id, updateKeywordsDto);
         throw new HttpException('Ключевое слово успешно изменено', HttpStatus.OK);
     }
 
     @Delete(':id')
     @UseGuards(JwtGuard)
     async deleteKeywordsByTelegramId(
-        @Param('id') keywordId: Keyword['id']
+        @Param('id') id: Keyword['id']
     ){
-        await this.keywordsService.deleteKeyword(keywordId);
+        await this.keywordsService.deleteKeyword(id);
         throw new HttpException('Ключевое слово успешно удалено', HttpStatus.OK);
     }
 
     @Get(':id')
     @UseGuards(JwtGuard)
-    async getKeywordsByUserSessionId( @Param('id') userSessionId: UserSession['id']): Promise<Keyword[]> {
-        return this.keywordsService.getKeywordsByUserSessionId(userSessionId);
+    async getKeywordsByUserSessionId( @Param('id') id: UserSession['id']): Promise<Keyword[]> {
+        return this.keywordsService.getKeywordsByUserSessionId(id);
     }
 }

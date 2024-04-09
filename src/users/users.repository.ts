@@ -25,7 +25,7 @@ export class UsersRepository {
 
   async createUser(createUserDto: CreateUserDto): Promise<InsertResult> {
     return await this.usersRepository
-      .createQueryBuilder()
+      .createQueryBuilder('users')
       .insert()
       .into(User)
       .values(createUserDto)

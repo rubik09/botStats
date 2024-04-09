@@ -16,11 +16,11 @@ export class UserSessionRepository {
     private readonly personalInfoRepository: PersonalInfoRepository,
   ) {}
 
-  async getUserSessions(): Promise<UserSession[]> {
+  async getUserSessions(): Promise<[UserSession[], number]> {
     return await this.userSessionRepository
       .createQueryBuilder('userSessions')
       .leftJoinAndSelect('userSessions.personalInfo', 'personalInfo')
-      .getMany();
+      .getManyAndCount();
   }
 
   async createUserSession(
@@ -32,7 +32,7 @@ export class UserSessionRepository {
     const personalInfoEntity = await this.personalInfoRepository.getByUserId(insertedPersonalInfoId);
 
     return this.userSessionRepository
-        .createQueryBuilder()
+        .createQueryBuilder('userSessions')
         .insert()
         .into(UserSession)
         .values({
@@ -60,7 +60,7 @@ export class UserSessionRepository {
 
   async getUserSessionById(id: number): Promise<UserSession> {
     return await this.userSessionRepository
-      .createQueryBuilder()
+      .createQueryBuilder('userSessions')
       .where("id = :id", { id })
       .getOne();
   }
@@ -74,7 +74,7 @@ export class UserSessionRepository {
 
   async getUserSessionByApiId(apiId: number): Promise<UserSession> {
     return await this.userSessionRepository
-      .createQueryBuilder()
+      .createQueryBuilder('userSessions')
       .where("api_id = :apiId", { apiId })
       .getOne();
   }
@@ -84,7 +84,7 @@ export class UserSessionRepository {
     updateUserSessionInfoDto: UpdateUserSessionInfoDto,
   ): Promise<UpdateResult> {
     return await this.userSessionRepository
-      .createQueryBuilder()
+      .createQueryBuilder('userSessions')
       .update(UserSession)
       .set(updateUserSessionInfoDto)
       .where("telegram_id = :telegramId", { telegramId })
@@ -96,16 +96,16 @@ export class UserSessionRepository {
     updateApiInfoDto: UpdateApiInfoDto,
   ): Promise<UpdateResult> {
     return await this.userSessionRepository
-      .createQueryBuilder()
+      .createQueryBuilder('userSessions')
       .update(UserSession).set(updateApiInfoDto)
       .where("telegram_id = :telegramId", { telegramId })
       .execute();
   }
 
-  async getActiveUserSessions(): Promise<UserSession[]> {
+  async getActiveUserSessions(): Promise<[UserSession[], number]> {
     return await this.userSessionRepository
-      .createQueryBuilder()
+      .createQueryBuilder('userSessions')
       .where("status = :status", { status: userSessionStatus.ACTIVE })
-      .getMany();
+      .getManyAndCount();
   }
 }

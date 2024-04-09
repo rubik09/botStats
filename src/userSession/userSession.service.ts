@@ -64,7 +64,7 @@ export class UserSessionService {
   async getActiveUserSessions(): Promise<UserSession[]> {
     this.logger.log(`Trying to get Active User Sessions`);
 
-    const activeSessions = this.userSessionRepository.getActiveUserSessions();
+    const [activeSessions] = await this.userSessionRepository.getActiveUserSessions();
 
     this.logger.debug(`Active User Sessions successfully get`);
 
@@ -74,7 +74,7 @@ export class UserSessionService {
   async getAllUserSessions(): Promise<UserSession[]> {
     this.logger.log(`Trying to get all User Sessions`);
 
-    const activeSessions = this.userSessionRepository.getUserSessions();
+    const [activeSessions] = await this.userSessionRepository.getUserSessions();
 
     this.logger.debug(`Active User Sessions successfully get `);
 

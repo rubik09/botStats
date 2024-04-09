@@ -14,7 +14,7 @@ export class StatsRepository {
 
   async createStats(apiIdClient: number): Promise<InsertResult> {
     return await this.statsRepository
-      .createQueryBuilder()
+      .createQueryBuilder('stats')
       .insert()
       .into(Stat)
       .values({ apiIdClient })

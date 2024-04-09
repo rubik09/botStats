@@ -15,7 +15,7 @@ export class PersonalInfoRepository {
 
   async updatePersonalInfo(id: number, updatePersonalInfoDto: UpdatePersonalInfoDto): Promise<UpdateResult> {
     return await this.personalInfoRepository
-      .createQueryBuilder()
+      .createQueryBuilder('personalInfo')
       .update(PersonalInfo)
       .set(updatePersonalInfoDto)
       .where("id = :id", { id })
@@ -24,14 +24,14 @@ export class PersonalInfoRepository {
 
   async getByUserId(id: number): Promise<PersonalInfo> {
     return await this.personalInfoRepository
-      .createQueryBuilder()
+      .createQueryBuilder('personalInfo')
       .where("id = :id", { id })
       .getOne();
   }
 
   async createPersonalInfo(personalInfo: CreatePersonalInfoDto): Promise<InsertResult> {
     return await this.personalInfoRepository
-        .createQueryBuilder()
+        .createQueryBuilder('personalInfo')
         .insert()
         .into(PersonalInfo)
         .values(personalInfo)
@@ -41,7 +41,7 @@ export class PersonalInfoRepository {
 
   async deletePersonalInfoById(id: number): Promise<DeleteResult> {
     return await this.personalInfoRepository
-      .createQueryBuilder()
+      .createQueryBuilder('personalInfo')
       .delete()
       .where("id = :id", { id })
       .execute();
