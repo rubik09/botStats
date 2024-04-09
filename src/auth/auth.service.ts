@@ -3,7 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 
 import { AdminsService } from '../admins/admins.service';
-import { CreateAdminDto } from '../admins/dto/createAdmin.dto';
+import {TAdminEmailAndPassword} from "../utils/types";
 
 @Injectable()
 export class AuthService {
@@ -13,8 +13,8 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async validateAdmin(adminDto: CreateAdminDto): Promise<void> {
-    const { email, password } = adminDto;
+  async validateAdmin(validateAdmin: TAdminEmailAndPassword): Promise<void> {
+    const { email, password } = validateAdmin;
 
     const admin = await this.adminsService.findAdminByEmail(email);
     if (!admin) {
@@ -26,12 +26,12 @@ export class AuthService {
     }
   }
 
-  async login(adminDto: CreateAdminDto) {
-    const { email } = adminDto;
+  async login(loginAdmin: TAdminEmailAndPassword) {
+    const { email } = loginAdmin;
 
     this.logger.log(`Trying to login admin with email: ${email}`);
 
-    await this.validateAdmin(adminDto);
+    await this.validateAdmin(loginAdmin);
     const payload = { email };
 
     this.logger.debug(`admin with email: ${email} login`);
@@ -41,7 +41,7 @@ export class AuthService {
     };
   }
 
-  async register(createAdminDto: CreateAdminDto): Promise<{ access_token: string }> {
+  async register(createAdminDto: TAdminEmailAndPassword): Promise<{ access_token: string }> {
     const { email, password } = createAdminDto;
 
     this.logger.debug(`Trying to register admin with email: ${email}`);

@@ -1,8 +1,8 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 
 import { AdminsRepository } from './admins.repository';
-import { CreateAdminDto } from './dto/createAdmin.dto';
 import { Admin } from './entity/admins.entity';
+import {TAdminEmailAndPassword} from "../utils/types";
 
 @Injectable()
 export class AdminsService {
@@ -24,8 +24,8 @@ export class AdminsService {
     return admin;
   }
 
-  async createAdmin(createAdminDto: CreateAdminDto) {
-    const { email } = createAdminDto;
+  async createAdmin(createAdmin: TAdminEmailAndPassword) {
+    const { email } = createAdmin;
 
     this.logger.log(`Trying to create admin with email: ${email}`);
 
@@ -36,7 +36,7 @@ export class AdminsService {
       throw new HttpException(`admin with email: ${email} already exist`, HttpStatus.BAD_REQUEST);
     }
 
-    const {raw} = await this.adminsRepository.createAdmin(createAdminDto);
+    const {raw} = await this.adminsRepository.createAdmin(createAdmin);
 
     this.logger.debug(`admin successfully created with id: ${raw.id}`);
   }
