@@ -9,7 +9,7 @@ export class AuthService {
       private jwtService: JwtService,
   ) {}
 
-  async validatePassword(password: string, adminPassword: string): Promise<void> {
+  async validatePassword(password: string, adminPassword: string) {
     const isMatch = bcrypt.compareSync(password, adminPassword);
 
     if (!isMatch) {

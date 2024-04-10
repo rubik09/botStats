@@ -47,7 +47,7 @@ export class AdminsService {
     this.logger.debug(`admin successfully created with id: ${raw.id}`);
   }
 
-  async validateAdmin(adminLoginDto: AdminLoginDto): Promise<void> {
+  async validateAdmin(adminLoginDto: AdminLoginDto) {
     const { email, password } = adminLoginDto;
 
     const admin = await this.findAdminByEmail(email);

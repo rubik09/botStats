@@ -98,7 +98,7 @@ export class StatsService implements OnModuleInit {
     this.logger.debug(`outgoing messages count successfully increased by apiId: ${apiId}`);
   }
 
-  async incomingMessages(clientInfoStr: string): Promise<void> {
+  async incomingMessages(clientInfoStr: string) {
     this.logger.log(`Trying to add incoming message to stats`);
 
     this.logger.log(`parsing clientInfoStr`);
