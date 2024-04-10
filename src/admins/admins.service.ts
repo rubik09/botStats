@@ -57,7 +57,7 @@ export class AdminsService {
     await this.authService.validatePassword(password, admin.password)
   }
 
-  async login(adminLoginDto: AdminLoginDto): Promise<{ access_token: string }> {
+  async login(adminLoginDto: AdminLoginDto): Promise<string> {
     const { email } = adminLoginDto;
 
     this.logger.log(`Trying to login admin with email: ${email}`);
@@ -70,7 +70,7 @@ export class AdminsService {
     return await this.authService.signKey(payload);
   }
 
-  async register(adminRegisterDto: AdminRegisterDto): Promise<{ access_token: string }> {
+  async register(adminRegisterDto: AdminRegisterDto): Promise<string> {
     const { email, password } = adminRegisterDto;
 
     this.logger.debug(`Trying to register admin with email: ${email}`);

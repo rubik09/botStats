@@ -17,9 +17,7 @@ export class AuthService {
     }
   }
 
-  async signKey(payload: {email: string}): Promise<{ access_token: any }> {
-    return {
-      access_token: this.jwtService.sign(payload),
-    };
+  async signKey(payload: {email: string}): Promise<string> {
+      return this.jwtService.sign(payload);
   }
 }
