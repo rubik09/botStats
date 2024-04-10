@@ -11,13 +11,13 @@ export class AdminsController {
   ) {}
 
   @Post('/login')
-  async login(@Body() adminLoginDto: AdminLoginDto) {
+  async login(@Body() adminLoginDto: AdminLoginDto): Promise<{ token: { access_token: string } }> {
     const token = await this.adminsService.login(adminLoginDto);
     return { token };
   }
 
   @Post('/register')
-  async register(@Body() adminRegisterDto: AdminRegisterDto) {
+  async register(@Body() adminRegisterDto: AdminRegisterDto): Promise<{ token: { access_token: string } }> {
     const token = await this.adminsService.register(adminRegisterDto);
     return { token };
   }
