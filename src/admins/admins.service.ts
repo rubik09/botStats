@@ -9,14 +9,19 @@ import { AdminValidateDto } from "./dto/adminValidate.dto";
 import { RegisterAdminDto } from "./dto/registerAdmin.dto";
 import { AdminLoginDto } from './dto/adminLogin.dto';
 import { TPayload, TToken } from '../utils/types';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AdminsService {
   private readonly logger = new Logger(AdminsService.name);
+  private hash: number;
   constructor(
     private adminsRepository: AdminsRepository,
-    private authService: AuthService
-  ) { }
+    private authService: AuthService,
+    private configService: ConfigService,
+  ) {
+    this.hash = this.configService.getOrThrow('HASH_LENGTH');
+   }
 
   async findAdminByEmail(email: Admin['email']): Promise<Admin> {
     this.logger.log(`Trying to get personal info by email: ${email}`);
@@ -44,7 +49,7 @@ export class AdminsService {
       throw new HttpException(`admin with email: ${email} already exist`, HttpStatus.BAD_REQUEST);
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password, this.hash);
     const createAdminDto: CreateAdminDto = {
       email,
       password: hashedPassword,

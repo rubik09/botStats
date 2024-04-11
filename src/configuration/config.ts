@@ -24,6 +24,7 @@ const {
   GROUP_ID,
   CRON_TIME_NIGHT,
   CRON_TIME_DAY,
+  HASH_LENGTH,
 } = process.env;
 
 export default (): any =>
@@ -67,4 +68,7 @@ export default (): any =>
       CRON_TIME_NIGHT: CRON_TIME_NIGHT,
       CRON_TIME_DAY: CRON_TIME_DAY,
     },
+    HASH: {
+      HASH_LENGTH: Number(HASH_LENGTH) || 10,
+    }
   }) as const;
