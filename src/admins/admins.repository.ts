@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import {Repository, InsertResult} from 'typeorm';
 
 import { Admin } from './entity/admins.entity';
-import {AdminRegisterDto} from "./dto/adminRegister.dto";
+import {CreateAdminDto} from "./dto/createAdmin.dto";
 
 @Injectable()
 export class AdminsRepository {
@@ -12,7 +12,7 @@ export class AdminsRepository {
     private readonly adminsRepository: Repository<Admin>,
   ) {}
 
-  async createAdmin(adminRegisterDto: AdminRegisterDto): Promise<InsertResult> {
+  async createAdmin(adminRegisterDto: CreateAdminDto): Promise<InsertResult> {
     return await this.adminsRepository
         .createQueryBuilder('admins')
         .insert()

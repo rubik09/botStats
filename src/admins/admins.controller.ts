@@ -2,8 +2,8 @@ import { Body, Controller, Post } from '@nestjs/common';
 
 import {AdminsService} from "./admins.service";
 import {AdminLoginDto} from "./dto/adminLogin.dto";
-import {AdminRegisterDto} from "./dto/adminRegister.dto";
 import {TToken} from "../utils/types";
+import {CreateAdminDto} from "./dto/createAdmin.dto";
 
 @Controller('admins')
 export class AdminsController {
@@ -18,8 +18,8 @@ export class AdminsController {
   }
 
   @Post('/register')
-  async register(@Body() adminRegisterDto: AdminRegisterDto): Promise<TToken> {
-    const token = await this.adminsService.register(adminRegisterDto);
+  async register(@Body() createAdminDto: CreateAdminDto): Promise<TToken> {
+    const token = await this.adminsService.register(createAdminDto);
     return { token };
   }
 }

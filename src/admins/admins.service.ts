@@ -4,8 +4,8 @@ import { AdminsRepository } from './admins.repository';
 import { Admin } from './entity/admins.entity';
 import * as bcrypt from "bcrypt";
 import {AuthService} from "../auth/auth.service";
-import {AdminRegisterDto} from "./dto/adminRegister.dto";
 import {AdminLoginDto} from "./dto/adminLogin.dto";
+import {CreateAdminDto} from "./dto/createAdmin.dto";
 
 @Injectable()
 export class AdminsService {
@@ -30,8 +30,8 @@ export class AdminsService {
     return admin;
   }
 
-  async createAdmin(adminRegisterDto: AdminRegisterDto) {
-    const { email } = adminRegisterDto;
+  async createAdmin(createAdminDto: CreateAdminDto) {
+    const { email } = createAdminDto;
 
     this.logger.log(`Trying to create admin with email: ${email}`);
 
@@ -42,7 +42,7 @@ export class AdminsService {
       throw new HttpException(`admin with email: ${email} already exist`, HttpStatus.BAD_REQUEST);
     }
 
-    const {raw} = await this.adminsRepository.createAdmin(adminRegisterDto);
+    const {raw} = await this.adminsRepository.createAdmin(createAdminDto);
 
     this.logger.debug(`admin successfully created with id: ${raw.id}`);
   }
@@ -70,18 +70,18 @@ export class AdminsService {
     return await this.authService.signKey(payload);
   }
 
-  async register(adminRegisterDto: AdminRegisterDto): Promise<string> {
-    const { email, password } = adminRegisterDto;
+  async register(createAdminDto: CreateAdminDto): Promise<string> {
+    const { email, password } = createAdminDto;
 
     this.logger.debug(`Trying to register admin with email: ${email}`);
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newAdmin = { ...adminRegisterDto, password: hashedPassword };
+    const newAdmin = { ...createAdminDto, password: hashedPassword };
 
     await this.createAdmin(newAdmin);
 
     this.logger.debug(`admin with email: ${email} registered`);
 
-    return this.login(adminRegisterDto);
+    return this.login(createAdminDto);
   }
 }
