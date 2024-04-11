@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import {JwtService} from "@nestjs/jwt";
+import {TPayload} from "../utils/types";
 
 @Injectable()
 export class AuthService {
@@ -17,7 +18,7 @@ export class AuthService {
     }
   }
 
-  async signKey(payload: {email: string}): Promise<string> {
-      return this.jwtService.sign(payload);
+  async signKey(payload: TPayload): Promise<string> {
+      return await this.jwtService.signAsync(payload);
   }
 }

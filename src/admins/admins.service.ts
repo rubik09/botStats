@@ -4,8 +4,9 @@ import { AdminsRepository } from './admins.repository';
 import { Admin } from './entity/admins.entity';
 import * as bcrypt from "bcrypt";
 import {AuthService} from "../auth/auth.service";
-import {AdminLoginDto} from "./dto/adminLogin.dto";
 import {CreateAdminDto} from "./dto/createAdmin.dto";
+import {AdminValidateDto} from "./dto/adminValidate.dto";
+import {RegisterAdminDto} from "./dto/registerAdmin.dto";
 
 @Injectable()
 export class AdminsService {
@@ -47,41 +48,38 @@ export class AdminsService {
     this.logger.debug(`admin successfully created with id: ${raw.id}`);
   }
 
-  async validateAdmin(adminLoginDto: AdminLoginDto) {
-    const { email, password } = adminLoginDto;
-
+  async validateAdmin({email, password}: AdminValidateDto) {
     const admin = await this.findAdminByEmail(email);
+
     if (!admin) {
       throw new BadRequestException('password or email incorrect');
     }
+
     await this.authService.validatePassword(password, admin.password)
   }
 
-  async login(adminLoginDto: AdminLoginDto): Promise<string> {
-    const { email } = adminLoginDto;
-
-    this.logger.log(`Trying to login admin with email: ${email}`);
-
-    await this.validateAdmin(adminLoginDto);
-    const payload = { email };
-
-    this.logger.debug(`admin with email: ${email} login`);
-
-    return await this.authService.signKey(payload);
-  }
-
-  async register(createAdminDto: CreateAdminDto): Promise<string> {
-    const { email, password } = createAdminDto;
+  async register(registerAdminDto: RegisterAdminDto): Promise<string> {
+    const { email, password } = registerAdminDto;
 
     this.logger.debug(`Trying to register admin with email: ${email}`);
 
+    const payload = { email };
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newAdmin = { ...createAdminDto, password: hashedPassword };
+    const createAdminDto: CreateAdminDto = {
+      email,
+      password: hashedPassword,
+    };
+    const adminValidateDto: AdminValidateDto = {
+      email,
+      password,
+    };
 
-    await this.createAdmin(newAdmin);
+    await this.createAdmin(createAdminDto);
 
     this.logger.debug(`admin with email: ${email} registered`);
 
-    return this.login(createAdminDto);
+    await this.validateAdmin(adminValidateDto);
+
+    return await this.authService.signKey(payload);
   }
 }

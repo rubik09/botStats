@@ -6,7 +6,7 @@ import { SECRET_JWT } from './jwtConst';
 import {Admin} from "../admins/entity/admins.entity";
 
 @Injectable()
-export class LocalStrategy extends PassportStrategy(Strategy) {
+export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor() {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),

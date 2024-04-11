@@ -12,12 +12,12 @@ export class AdminsRepository {
     private readonly adminsRepository: Repository<Admin>,
   ) {}
 
-  async createAdmin(adminRegisterDto: CreateAdminDto): Promise<InsertResult> {
+  async createAdmin(createAdminDto: CreateAdminDto): Promise<InsertResult> {
     return await this.adminsRepository
         .createQueryBuilder('admins')
         .insert()
         .into(Admin)
-        .values(adminRegisterDto)
+        .values(createAdminDto)
         .execute();
   }
 
