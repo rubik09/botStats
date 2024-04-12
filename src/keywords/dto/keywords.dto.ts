@@ -1,5 +1,6 @@
-import {IsInt, IsString, Min, MinLength, MaxLength} from 'class-validator';
-import {Keyword} from "../entity/keywords.entity";
+import { IsInt, IsString, MaxLength, Min, MinLength } from 'class-validator';
+
+import { Keyword } from '../entity/keywords.entity';
 
 export class KeywordsDto {
   @IsInt()

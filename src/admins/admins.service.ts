@@ -1,27 +1,26 @@
 import { BadRequestException, HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import * as bcrypt from 'bcrypt';
 
 import { AdminsRepository } from './admins.repository';
-import { Admin } from './entity/admins.entity';
-import * as bcrypt from "bcrypt";
-import { AuthService } from "../auth/auth.service";
-import { CreateAdminDto } from "./dto/createAdmin.dto";
-import { AdminValidateDto } from "./dto/adminValidate.dto";
-import { RegisterAdminDto } from "./dto/registerAdmin.dto";
 import { AdminLoginDto } from './dto/adminLogin.dto';
-import { TPayload, TToken } from '../utils/types';
-import { ConfigService } from '@nestjs/config';
+import { CreateAdminDto } from './dto/createAdmin.dto';
+import { RegisterAdminDto } from './dto/registerAdmin.dto';
+import { Admin } from './entity/admins.entity';
+import { AuthService } from '../auth/auth.service';
+import { TToken } from '../utils/types';
 
 @Injectable()
 export class AdminsService {
   private readonly logger = new Logger(AdminsService.name);
-  private hash: number;
+  private readonly hash: number;
   constructor(
     private adminsRepository: AdminsRepository,
     private authService: AuthService,
     private configService: ConfigService,
   ) {
-    this.hash = this.configService.getOrThrow('HASH_LENGTH');
-   }
+    this.hash = this.configService.getOrThrow('HASH.HASH_LENGTH');
+  }
 
   async findAdminByEmail(email: Admin['email']): Promise<Admin> {
     this.logger.log(`Trying to get personal info by email: ${email}`);
@@ -39,7 +38,6 @@ export class AdminsService {
   }
 
   async createAdmin({ email, password }: RegisterAdminDto) {
-
     this.logger.log(`Trying to create admin with email: ${email}`);
 
     const admin = await this.adminsRepository.findOneByEmail(email);
@@ -69,7 +67,6 @@ export class AdminsService {
   }
 
   async login({ email, password }: AdminLoginDto): Promise<TToken> {
-
     const admin = await this.adminsRepository.findOneByEmail(email);
 
     if (!admin) {

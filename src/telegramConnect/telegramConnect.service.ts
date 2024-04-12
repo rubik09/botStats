@@ -1,6 +1,8 @@
 import { HttpException, HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 
 import { CreateTelegramConnectionDto } from './dto/createTelegramConnect.dto';
+import { CreateKeywordsDto } from '../keywords/dto/createKeywords.dto';
+import { KeywordsService } from '../keywords/keywords.service';
 import { UpdateApiInfoDto } from '../userSession/dto/updateApiInfo.dto';
 import { UpdateUserSessionInfoDto } from '../userSession/dto/updateUserSession.dto';
 import { userSessionStatus } from '../userSession/entity/userSession.entity';
@@ -11,8 +13,6 @@ import emitterSubject from '../utils/emitter';
 import { IClientStartPromises, IClients, IFirstStep, IPromises, ISecondStep, IThirdStep } from '../utils/interfaces';
 import generatePromise from '../utils/TelegramPromiseGeneration';
 import { TSetupSteps } from '../utils/types';
-import {KeywordsService} from "../keywords/keywords.service";
-import {CreateKeywordsDto} from "../keywords/dto/createKeywords.dto";
 
 const clients: IClients = {};
 const promises: IPromises = {};
@@ -23,8 +23,8 @@ export class TelegramConnectService implements OnModuleInit {
   private connectionStepFunctions: TSetupSteps;
   private readonly logger = new Logger(TelegramConnectService.name);
   constructor(
-      private userSessionService: UserSessionService,
-      private keywordsService: KeywordsService,
+    private userSessionService: UserSessionService,
+    private keywordsService: KeywordsService,
   ) {}
 
   async firstConnectionStep({ apiId, apiHash, telegramId, username, phoneNumber }: IFirstStep) {
@@ -112,7 +112,9 @@ export class TelegramConnectService implements OnModuleInit {
   async thirdConnectionStep({ activity, keyword, telegramId, username }: IThirdStep) {
     this.logger.debug(`Run third connection step for ${username}`);
 
-    this.logger.debug(`Third connection step: keywords: ${activity}: ${keyword}, telegramId: ${telegramId}, ${username}`);
+    this.logger.debug(
+      `Third connection step: keywords: ${activity}: ${keyword}, telegramId: ${telegramId}, ${username}`,
+    );
 
     const userSession = await this.userSessionService.getUserSessionByTelegramId(telegramId);
 
@@ -167,7 +169,7 @@ export class TelegramConnectService implements OnModuleInit {
 
   async connectToTelegram(createTelegramConnectionDto: CreateTelegramConnectionDto) {
     const { setupStep, telegramId } = createTelegramConnectionDto;
-    console.log(await this.userSessionService.getPersonalInfoByTelegramId(telegramId))
+    console.log(await this.userSessionService.getPersonalInfoByTelegramId(telegramId));
     const { personalInfo } = await this.userSessionService.getPersonalInfoByTelegramId(telegramId);
     const { username, phoneNumber } = personalInfo;
 

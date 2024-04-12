@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, UpdateResult, InsertResult } from 'typeorm';
+import { InsertResult, Repository, UpdateResult } from 'typeorm';
 
 import { UpdateStatsDto } from './dto/updateStats.dto';
 import { Stat } from './entity/stats.entity';
@@ -13,12 +13,7 @@ export class StatsRepository {
   ) {}
 
   async createStats(apiIdClient: number): Promise<InsertResult> {
-    return await this.statsRepository
-      .createQueryBuilder('stats')
-      .insert()
-      .into(Stat)
-      .values({ apiIdClient })
-      .execute();
+    return await this.statsRepository.createQueryBuilder('stats').insert().into(Stat).values({ apiIdClient }).execute();
   }
 
   async updateStatsByApiId(updateStatsDto: UpdateStatsDto, apiIdClient: number): Promise<UpdateResult> {
@@ -26,7 +21,7 @@ export class StatsRepository {
       .createQueryBuilder('stats')
       .update(Stat)
       .set(updateStatsDto)
-      .where("stats.api_id_client = :apiIdClient", { apiIdClient })
+      .where('stats.api_id_client = :apiIdClient', { apiIdClient })
       .execute();
   }
 
@@ -34,8 +29,8 @@ export class StatsRepository {
     return await this.statsRepository
       .createQueryBuilder('stats')
       .update(Stat)
-      .set({ incomingMessagesCount: () => "incomingMessagesCount + 1" })
-      .where("stats.api_id_client = :apiIdClient", { apiIdClient })
+      .set({ incomingMessagesCount: () => 'incomingMessagesCount + 1' })
+      .where('stats.api_id_client = :apiIdClient', { apiIdClient })
       .execute();
   }
 
@@ -43,15 +38,15 @@ export class StatsRepository {
     return await this.statsRepository
       .createQueryBuilder('stats')
       .update(Stat)
-      .set({ outgoingMessagesCount: () => "outgoingMessagesCount + 1" })
-      .where("stats.api_id_client = :apiIdClient", { apiIdClient })
+      .set({ outgoingMessagesCount: () => 'outgoingMessagesCount + 1' })
+      .where('stats.api_id_client = :apiIdClient', { apiIdClient })
       .execute();
   }
 
   async getStatsByApiId(apiIdClient: number): Promise<Stat> {
     return await this.statsRepository
       .createQueryBuilder('stats')
-      .where("stats.api_id_client = :apiIdClient", { apiIdClient })
+      .where('stats.api_id_client = :apiIdClient', { apiIdClient })
       .getOne();
   }
 }
