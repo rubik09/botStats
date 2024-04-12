@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DeleteResult, InsertResult } from 'typeorm';
+import { DeleteResult, InsertResult, Repository } from 'typeorm';
 
 import { CreateUserDto } from './dto/createUser.dto';
+import { FindByApiIdAndTgIdDto } from './dto/findByApiIdAndTgId.dto';
 import { User } from './entity/users.entity';
-import {FindByApiIdAndTgIdDto} from "./dto/findByApiIdAndTgId.dto";
 
 @Injectable()
 export class UsersRepository {
@@ -16,7 +16,7 @@ export class UsersRepository {
   async findUserByApiIdAndTelegramId(findByApiIdAndTgIdDto: FindByApiIdAndTgIdDto): Promise<User> {
     return await this.usersRepository
       .createQueryBuilder('users')
-      .where("users.api_id_client = :apiIdClient AND users.telegram_id = :telegramId", {
+      .where('users.api_id_client = :apiIdClient AND users.telegram_id = :telegramId', {
         apiIdClient: findByApiIdAndTgIdDto.apiIdClient,
         telegramId: findByApiIdAndTgIdDto.telegramId,
       })
@@ -24,18 +24,13 @@ export class UsersRepository {
   }
 
   async createUser(createUserDto: CreateUserDto): Promise<InsertResult> {
-    return await this.usersRepository
-      .createQueryBuilder('users')
-      .insert()
-      .into(User)
-      .values(createUserDto)
-      .execute();
+    return await this.usersRepository.createQueryBuilder('users').insert().into(User).values(createUserDto).execute();
   }
 
   async getCountUsersByApiId(apiIdClient: number): Promise<number> {
     return await this.usersRepository
       .createQueryBuilder('users')
-      .where("users.api_id_client = :apiIdClient", { apiIdClient })
+      .where('users.api_id_client = :apiIdClient', { apiIdClient })
       .getCount();
   }
 
@@ -44,7 +39,7 @@ export class UsersRepository {
       .createQueryBuilder('users')
       .delete()
       .from(User)
-      .where("users.api_id_client = :apiIdClient", { apiIdClient })
+      .where('users.api_id_client = :apiIdClient', { apiIdClient })
       .execute();
   }
 }

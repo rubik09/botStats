@@ -6,12 +6,12 @@ import { UpdateStatsDto } from './dto/updateStats.dto';
 import { Stat } from './entity/stats.entity';
 import { StatsRepository } from './stats.repository';
 import statsSending from './statsSending';
+import { KeywordsService } from '../keywords/keywords.service';
 import { CreateUserDto } from '../users/dto/createUser.dto';
 import { UsersService } from '../users/users.service';
 import { UserSessionService } from '../userSession/userSession.service';
+import { combineKeywords } from '../utils/combineKeywords';
 import { cronTimezone, time } from '../utils/consts';
-import {KeywordsService} from "../keywords/keywords.service";
-import {combineKeywords} from "../utils/combineKeywords";
 
 @Injectable()
 export class StatsService implements OnModuleInit {
@@ -48,7 +48,7 @@ export class StatsService implements OnModuleInit {
       throw new HttpException(`stats with apiId: ${apiId}  already exist`, HttpStatus.BAD_REQUEST);
     }
 
-    const {raw} = await this.statsRepository.createStats(apiId);
+    const { raw } = await this.statsRepository.createStats(apiId);
 
     this.logger.debug(`stats successfully created with id: ${raw[0].id}`);
   }
@@ -112,7 +112,7 @@ export class StatsService implements OnModuleInit {
 
     const user = await this.usersService.getUserByApiIdAndTelegramId(createUserDto);
 
-    console.log(user)
+    console.log(user);
 
     if (!user) await this.usersService.createUser(createUserDto);
 
@@ -160,7 +160,7 @@ export class StatsService implements OnModuleInit {
       if (!statsArr) await this.createStats(apiId);
       const allUsers = await this.usersService.getCountUsersByApiId(apiId);
       const { incomingMessagesCount, outgoingMessagesCount } = await this.getStatsByApiId(apiId);
-      const keywords  = await this.keywordsService.getKeywordsByUserSessionId(id);
+      const keywords = await this.keywordsService.getKeywordsByUserSessionId(id);
       const { personalInfo } = await this.userSessionService.getPersonalInfoByApiId(apiId);
       const { username } = personalInfo;
       let averageMessagesCount = incomingMessagesCount / allUsers;

@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import {Repository, DeleteResult, UpdateResult, InsertResult} from 'typeorm';
+import { DeleteResult, InsertResult, Repository, UpdateResult } from 'typeorm';
 
+import { CreatePersonalInfoDto } from './dto/createPersonalInfo.dto';
 import { UpdatePersonalInfoDto } from './dto/updatePersonalInfo.dto';
 import { PersonalInfo } from './entity/personalInfo.entity';
-import {CreatePersonalInfoDto} from "./dto/createPersonalInfo.dto";
 
 @Injectable()
 export class PersonalInfoRepository {
@@ -18,32 +18,28 @@ export class PersonalInfoRepository {
       .createQueryBuilder('personalInfo')
       .update(PersonalInfo)
       .set(updatePersonalInfoDto)
-      .where("id = :id", { id })
+      .where('id = :id', { id })
       .execute();
   }
 
   async getByUserId(id: number): Promise<PersonalInfo> {
-    return await this.personalInfoRepository
-      .createQueryBuilder('personalInfo')
-      .where("id = :id", { id })
-      .getOne();
+    return await this.personalInfoRepository.createQueryBuilder('personalInfo').where('id = :id', { id }).getOne();
   }
 
   async createPersonalInfo(personalInfo: CreatePersonalInfoDto): Promise<InsertResult> {
     return await this.personalInfoRepository
-        .createQueryBuilder('personalInfo')
-        .insert()
-        .into(PersonalInfo)
-        .values(personalInfo)
-        .execute()
-
+      .createQueryBuilder('personalInfo')
+      .insert()
+      .into(PersonalInfo)
+      .values(personalInfo)
+      .execute();
   }
 
   async deletePersonalInfoById(id: number): Promise<DeleteResult> {
     return await this.personalInfoRepository
       .createQueryBuilder('personalInfo')
       .delete()
-      .where("id = :id", { id })
+      .where('id = :id', { id })
       .execute();
   }
 }

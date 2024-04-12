@@ -1,9 +1,9 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 
 import { CreateUserDto } from './dto/createUser.dto';
+import { FindByApiIdAndTgIdDto } from './dto/findByApiIdAndTgId.dto';
 import { User } from './entity/users.entity';
 import { UsersRepository } from './users.repository';
-import {FindByApiIdAndTgIdDto} from "./dto/findByApiIdAndTgId.dto";
 
 @Injectable()
 export class UsersService {
@@ -35,7 +35,7 @@ export class UsersService {
       );
     }
 
-    const {raw} = await this.usersRepository.createUser(createUserDto);
+    const { raw } = await this.usersRepository.createUser(createUserDto);
 
     this.logger.debug(`user successfully created with id: ${raw[0].id}`);
   }

@@ -25,6 +25,8 @@ const {
   CRON_TIME_NIGHT,
   CRON_TIME_DAY,
   HASH_LENGTH,
+  CLIENT_EMAIL,
+  PRIVATE_KEY,
 } = process.env;
 
 export default (): any =>
@@ -70,5 +72,9 @@ export default (): any =>
     },
     HASH: {
       HASH_LENGTH: Number(HASH_LENGTH) || 10,
-    }
+    },
+    TABLE: {
+      CLIENT_EMAIL: CLIENT_EMAIL,
+      PRIVATE_KEY: PRIVATE_KEY,
+    },
   }) as const;

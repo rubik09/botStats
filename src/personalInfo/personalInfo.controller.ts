@@ -1,4 +1,4 @@
-import {Body, Controller, Delete, HttpException, HttpStatus, Param, Patch, UseGuards} from '@nestjs/common';
+import { Body, Controller, Delete, HttpException, HttpStatus, Param, Patch, UseGuards } from '@nestjs/common';
 
 import { UpdatePersonalInfoDto } from './dto/updatePersonalInfo.dto';
 import { PersonalInfo } from './entity/personalInfo.entity';
@@ -7,9 +7,7 @@ import { JwtGuard } from '../auth/jwtAuth.guard';
 
 @Controller('personalInfo')
 export class PersonalInfoController {
-  constructor(
-    private readonly personalInfoService: PersonalInfoService,
-  ) {}
+  constructor(private readonly personalInfoService: PersonalInfoService) {}
 
   @Patch(':id')
   @UseGuards(JwtGuard)

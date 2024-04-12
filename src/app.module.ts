@@ -8,12 +8,12 @@ import config from './configuration/config';
 import { HealthModule } from './health/health.module';
 import { KafkaModule } from './kafka/kafka.module';
 import { VerificationConsumer } from './kafka/verification.consumer';
+import { KeywordsModule } from './keywords/keywords.module';
 import { PersonalInfoModule } from './personalInfo/personalInfo.module';
 import { StatsModule } from './stats/stats.module';
 import { TelegramConnectModule } from './telegramConnect/telegramConnect.module';
 import { UsersModule } from './users/users.module';
 import { UserSessionModule } from './userSession/userSession.module';
-import { KeywordsModule } from './keywords/keywords.module';
 
 @Module({
   imports: [

@@ -1,12 +1,14 @@
+import * as process from 'process';
+
+import * as dotenv from 'dotenv';
+
+import { Keyword } from '../keywords/entity/keywords.entity';
 import { PersonalInfo } from '../personalInfo/entity/personalInfo.entity';
 import { googleSheets } from '../utils/googleClient';
-import * as process from 'process';
-import * as dotenv from 'dotenv';
 
 dotenv.config();
 
 export const { SPREAD_SHEET_ID, SHEET_ID } = process.env;
-import {Keyword} from "../keywords/entity/keywords.entity";
 
 const StatsSending = async (
   username: PersonalInfo['username'],
