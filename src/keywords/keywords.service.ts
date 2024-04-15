@@ -80,19 +80,12 @@ export class KeywordsService {
     this.logger.debug(`count successfully reset by id: ${id}`);
   }
 
-  async increaseKeywordCountById(id: Keyword['id']) {
-    this.logger.log(`Trying to increase count by id: ${id}`);
+  async increaseKeywordsCountByIdArr(keywordIdArr: Keyword['id'][]) {
+    this.logger.log(`Trying to increase count by ids: ${keywordIdArr}`);
 
-    const [keyword] = await this.keywordsRepository.getKeywordsByUserSessionId(id);
+    await this.keywordsRepository.increaseKeywordCountByIdArr(keywordIdArr);
 
-    if (!keyword) {
-      this.logger.error(`keyword with id: ${id} not exist`);
-      throw new HttpException(`keyword with id: ${id} not exist`, HttpStatus.BAD_REQUEST);
-    }
-
-    await this.keywordsRepository.increaseKeywordCountById(id);
-
-    this.logger.debug(`count successfully increased by id: ${id}`);
+    this.logger.debug(`count successfully increased by ids: ${keywordIdArr}`);
   }
 
   async getKeywordsByUserSessionId(id: UserSession['id']): Promise<Keyword[]> {
@@ -112,20 +105,20 @@ export class KeywordsService {
     return keywords;
   }
 
-  async getKeywordsByMessage(message: string, id: UserSession['id']): Promise<Keyword> {
-    this.logger.log(`Trying to get keywords by userSessionId: ${id} and message: ${message} `);
+  async getKeywordsIdArrByKeywordMessage(message: string, apiId: UserSession['apiId']): Promise<number[]> {
+    this.logger.log(`Trying to get keywords by apiId: ${apiId} and message: ${message} `);
 
-    const userSession = await this.userSessionRepository.getUserSessionById(id);
+    const userSession = await this.userSessionRepository.getUserSessionByApiId(apiId);
 
     if (!userSession) {
-      this.logger.error(`keywords with id: ${id} not found`);
-      throw new HttpException(`keywords with id: ${id} not found`, HttpStatus.NOT_FOUND);
+      this.logger.error(`keywords with apiId: ${apiId} not found`);
+      throw new HttpException(`keywords with apiId: ${apiId} not found`, HttpStatus.NOT_FOUND);
     }
 
-    const keywords = await this.keywordsRepository.getKeywordsByMessage(message, id);
+    const keywordsId = await this.keywordsRepository.getKeywordsIdArrByKeywordMessage(message, apiId);
 
-    this.logger.debug(`keywords successfully get by id: ${id}`);
+    this.logger.debug(`keywords successfully get by apiId: ${apiId}`);
 
-    return keywords;
+    return keywordsId.map((result) => result.id);
   }
 }

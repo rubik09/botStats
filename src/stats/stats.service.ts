@@ -112,8 +112,6 @@ export class StatsService implements OnModuleInit {
 
     const user = await this.usersService.getUserByApiIdAndTelegramId(createUserDto);
 
-    console.log(user);
-
     if (!user) await this.usersService.createUser(createUserDto);
 
     const stats = await this.getStatsByApiId(apiId);
@@ -132,7 +130,7 @@ export class StatsService implements OnModuleInit {
     const clientInfoObj = JSON.parse(clientInfoStr);
     const { apiId, message } = clientInfoObj;
 
-    const { personalInfo, id } = await this.userSessionService.getPersonalInfoByApiId(apiId);
+    const { personalInfo } = await this.userSessionService.getPersonalInfoByApiId(apiId);
     const { username } = personalInfo;
     const statsArr = await this.getStatsByApiId(apiId);
 
@@ -144,9 +142,9 @@ export class StatsService implements OnModuleInit {
 
     const msgLowerCase = message.toLowerCase().trim();
 
-    const keywords = await this.keywordsService.getKeywordsByMessage(msgLowerCase, id);
+    const keywordIdArr = await this.keywordsService.getKeywordsIdArrByKeywordMessage(msgLowerCase, apiId);
 
-    if (keywords) await this.keywordsService.increaseKeywordCountById(keywords.id);
+    if (keywordIdArr.length) await this.keywordsService.increaseKeywordsCountByIdArr(keywordIdArr);
 
     this.logger.debug(`outgoing message successfully add to stats`);
   }

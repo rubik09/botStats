@@ -56,21 +56,22 @@ export class KeywordsRepository {
       .execute();
   }
 
-  async increaseKeywordCountById(id: number): Promise<UpdateResult> {
+  async increaseKeywordCountByIdArr(keywordIdArr: number[]): Promise<UpdateResult> {
     return await this.keywordsRepository
       .createQueryBuilder('keywords')
       .update(Keyword)
       .set({ count: () => 'count + 1' })
-      .where('keywords.id = :id', { id })
+      .whereInIds(keywordIdArr)
       .execute();
   }
 
-  async getKeywordsByMessage(message: string, id: number): Promise<Keyword> {
+  async getKeywordsIdArrByKeywordMessage(message: string, apiId: number): Promise<Keyword[]> {
     return await this.keywordsRepository
       .createQueryBuilder('keywords')
-      .leftJoinAndSelect('keywords.userSession', 'userSession')
-      .where('keywords.keyword = :message', { message })
-      .andWhere('userSession.id = :id', { id })
-      .getOne();
+      .leftJoin('keywords.userSession', 'userSession')
+      .where('keywords.keyword = :message', { message: JSON.stringify(message) })
+      .select(['keywords.id'])
+      .andWhere('userSession.api_id = :apiId', { apiId })
+      .getMany();
   }
 }
