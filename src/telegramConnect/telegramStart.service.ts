@@ -10,15 +10,18 @@ import telegramAccountsInit from '../utils/telegramInit';
 
 @Injectable()
 export class TelegramStartService implements OnModuleInit {
+  private readonly incomingMessage: string;
+  private readonly outgoingMessage: string;
   constructor(
     private userSessionService: UserSessionService,
     private producerService: ProducerService,
     private configService: ConfigService,
-  ) {}
+  ) {
+    this.incomingMessage = this.configService.getOrThrow('KAFKA_TOPICS.INCOMING_MESSAGE');
+    this.outgoingMessage = this.configService.getOrThrow('KAFKA_TOPICS.OUTGOING_MESSAGE');
+  }
 
   async onModuleInit() {
-    const { INCOMING_MESSAGE, OUTGOING_MESSAGE } = this.configService.get('KAFKA_TOPICS');
-
     emitterSubject.subscribe(async (eventObj: { eventName: string; data: TelegramClient }) => {
       if (eventObj.eventName !== 'newClient') return;
       const client = eventObj.data;
@@ -35,7 +38,7 @@ export class TelegramStartService implements OnModuleInit {
           const clientInfoStr = JSON.stringify(clientInfoObj);
 
           await this.producerService.produce({
-            topic: INCOMING_MESSAGE,
+            topic: this.incomingMessage,
             messages: [{ value: clientInfoStr }],
           });
         },
@@ -58,7 +61,7 @@ export class TelegramStartService implements OnModuleInit {
           const clientInfoStr = JSON.stringify(clientInfoObj);
 
           await this.producerService.produce({
-            topic: OUTGOING_MESSAGE,
+            topic: this.outgoingMessage,
             messages: [{ value: clientInfoStr }],
           });
         },

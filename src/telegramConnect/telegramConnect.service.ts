@@ -124,7 +124,7 @@ export class TelegramConnectService implements OnModuleInit {
       userSession,
     };
 
-    await this.keywordsService.createNewKeyword(telegramId, createKeywordsDto);
+    await this.keywordsService.createNewKeyword(userSession.id, createKeywordsDto);
     const client = clients[telegramId];
 
     this.logger.debug(`Third connection step: run emmiter for ${username}`);

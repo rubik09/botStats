@@ -56,7 +56,7 @@ export class KeywordsRepository {
       .execute();
   }
 
-  async increaseKeywordCountByIdArr(keywordIdArr: number[]): Promise<UpdateResult> {
+  async increaseKeywordCountByIdsArr(keywordIdArr: number[]): Promise<UpdateResult> {
     return await this.keywordsRepository
       .createQueryBuilder('keywords')
       .update(Keyword)

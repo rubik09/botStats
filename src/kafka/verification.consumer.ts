@@ -7,28 +7,32 @@ import { StatsService } from '../stats/stats.service';
 @Injectable()
 export class VerificationConsumer implements OnModuleInit {
   private readonly logger = new Logger(VerificationConsumer.name);
+  private readonly incomingMessage: string;
+  private readonly outgoingMessage: string;
 
   constructor(
     private readonly consumerService: ConsumerService,
     private readonly configService: ConfigService,
     private readonly statsService: StatsService,
-  ) {}
+  ) {
+    this.incomingMessage = this.configService.getOrThrow('KAFKA_TOPICS.INCOMING_MESSAGE');
+    this.outgoingMessage = this.configService.getOrThrow('KAFKA_TOPICS.OUTGOING_MESSAGE');
+  }
 
   async onModuleInit() {
-    const { INCOMING_MESSAGE, OUTGOING_MESSAGE } = this.configService.get('KAFKA_TOPICS');
     await this.consumerService.consume(
       {
-        topics: [INCOMING_MESSAGE, OUTGOING_MESSAGE],
+        topics: [this.incomingMessage, this.outgoingMessage],
       },
       {
         eachMessage: async ({ message, topic }) => {
           try {
             const clientInfoStr = message.value.toString();
             this.logger.debug(`${topic} : ${clientInfoStr}`);
-            if (topic === OUTGOING_MESSAGE) {
+            if (topic === this.outgoingMessage) {
               await this.statsService.outgoingMessages(clientInfoStr);
             }
-            if (topic === INCOMING_MESSAGE) {
+            if (topic === this.incomingMessage) {
               await this.statsService.incomingMessages(clientInfoStr);
             }
           } catch (e) {

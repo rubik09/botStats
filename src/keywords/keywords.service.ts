@@ -15,14 +15,14 @@ export class KeywordsService {
     private keywordsRepository: KeywordsRepository,
   ) {}
 
-  async createNewKeyword(telegramId: UserSession['telegramId'], createKeywordsDto: CreateKeywordsDto) {
-    this.logger.log(`Trying to create keyword by id: ${telegramId}`);
+  async createNewKeyword(id: UserSession['id'], createKeywordsDto: CreateKeywordsDto) {
+    this.logger.log(`Trying to create keyword by id: ${id}`);
 
-    const userSession = await this.userSessionRepository.getUserSessionByTelegramId(telegramId);
+    const userSession = await this.userSessionRepository.getUserSessionById(id);
 
     if (!userSession) {
-      this.logger.error(`session with telegramId: ${telegramId} not exist`);
-      throw new HttpException(`session with telegramId: ${telegramId} not exist`, HttpStatus.BAD_REQUEST);
+      this.logger.error(`session with id: ${id} not exist`);
+      throw new HttpException(`session with id: ${id} not exist`, HttpStatus.BAD_REQUEST);
     }
 
     const keywordDto: CreateKeywordsDto = {
@@ -80,10 +80,10 @@ export class KeywordsService {
     this.logger.debug(`count successfully reset by id: ${id}`);
   }
 
-  async increaseKeywordsCountByIdArr(keywordIdArr: Keyword['id'][]) {
+  async increaseKeywordsCountByIdsArr(keywordIdArr: Keyword['id'][]) {
     this.logger.log(`Trying to increase count by ids: ${keywordIdArr}`);
 
-    await this.keywordsRepository.increaseKeywordCountByIdArr(keywordIdArr);
+    await this.keywordsRepository.increaseKeywordCountByIdsArr(keywordIdArr);
 
     this.logger.debug(`count successfully increased by ids: ${keywordIdArr}`);
   }

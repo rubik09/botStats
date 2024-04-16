@@ -16,6 +16,6 @@ export class AdminsController {
 
   @Post()
   async register(@Body() registerAdminDto: RegisterAdminDto) {
-    return await this.adminsService.createAdmin(registerAdminDto);
+    await this.adminsService.createAdmin(registerAdminDto);
   }
 }

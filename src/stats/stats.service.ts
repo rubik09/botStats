@@ -16,13 +16,19 @@ import { cronTimezone, time } from '../utils/consts';
 @Injectable()
 export class StatsService implements OnModuleInit {
   private readonly logger = new Logger(StatsService.name);
+  private readonly cronTimeDay: string;
+  private readonly cronTimeNight: string;
+
   constructor(
     private readonly statsRepository: StatsRepository,
     private readonly usersService: UsersService,
     private readonly userSessionService: UserSessionService,
     private readonly configService: ConfigService,
     private readonly keywordsService: KeywordsService,
-  ) {}
+  ) {
+    this.cronTimeDay = this.configService.getOrThrow('CRON.CRON_TIME_DAY');
+    this.cronTimeNight = this.configService.getOrThrow('CRON.CRON_TIME_NIGHT');
+  }
 
   async getStatsByApiId(apiId: Stat['apiIdClient']): Promise<Stat> {
     this.logger.log(`Trying to get stats by apiId: ${apiId}`);
@@ -144,7 +150,7 @@ export class StatsService implements OnModuleInit {
 
     const keywordIdArr = await this.keywordsService.getKeywordsIdArrByKeywordMessage(msgLowerCase, apiId);
 
-    if (keywordIdArr.length) await this.keywordsService.increaseKeywordsCountByIdArr(keywordIdArr);
+    if (keywordIdArr.length) await this.keywordsService.increaseKeywordsCountByIdsArr(keywordIdArr);
 
     this.logger.debug(`outgoing message successfully add to stats`);
   }
@@ -195,10 +201,8 @@ export class StatsService implements OnModuleInit {
   }
 
   onModuleInit(): any {
-    const { CRON_TIME_DAY, CRON_TIME_NIGHT } = this.configService.get('CRON');
-
     cron.schedule(
-      CRON_TIME_DAY,
+      this.cronTimeDay,
       async () => {
         await this.PreSendCalculation(time.DAY);
       },
@@ -206,7 +210,7 @@ export class StatsService implements OnModuleInit {
     );
 
     cron.schedule(
-      CRON_TIME_NIGHT,
+      this.cronTimeNight,
       async () => {
         await this.PreSendCalculation(time.NIGHT);
       },
