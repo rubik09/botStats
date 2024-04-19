@@ -1,6 +1,5 @@
-import { HttpException, HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import * as cron from 'node-cron';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { Cron } from '@nestjs/schedule';
 
 import { UpdateStatsDto } from './dto/updateStats.dto';
 import { Stat } from './entity/stats.entity';
@@ -11,24 +10,18 @@ import { CreateUserDto } from '../users/dto/createUser.dto';
 import { UsersService } from '../users/users.service';
 import { UserSessionService } from '../userSession/userSession.service';
 import { combineKeywords } from '../utils/combineKeywords';
-import { cronTimezone, time } from '../utils/consts';
+import { cronTimeDay, cronTimeNight, cronTimezone, time } from '../utils/consts';
 
 @Injectable()
-export class StatsService implements OnModuleInit {
+export class StatsService {
   private readonly logger = new Logger(StatsService.name);
-  private readonly cronTimeDay: string;
-  private readonly cronTimeNight: string;
 
   constructor(
     private readonly statsRepository: StatsRepository,
     private readonly usersService: UsersService,
     private readonly userSessionService: UserSessionService,
-    private readonly configService: ConfigService,
     private readonly keywordsService: KeywordsService,
-  ) {
-    this.cronTimeDay = this.configService.getOrThrow('CRON.CRON_TIME_DAY');
-    this.cronTimeNight = this.configService.getOrThrow('CRON.CRON_TIME_NIGHT');
-  }
+  ) {}
 
   async getStatsByApiId(apiId: Stat['apiIdClient']): Promise<Stat> {
     this.logger.log(`Trying to get stats by apiId: ${apiId}`);
@@ -136,7 +129,7 @@ export class StatsService implements OnModuleInit {
     const clientInfoObj = JSON.parse(clientInfoStr);
     const { apiId, message } = clientInfoObj;
 
-    const { personalInfo } = await this.userSessionService.getPersonalInfoByApiId(apiId);
+    const { personalInfo, id } = await this.userSessionService.getPersonalInfoByApiId(apiId);
     const { username } = personalInfo;
     const statsArr = await this.getStatsByApiId(apiId);
 
@@ -146,11 +139,20 @@ export class StatsService implements OnModuleInit {
 
     this.logger.debug({ username, apiId, date: new Date() });
 
+    const keywords = await this.keywordsService.getKeywordsByUserSessionId(id);
+
+    if (!keywords.length) return;
+
     const msgLowerCase = message.toLowerCase().trim();
 
-    const keywordIdArr = await this.keywordsService.getKeywordsIdArrByKeywordMessage(msgLowerCase, apiId);
+    for (const { keyword, id } of keywords) {
+      const keywordLowerCase = keyword.toLowerCase().trim();
+      const keywordIncludes = msgLowerCase.includes(keywordLowerCase);
 
-    if (keywordIdArr.length) await this.keywordsService.increaseKeywordsCountByIdsArr(keywordIdArr);
+      if (keywordIncludes) await this.keywordsService.increaseKeywordsCountById(id);
+
+      continue;
+    }
 
     this.logger.debug(`outgoing message successfully add to stats`);
   }
@@ -200,21 +202,13 @@ export class StatsService implements OnModuleInit {
     }
   }
 
-  onModuleInit(): any {
-    cron.schedule(
-      this.cronTimeDay,
-      async () => {
-        await this.PreSendCalculation(time.DAY);
-      },
-      { scheduled: true, timezone: cronTimezone },
-    );
+  @Cron(cronTimeDay, { timeZone: cronTimezone })
+  async handleCronDay() {
+    await this.PreSendCalculation(time.DAY);
+  }
 
-    cron.schedule(
-      this.cronTimeNight,
-      async () => {
-        await this.PreSendCalculation(time.NIGHT);
-      },
-      { scheduled: true, timezone: cronTimezone },
-    );
+  @Cron(cronTimeNight, { timeZone: cronTimezone })
+  async handleCronNight() {
+    await this.PreSendCalculation(time.NIGHT);
   }
 }

@@ -39,14 +39,6 @@ export class KeywordsRepository {
     return await this.keywordsRepository.createQueryBuilder('keywords').where('id = :id', { id }).getOne();
   }
 
-  async getKeywordsByUserSessionId(id: number): Promise<[Keyword[], number]> {
-    return await this.keywordsRepository
-      .createQueryBuilder('keywords')
-      .leftJoinAndSelect('keywords.userSession', 'userSession')
-      .where('userSession.id = :id', { id })
-      .getManyAndCount();
-  }
-
   async resetCountByUserSessionId(id: number): Promise<UpdateResult> {
     return await this.keywordsRepository
       .createQueryBuilder('keywords')
@@ -56,22 +48,19 @@ export class KeywordsRepository {
       .execute();
   }
 
-  async increaseKeywordCountByIdsArr(keywordIdArr: number[]): Promise<UpdateResult> {
+  async increaseKeywordCountById(id: number): Promise<UpdateResult> {
     return await this.keywordsRepository
       .createQueryBuilder('keywords')
       .update(Keyword)
       .set({ count: () => 'count + 1' })
-      .whereInIds(keywordIdArr)
+      .where('id = :id', { id })
       .execute();
   }
 
-  async getKeywordsIdArrByKeywordMessage(message: string, apiId: number): Promise<Keyword[]> {
+  async getKeywordsByUserSessionId(id: number): Promise<[Keyword[], number]> {
     return await this.keywordsRepository
       .createQueryBuilder('keywords')
-      .leftJoin('keywords.userSession', 'userSession')
-      .where('keywords.keyword = :message', { message: JSON.stringify(message) })
-      .select(['keywords.id'])
-      .andWhere('userSession.api_id = :apiId', { apiId })
-      .getMany();
+      .where('keywords.user_session_id = :id', { id })
+      .getManyAndCount();
   }
 }

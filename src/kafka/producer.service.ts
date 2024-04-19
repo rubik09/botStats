@@ -4,10 +4,13 @@ import { Kafka, Producer, ProducerRecord } from 'kafkajs';
 
 @Injectable()
 export class ProducerService implements OnModuleInit, OnApplicationShutdown {
-  private readonly kafka = new Kafka(this.configService.getOrThrow('KAFKA'));
-  private readonly producer: Producer = this.kafka.producer();
+  private readonly kafka: Kafka;
+  private readonly producer: Producer;
 
-  constructor(private readonly configService: ConfigService) {}
+  constructor(private readonly configService: ConfigService) {
+    this.kafka = new Kafka(this.configService.getOrThrow('KAFKA'));
+    this.producer = this.kafka.producer();
+  }
 
   async onModuleInit() {
     await this.producer.connect();

@@ -1,5 +1,6 @@
 import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ScheduleModule } from '@nestjs/schedule';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AdminsModule } from './admins/admins.module';
@@ -21,6 +22,7 @@ import { UserSessionModule } from './userSession/userSession.module';
       isGlobal: true,
       load: [config],
     }),
+    ScheduleModule.forRoot(),
     HealthModule,
     AdminsModule,
     UserSessionModule,
@@ -29,7 +31,7 @@ import { UserSessionModule } from './userSession/userSession.module';
     PersonalInfoModule,
     TelegramConnectModule,
     TypeOrmModule.forRootAsync({
-      useFactory: async (configService: ConfigService) => configService.get('POSTGRES_DB_SETTINGS'),
+      useFactory: async (configService: ConfigService) => configService.getOrThrow('POSTGRES_DB_SETTINGS'),
       inject: [ConfigService],
     }),
     PersonalInfoModule,
