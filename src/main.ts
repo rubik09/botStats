@@ -29,7 +29,7 @@ async function bootstrap() {
 
   app.use(helmet());
 
-  const port = HTTP_PORT || 8000;
+  const port = HTTP_PORT;
   await app.listen(port, () => {
     console.log(`🚀 Server listening ${port} `);
   });

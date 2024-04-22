@@ -32,7 +32,7 @@ export default (): any =>
     API_PREFIX: '/api',
     API_VERSION: '/v1',
     SERVICE_NAME: pack.name,
-    HTTP_PORT: Number(HTTP_PORT),
+    HTTP_PORT: Number(HTTP_PORT) || 8000,
     LOG_LEVEL: LOG_LEVEL,
     SECRET_JWT: SECRET_JWT,
     BOT_TOKEN: BOT_TOKEN,
