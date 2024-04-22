@@ -150,8 +150,6 @@ export class StatsService {
       const keywordIncludes = msgLowerCase.includes(keywordLowerCase);
 
       if (keywordIncludes) await this.keywordsService.increaseKeywordsCountById(id);
-
-      continue;
     }
 
     this.logger.debug(`outgoing message successfully add to stats`);

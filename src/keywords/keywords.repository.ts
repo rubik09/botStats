@@ -57,10 +57,10 @@ export class KeywordsRepository {
       .execute();
   }
 
-  async getKeywordsByUserSessionId(id: number): Promise<[Keyword[], number]> {
+  async getKeywordsByUserSessionId(userSessionId: number): Promise<[Keyword[], number]> {
     return await this.keywordsRepository
       .createQueryBuilder('keywords')
-      .where('keywords.user_session_id = :id', { id })
+      .where('keywords.user_session_id = :userSessionId', { userSessionId })
       .getManyAndCount();
   }
 }
