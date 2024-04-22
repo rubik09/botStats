@@ -15,14 +15,14 @@ export class KeywordsService {
     private keywordsRepository: KeywordsRepository,
   ) {}
 
-  async createNewKeyword(telegramId: UserSession['telegramId'], createKeywordsDto: CreateKeywordsDto) {
-    this.logger.log(`Trying to create keyword by id: ${telegramId}`);
+  async createNewKeyword(id: UserSession['id'], createKeywordsDto: CreateKeywordsDto) {
+    this.logger.log(`Trying to create keyword by id: ${id}`);
 
-    const userSession = await this.userSessionRepository.getUserSessionByTelegramId(telegramId);
+    const userSession = await this.userSessionRepository.getUserSessionById(id);
 
     if (!userSession) {
-      this.logger.error(`session with telegramId: ${telegramId} not exist`);
-      throw new HttpException(`session with telegramId: ${telegramId} not exist`, HttpStatus.BAD_REQUEST);
+      this.logger.error(`session with id: ${id} not exist`);
+      throw new HttpException(`session with id: ${id} not exist`, HttpStatus.BAD_REQUEST);
     }
 
     const keywordDto: CreateKeywordsDto = {
@@ -80,45 +80,21 @@ export class KeywordsService {
     this.logger.debug(`count successfully reset by id: ${id}`);
   }
 
-  async increaseKeywordsCountByIdArr(keywordIdArr: Keyword['id'][]) {
-    this.logger.log(`Trying to increase count by ids: ${keywordIdArr}`);
+  async increaseKeywordsCountById(id: Keyword['id']) {
+    this.logger.log(`Trying to increase count by id: ${id}`);
 
-    await this.keywordsRepository.increaseKeywordCountByIdArr(keywordIdArr);
+    await this.keywordsRepository.increaseKeywordCountById(id);
 
-    this.logger.debug(`count successfully increased by ids: ${keywordIdArr}`);
+    this.logger.debug(`count successfully increased by id: ${id}`);
   }
 
   async getKeywordsByUserSessionId(id: UserSession['id']): Promise<Keyword[]> {
-    this.logger.log(`Trying to get keywords by id: ${id}`);
-
-    const userSession = await this.userSessionRepository.getUserSessionById(id);
-
-    if (!userSession) {
-      this.logger.error(`keywords with id: ${id} not found`);
-      throw new HttpException(`keywords with id: ${id} not found`, HttpStatus.NOT_FOUND);
-    }
+    this.logger.log(`Trying to get keywords by UserSessionId: ${id}`);
 
     const [keywords] = await this.keywordsRepository.getKeywordsByUserSessionId(id);
 
-    this.logger.debug(`keywords successfully get by id: ${id}`);
+    this.logger.debug(`keywords successfully get by UserSessionId: ${id}`);
 
     return keywords;
-  }
-
-  async getKeywordsIdArrByKeywordMessage(message: string, apiId: UserSession['apiId']): Promise<number[]> {
-    this.logger.log(`Trying to get keywords by apiId: ${apiId} and message: ${message} `);
-
-    const userSession = await this.userSessionRepository.getUserSessionByApiId(apiId);
-
-    if (!userSession) {
-      this.logger.error(`keywords with apiId: ${apiId} not found`);
-      throw new HttpException(`keywords with apiId: ${apiId} not found`, HttpStatus.NOT_FOUND);
-    }
-
-    const keywordsId = await this.keywordsRepository.getKeywordsIdArrByKeywordMessage(message, apiId);
-
-    this.logger.debug(`keywords successfully get by apiId: ${apiId}`);
-
-    return keywordsId.map((result) => result.id);
   }
 }

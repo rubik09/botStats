@@ -4,15 +4,18 @@ import { Consumer, ConsumerRunConfig, ConsumerSubscribeTopics, Kafka } from 'kaf
 
 @Injectable()
 export class ConsumerService implements OnApplicationShutdown {
-  private readonly kafka = new Kafka(this.configService.get('KAFKA'));
+  private readonly kafka: Kafka;
   private readonly consumers: Consumer[] = [];
+  private readonly groupId: number;
 
-  constructor(private readonly configService: ConfigService) {}
+  constructor(private readonly configService: ConfigService) {
+    this.groupId = this.configService.getOrThrow('GROUP_ID');
+    this.kafka = new Kafka(this.configService.getOrThrow('KAFKA'));
+  }
 
   async consume(topic: ConsumerSubscribeTopics, config: ConsumerRunConfig) {
-    const groupId = this.configService.get('GROUP_ID');
     const consumer = this.kafka.consumer({
-      groupId: 'nestjs-kafka-' + groupId,
+      groupId: `nestjs-kafka-${this.groupId}`,
     });
     await consumer.connect();
     await consumer.subscribe(topic);

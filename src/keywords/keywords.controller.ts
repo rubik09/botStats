@@ -24,24 +24,21 @@ export class KeywordsController {
 
   @Post(':id')
   @UseGuards(JwtGuard)
-  async addKeywordsByTelegramId(
-    @Param('id') id: UserSession['telegramId'],
-    @Body() createKeywordsDto: CreateKeywordsDto,
-  ) {
+  async addKeywordsByUserSessionId(@Param('id') id: UserSession['id'], @Body() createKeywordsDto: CreateKeywordsDto) {
     await this.keywordsService.createNewKeyword(id, createKeywordsDto);
     throw new HttpException('Ключевое слово успешно создано', HttpStatus.CREATED);
   }
 
   @Patch(':id')
   @UseGuards(JwtGuard)
-  async editKeywordsByTelegramId(@Param('id') id: Keyword['id'], @Body() updateKeywordsDto: UpdateKeywordsDto) {
+  async editKeywordsByKeywordId(@Param('id') id: Keyword['id'], @Body() updateKeywordsDto: UpdateKeywordsDto) {
     await this.keywordsService.updateKeyword(id, updateKeywordsDto);
     throw new HttpException('Ключевое слово успешно изменено', HttpStatus.OK);
   }
 
   @Delete(':id')
   @UseGuards(JwtGuard)
-  async deleteKeywordsByTelegramId(@Param('id') id: Keyword['id']) {
+  async deleteKeywordsByKeywordId(@Param('id') id: Keyword['id']) {
     await this.keywordsService.deleteKeyword(id);
     throw new HttpException('Ключевое слово успешно удалено', HttpStatus.OK);
   }

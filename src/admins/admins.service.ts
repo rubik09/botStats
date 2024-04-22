@@ -55,14 +55,14 @@ export class AdminsService {
 
     const { raw } = await this.adminsRepository.createAdmin(createAdminDto);
 
-    this.logger.debug(`admin successfully created with id: ${raw.id}`);
+    this.logger.debug(`admin successfully created with id: ${raw[0].id}`);
   }
 
   async validatePassword(password: string, adminPassword: string) {
     const isMatch = bcrypt.compareSync(password, adminPassword);
 
     if (!isMatch) {
-      throw new BadRequestException('password or email incorrect');
+      throw new BadRequestException('password incorrect');
     }
   }
 
@@ -70,7 +70,7 @@ export class AdminsService {
     const admin = await this.adminsRepository.findOneByEmail(email);
 
     if (!admin) {
-      throw new BadRequestException('password or email incorrect');
+      throw new BadRequestException('email incorrect');
     }
     await this.validatePassword(password, admin.password);
 

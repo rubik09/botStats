@@ -22,8 +22,6 @@ const {
   INCOMING_MESSAGE,
   OUTGOING_MESSAGE,
   GROUP_ID,
-  CRON_TIME_NIGHT,
-  CRON_TIME_DAY,
   HASH_LENGTH,
   CLIENT_EMAIL,
   PRIVATE_KEY,
@@ -65,10 +63,6 @@ export default (): any =>
     },
     GROUP_ID: {
       GROUP_ID: GROUP_ID,
-    },
-    CRON: {
-      CRON_TIME_NIGHT: CRON_TIME_NIGHT,
-      CRON_TIME_DAY: CRON_TIME_DAY,
     },
     HASH: {
       HASH_LENGTH: Number(HASH_LENGTH) || 10,
