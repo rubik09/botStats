@@ -8,7 +8,7 @@ import { googleSheets } from '../utils/googleClient';
 
 dotenv.config();
 
-export const { SPREAD_SHEET_ID, SHEET_ID } = process.env;
+const { SPREAD_SHEET_ID, SHEET_ID } = process.env;
 
 const StatsSending = async (
   username: PersonalInfo['username'],

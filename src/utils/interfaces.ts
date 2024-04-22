@@ -20,7 +20,7 @@ export interface IPromiseValue {
   phoneCode: string;
 }
 
-export interface IGeneralStep {
+interface IGeneralStep {
   telegramId: number;
   username: string;
 }
