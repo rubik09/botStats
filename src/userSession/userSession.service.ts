@@ -86,6 +86,11 @@ export class UserSessionService {
 
     const userSession = await this.userSessionRepository.getUserSessionById(id);
 
+    if (!userSession) {
+      this.logger.error(`session with id: ${id} not exist`);
+      throw new HttpException(`session with id: ${id} not exist`, HttpStatus.BAD_REQUEST);
+    }
+
     this.logger.debug(`User Sessions successfully get by id: ${id}`);
 
     return userSession;

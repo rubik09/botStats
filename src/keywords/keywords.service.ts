@@ -20,11 +20,6 @@ export class KeywordsService {
 
     const userSession = await this.userSessionService.getUserSessionById(id);
 
-    if (!userSession) {
-      this.logger.error(`session with id: ${id} not exist`);
-      throw new HttpException(`session with id: ${id} not exist`, HttpStatus.BAD_REQUEST);
-    }
-
     const keywordDto: CreateKeywordsDto = {
       ...createKeywordsDto,
       userSession,
@@ -68,12 +63,7 @@ export class KeywordsService {
   async resetCountByUserSessionId(id: UserSession['id']) {
     this.logger.log(`Trying to reset count by userSessionId: ${id}`);
 
-    const userSession = await this.userSessionService.getUserSessionById(id);
-
-    if (!userSession) {
-      this.logger.error(`session with userSessionId: ${id} not exist`);
-      throw new HttpException(`session with userSessionId: ${id} not exist`, HttpStatus.BAD_REQUEST);
-    }
+    await this.userSessionService.getUserSessionById(id);
 
     await this.keywordsRepository.resetCountByUserSessionId(id);
 
