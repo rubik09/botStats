@@ -62,9 +62,9 @@ export class StatsService {
       throw new HttpException(`stats with apiId: ${apiId} not found`, HttpStatus.NOT_FOUND);
     }
 
-    await this.statsRepository.updateStatsByApiId(updateStatsDto, apiId);
+    const {affected} = await this.statsRepository.updateStatsByApiId(updateStatsDto, apiId);
 
-    this.logger.debug(`stats successfully updated by apiId: ${apiId}`);
+    this.logger.debug(`${affected} stats successfully updated by apiId: ${apiId}`);
   }
 
   async increaseIncomingMessagesCountToSessionByApiId(apiId: Stat['apiIdClient']) {
@@ -77,9 +77,9 @@ export class StatsService {
       throw new HttpException(`stats with apiId: ${apiId} not found`, HttpStatus.NOT_FOUND);
     }
 
-    await this.statsRepository.increaseIncomingMessagesCountToSessionByApiId(apiId);
+    const {affected} = await this.statsRepository.increaseIncomingMessagesCountToSessionByApiId(apiId);
 
-    this.logger.debug(`incoming messages count successfully increased by apiId: ${apiId}`);
+    this.logger.debug(`${affected} incoming messages count successfully increased by apiId: ${apiId}`);
   }
 
   async increaseOutgoingMessagesCountToSessionByApiId(apiId: Stat['apiIdClient']) {
@@ -92,9 +92,9 @@ export class StatsService {
       throw new HttpException(`stats with apiId: ${apiId} not found`, HttpStatus.NOT_FOUND);
     }
 
-    await this.statsRepository.increaseOutgoingMessagesCountToSessionByApiId(apiId);
+    const {affected} = await this.statsRepository.increaseOutgoingMessagesCountToSessionByApiId(apiId);
 
-    this.logger.debug(`outgoing messages count successfully increased by apiId: ${apiId}`);
+    this.logger.debug(`${affected} outgoing messages count successfully increased by apiId: ${apiId}`);
   }
 
   async incomingMessages(clientInfoStr: string) {

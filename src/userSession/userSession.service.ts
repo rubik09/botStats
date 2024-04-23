@@ -109,9 +109,9 @@ export class UserSessionService {
       throw new HttpException(`user session with telegramId: ${telegramId} not found`, HttpStatus.NOT_FOUND);
     }
 
-    await this.userSessionRepository.updateUserSessionByTelegramId(telegramId, updateUserSessionInfoDto);
+    const {affected} = await this.userSessionRepository.updateUserSessionByTelegramId(telegramId, updateUserSessionInfoDto);
 
-    this.logger.debug(`user session successfully updated by telegramId: ${telegramId}`);
+    this.logger.debug(`${affected} user session successfully updated by telegramId: ${telegramId}`);
   }
 
   async updateApiInfoByTelegramId(telegramId: UserSession['telegramId'], updateApiInfoDto: UpdateApiInfoDto) {
@@ -124,9 +124,9 @@ export class UserSessionService {
       throw new HttpException(`user session with telegramId: ${telegramId} not found`, HttpStatus.NOT_FOUND);
     }
 
-    await this.userSessionRepository.updateApiInfoByTelegramId(telegramId, updateApiInfoDto);
+    const {affected} = await this.userSessionRepository.updateApiInfoByTelegramId(telegramId, updateApiInfoDto);
 
-    this.logger.debug(`api info successfully updated by telegramId: ${telegramId}`);
+    this.logger.debug(`${affected} api info successfully updated by telegramId: ${telegramId}`);
   }
 
   async createUserSession(telegramId: UserSession['telegramId'], personalInfo: CreatePersonalInfoDto) {
