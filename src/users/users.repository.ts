@@ -13,12 +13,12 @@ export class UsersRepository {
     private readonly usersRepository: Repository<User>,
   ) {}
 
-  async findUserByApiIdAndTelegramId(findByApiIdAndTgIdDto: FindByApiIdAndTgIdDto): Promise<User> {
+  async findUserByApiIdAndTelegramId({ apiIdClient, telegramId }: FindByApiIdAndTgIdDto): Promise<User> {
     return await this.usersRepository
       .createQueryBuilder('users')
       .where('users.api_id_client = :apiIdClient AND users.telegram_id = :telegramId', {
-        apiIdClient: findByApiIdAndTgIdDto.apiIdClient,
-        telegramId: findByApiIdAndTgIdDto.telegramId,
+        apiIdClient,
+        telegramId,
       })
       .getOne();
   }

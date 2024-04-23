@@ -91,9 +91,9 @@ export class KeywordsService {
   async getKeywordsByUserSessionId(id: UserSession['id']): Promise<Keyword[]> {
     this.logger.log(`Trying to get keywords by UserSessionId: ${id}`);
 
-    const [keywords] = await this.keywordsRepository.getKeywordsByUserSessionId(id);
+    const [keywords, count] = await this.keywordsRepository.getKeywordsByUserSessionId(id);
 
-    this.logger.debug(`keywords successfully get by UserSessionId: ${id}`);
+    this.logger.debug(`${count} keywords successfully get by UserSessionId: ${id}`);
 
     return keywords;
   }

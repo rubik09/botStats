@@ -28,7 +28,7 @@ const StatsSending = async (
     keywordsDiffArr.forEach((item: Keyword) => {
       activityToInsert.push({
         userEnteredValue: {
-          stringValue: item.activity,
+          stringValue: `${item.activity}-${item.keyword}`,
         },
       });
 

@@ -1,19 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { InsertResult, Repository, UpdateResult } from 'typeorm';
+import { DataSource, InsertResult, Repository, UpdateResult } from 'typeorm';
 
 import { UpdateApiInfoDto } from './dto/updateApiInfo.dto';
 import { UpdateUserSessionInfoDto } from './dto/updateUserSession.dto';
 import { UserSession, userSessionStatus } from './entity/userSession.entity';
 import { CreatePersonalInfoDto } from '../personalInfo/dto/createPersonalInfo.dto';
-import { PersonalInfoRepository } from '../personalInfo/personalInfo.repository';
+import { PersonalInfo } from '../personalInfo/entity/personalInfo.entity';
 
 @Injectable()
 export class UserSessionRepository {
   constructor(
     @InjectRepository(UserSession)
+    @InjectRepository(PersonalInfo)
     private readonly userSessionRepository: Repository<UserSession>,
-    private readonly personalInfoRepository: PersonalInfoRepository,
+    private readonly dataSource: DataSource,
   ) {}
 
   async getUserSessions(): Promise<[UserSession[], number]> {
@@ -24,19 +25,43 @@ export class UserSessionRepository {
   }
 
   async createUserSession(telegramId: number, personalInfo: CreatePersonalInfoDto): Promise<InsertResult> {
-    const { identifiers } = await this.personalInfoRepository.createPersonalInfo(personalInfo);
-    const insertedPersonalInfoId = identifiers[0]?.id;
-    const personalInfoEntity = await this.personalInfoRepository.getByUserId(insertedPersonalInfoId);
+    const queryRunner = this.dataSource.createQueryRunner();
 
-    return this.userSessionRepository
-      .createQueryBuilder('userSessions')
-      .insert()
-      .into(UserSession)
-      .values({
-        telegramId,
-        personalInfo: personalInfoEntity,
-      })
-      .execute();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      const { identifiers } = await queryRunner.manager
+        .createQueryBuilder()
+        .insert()
+        .into(PersonalInfo)
+        .values(personalInfo)
+        .execute();
+
+      const insertedPersonalInfoId = identifiers[0]?.id;
+
+      const personalInfoEntity = await queryRunner.manager
+        .createQueryBuilder(PersonalInfo, 'personalInfo')
+        .where('personalInfo.id = :id', { id: insertedPersonalInfoId })
+        .getOne();
+
+      const userSession = queryRunner.manager
+        .createQueryBuilder()
+        .insert()
+        .into(UserSession)
+        .values({
+          telegramId,
+          personalInfo: personalInfoEntity,
+        })
+        .execute();
+
+      await queryRunner.commitTransaction();
+      return userSession;
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
+    }
   }
 
   async getPersonalInfoByTelegramId(telegramId: number): Promise<UserSession> {
