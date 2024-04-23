@@ -22,8 +22,8 @@ export class UserSessionController {
     @Param('id') telegramId: UserSession['telegramId'],
     @Body() createPersonalInfoDto: CreatePersonalInfoDto,
   ) {
-    await this.userSessionService.createUserSession(telegramId, createPersonalInfoDto);
-    throw new HttpException('Персональная информация успешно создана', HttpStatus.CREATED);
+    await this.userSessionService.createUserSessionAndPersonalInfoTransaction(telegramId, createPersonalInfoDto);
+    throw new HttpException('Персональная информация и сессия успешно созданы', HttpStatus.CREATED);
   }
 
   @Patch(':id')

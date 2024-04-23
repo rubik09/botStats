@@ -1,20 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, InsertResult, Repository, UpdateResult } from 'typeorm';
+import { Repository, UpdateResult } from 'typeorm';
 
+import { CreateUserSessionDto } from './dto/createUserSession.dto';
 import { UpdateApiInfoDto } from './dto/updateApiInfo.dto';
 import { UpdateUserSessionInfoDto } from './dto/updateUserSession.dto';
 import { UserSession, userSessionStatus } from './entity/userSession.entity';
-import { CreatePersonalInfoDto } from '../personalInfo/dto/createPersonalInfo.dto';
-import { PersonalInfo } from '../personalInfo/entity/personalInfo.entity';
 
 @Injectable()
 export class UserSessionRepository {
   constructor(
     @InjectRepository(UserSession)
-    @InjectRepository(PersonalInfo)
     private readonly userSessionRepository: Repository<UserSession>,
-    private readonly dataSource: DataSource,
   ) {}
 
   async getUserSessions(): Promise<[UserSession[], number]> {
@@ -22,46 +19,6 @@ export class UserSessionRepository {
       .createQueryBuilder('userSessions')
       .leftJoinAndSelect('userSessions.personalInfo', 'personalInfo')
       .getManyAndCount();
-  }
-
-  async createUserSession(telegramId: number, personalInfo: CreatePersonalInfoDto): Promise<InsertResult> {
-    const queryRunner = this.dataSource.createQueryRunner();
-
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-
-    try {
-      const { identifiers } = await queryRunner.manager
-        .createQueryBuilder()
-        .insert()
-        .into(PersonalInfo)
-        .values(personalInfo)
-        .execute();
-
-      const insertedPersonalInfoId = identifiers[0]?.id;
-
-      const personalInfoEntity = await queryRunner.manager
-        .createQueryBuilder(PersonalInfo, 'personalInfo')
-        .where('personalInfo.id = :id', { id: insertedPersonalInfoId })
-        .getOne();
-
-      const userSession = queryRunner.manager
-        .createQueryBuilder()
-        .insert()
-        .into(UserSession)
-        .values({
-          telegramId,
-          personalInfo: personalInfoEntity,
-        })
-        .execute();
-
-      await queryRunner.commitTransaction();
-      return userSession;
-    } catch (err) {
-      await queryRunner.rollbackTransaction();
-    } finally {
-      await queryRunner.release();
-    }
   }
 
   async getPersonalInfoByTelegramId(telegramId: number): Promise<UserSession> {
@@ -124,5 +81,12 @@ export class UserSessionRepository {
       .createQueryBuilder('userSessions')
       .where('status = :status', { status: userSessionStatus.ACTIVE })
       .getManyAndCount();
+  }
+
+  async createUserSessionTransaction(
+    queryRunner: any,
+    createUserSessionDto: CreateUserSessionDto,
+  ): Promise<UserSession> {
+    return await queryRunner.manager.save(UserSession, createUserSessionDto);
   }
 }

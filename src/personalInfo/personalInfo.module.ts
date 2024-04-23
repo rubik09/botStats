@@ -10,6 +10,6 @@ import { PersonalInfoService } from './personalInfo.service';
   imports: [TypeOrmModule.forFeature([PersonalInfo])],
   providers: [PersonalInfoService, PersonalInfoRepository],
   controllers: [PersonalInfoController],
-  exports: [PersonalInfoRepository],
+  exports: [PersonalInfoService],
 })
 export class PersonalInfoModule {}
