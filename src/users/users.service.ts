@@ -53,7 +53,7 @@ export class UsersService {
   async cleanTableByApiId(apiIdClient: User['apiIdClient']) {
     this.logger.log(`Trying to clean users table by apiId: ${apiIdClient}`);
 
-    const {affected} = await this.usersRepository.cleanTableByApiId(apiIdClient);
+    const { affected } = await this.usersRepository.cleanTableByApiId(apiIdClient);
 
     this.logger.debug(`${affected} users table successfully cleaned by apiIdClient: ${apiIdClient}`);
   }

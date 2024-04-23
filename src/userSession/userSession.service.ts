@@ -109,7 +109,10 @@ export class UserSessionService {
       throw new HttpException(`user session with telegramId: ${telegramId} not found`, HttpStatus.NOT_FOUND);
     }
 
-    const {affected} = await this.userSessionRepository.updateUserSessionByTelegramId(telegramId, updateUserSessionInfoDto);
+    const { affected } = await this.userSessionRepository.updateUserSessionByTelegramId(
+      telegramId,
+      updateUserSessionInfoDto,
+    );
 
     this.logger.debug(`${affected} user session successfully updated by telegramId: ${telegramId}`);
   }
@@ -124,7 +127,7 @@ export class UserSessionService {
       throw new HttpException(`user session with telegramId: ${telegramId} not found`, HttpStatus.NOT_FOUND);
     }
 
-    const {affected} = await this.userSessionRepository.updateApiInfoByTelegramId(telegramId, updateApiInfoDto);
+    const { affected } = await this.userSessionRepository.updateApiInfoByTelegramId(telegramId, updateApiInfoDto);
 
     this.logger.debug(`${affected} api info successfully updated by telegramId: ${telegramId}`);
   }

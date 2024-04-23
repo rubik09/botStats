@@ -55,7 +55,7 @@ export class KeywordsService {
       throw new HttpException(`keyword with keywordId: ${id} not exist`, HttpStatus.BAD_REQUEST);
     }
 
-    const {affected} = await this.keywordsRepository.updateNewKeyword(id, updateKeywordsDto);
+    const { affected } = await this.keywordsRepository.updateNewKeyword(id, updateKeywordsDto);
 
     this.logger.debug(`${affected} keyword successfully updated by id: ${id}`);
   }
@@ -65,7 +65,7 @@ export class KeywordsService {
 
     await this.userSessionService.getUserSessionById(id);
 
-    const {affected} = await this.keywordsRepository.resetCountByUserSessionId(id);
+    const { affected } = await this.keywordsRepository.resetCountByUserSessionId(id);
 
     this.logger.debug(`${affected} count successfully reset by id: ${id}`);
   }
@@ -73,7 +73,7 @@ export class KeywordsService {
   async increaseKeywordsCountById(id: Keyword['id']) {
     this.logger.log(`Trying to increase count by id: ${id}`);
 
-    const {affected} = await this.keywordsRepository.increaseKeywordCountById(id);
+    const { affected } = await this.keywordsRepository.increaseKeywordCountById(id);
 
     this.logger.debug(`${affected} count successfully increased by id: ${id}`);
   }
