@@ -81,6 +81,16 @@ export class UserSessionService {
     return activeSessions;
   }
 
+  async getUserSessionById(id: UserSession['id']): Promise<UserSession> {
+    this.logger.log(`Trying to get User Sessions by id: ${id}`);
+
+    const userSession = await this.userSessionRepository.getUserSessionById(id);
+
+    this.logger.debug(`User Sessions successfully get by id: ${id}`);
+
+    return userSession;
+  }
+
   async updateUserSessionByTelegramId(
     telegramId: UserSession['telegramId'],
     updateUserSessionInfoDto: UpdateUserSessionInfoDto,

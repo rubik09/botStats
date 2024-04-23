@@ -5,20 +5,20 @@ import { UpdateKeywordsDto } from './dto/updateKeywords.dto';
 import { Keyword } from './entity/keywords.entity';
 import { KeywordsRepository } from './keywords.repository';
 import { UserSession } from '../userSession/entity/userSession.entity';
-import { UserSessionRepository } from '../userSession/userSession.repository';
+import { UserSessionService } from '../userSession/userSession.service';
 
 @Injectable()
 export class KeywordsService {
   private readonly logger = new Logger(KeywordsService.name);
   constructor(
-    private userSessionRepository: UserSessionRepository,
+    private userSessionService: UserSessionService,
     private keywordsRepository: KeywordsRepository,
   ) {}
 
   async createNewKeyword(id: UserSession['id'], createKeywordsDto: CreateKeywordsDto) {
     this.logger.log(`Trying to create keyword by id: ${id}`);
 
-    const userSession = await this.userSessionRepository.getUserSessionById(id);
+    const userSession = await this.userSessionService.getUserSessionById(id);
 
     if (!userSession) {
       this.logger.error(`session with id: ${id} not exist`);
@@ -68,7 +68,7 @@ export class KeywordsService {
   async resetCountByUserSessionId(id: UserSession['id']) {
     this.logger.log(`Trying to reset count by userSessionId: ${id}`);
 
-    const userSession = await this.userSessionRepository.getUserSessionById(id);
+    const userSession = await this.userSessionService.getUserSessionById(id);
 
     if (!userSession) {
       this.logger.error(`session with userSessionId: ${id} not exist`);
