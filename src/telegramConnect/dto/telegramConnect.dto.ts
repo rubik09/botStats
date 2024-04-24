@@ -1,6 +1,7 @@
 import { Transform } from 'class-transformer';
 import { IsEnum, IsInt, IsString, Max, Min } from 'class-validator';
 
+import { Keyword } from '../../keywords/entity/keywords.entity';
 import { UserSession, userSessionStatus } from '../../userSession/entity/userSession.entity';
 
 export class TelegramConnectDto {
@@ -11,7 +12,7 @@ export class TelegramConnectDto {
   logSession: UserSession['logSession'];
 
   @IsString()
-  keywords: UserSession['keywords'];
+  keywords: Keyword;
 
   @IsEnum(userSessionStatus)
   status: UserSession['status'];

@@ -32,9 +32,6 @@ export class UserSession {
   @Column({ type: 'varchar', default: '' })
   logSession: string;
 
-  @Column({ type: 'json', default: "[]" })
-  keywords: string;
-
   @Column({
     type: 'enum',
     enum: userSessionStatus,

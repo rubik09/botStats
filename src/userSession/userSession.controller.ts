@@ -1,9 +1,10 @@
-import { Body, Controller, Get, Param, Patch, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Param, Patch, Post, UseGuards } from '@nestjs/common';
 
 import { UpdateUserSessionInfoDto } from './dto/updateUserSession.dto';
 import { UserSession } from './entity/userSession.entity';
 import { UserSessionService } from './userSession.service';
 import { JwtGuard } from '../auth/jwtAuth.guard';
+import { CreatePersonalInfoDto } from '../personalInfo/dto/createPersonalInfo.dto';
 
 @Controller('sessions')
 export class UserSessionController {
@@ -15,12 +16,23 @@ export class UserSessionController {
     return this.userSessionService.getAllUserSessions();
   }
 
+  @Post(':id')
+  @UseGuards(JwtGuard)
+  async createPersonalInfoAndUserSession(
+    @Param('id') telegramId: UserSession['telegramId'],
+    @Body() createPersonalInfoDto: CreatePersonalInfoDto,
+  ) {
+    await this.userSessionService.createUserSessionTransaction(telegramId, createPersonalInfoDto);
+    throw new HttpException('Персональная информация и сессия успешно созданы', HttpStatus.CREATED);
+  }
+
   @Patch(':id')
   @UseGuards(JwtGuard)
   async updateUserSessionByTelegramId(
     @Param('id') telegramId: UserSession['telegramId'],
     @Body() body: UpdateUserSessionInfoDto,
-  ): Promise<number> {
-    return this.userSessionService.updateUserSessionByTelegramId(telegramId, body);
+  ) {
+    await this.userSessionService.updateUserSessionByTelegramId(telegramId, body);
+    throw new HttpException('Сессия успешно обновлена', HttpStatus.OK);
   }
 }

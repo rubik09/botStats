@@ -1,30 +1,28 @@
-import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import * as bcrypt from 'bcrypt';
 
 import { AdminsRepository } from './admins.repository';
+import { AdminLoginDto } from './dto/adminLogin.dto';
 import { CreateAdminDto } from './dto/createAdmin.dto';
-import { Admins } from './entity/admins.entity';
+import { RegisterAdminDto } from './dto/registerAdmin.dto';
+import { Admin } from './entity/admins.entity';
+import { AuthService } from '../auth/auth.service';
+import { TToken } from '../utils/types';
 
 @Injectable()
 export class AdminsService {
   private readonly logger = new Logger(AdminsService.name);
-  constructor(private adminsRepository: AdminsRepository) {}
-
-  async findAdminById(id: Admins['id']): Promise<Admins> {
-    this.logger.log(`Trying to get personal info by id: ${id}`);
-
-    const admin = this.adminsRepository.findOneById(id);
-
-    if (!admin) {
-      this.logger.error(`admin with id: ${id} not found`);
-      throw new HttpException(`admin with id: ${id} not found`, HttpStatus.NOT_FOUND);
-    }
-
-    this.logger.debug(`admin successfully get`);
-
-    return admin;
+  private readonly hash: number;
+  constructor(
+    private adminsRepository: AdminsRepository,
+    private authService: AuthService,
+    private configService: ConfigService,
+  ) {
+    this.hash = this.configService.getOrThrow('HASH.HASH_LENGTH');
   }
 
-  async findAdminByEmail(email: Admins['email']): Promise<Admins> {
+  async findAdminByEmail(email: Admin['email']): Promise<Admin> {
     this.logger.log(`Trying to get personal info by email: ${email}`);
 
     const admin = this.adminsRepository.findOneByEmail(email);
@@ -34,15 +32,13 @@ export class AdminsService {
       throw new HttpException(`admin with email: ${email} not found`, HttpStatus.NOT_FOUND);
     }
 
-    this.logger.debug(`admin successfully get`);
+    this.logger.debug(`admin successfully get by email: ${email}`);
 
     return admin;
   }
 
-  async createAdmin(createAdminDto: CreateAdminDto): Promise<Admins> {
-    this.logger.log(`Trying to create admin`);
-
-    const { email } = createAdminDto;
+  async createAdmin({ email, password }: RegisterAdminDto) {
+    this.logger.log(`Trying to create admin with email: ${email}`);
 
     const admin = await this.adminsRepository.findOneByEmail(email);
 
@@ -51,10 +47,33 @@ export class AdminsService {
       throw new HttpException(`admin with email: ${email} already exist`, HttpStatus.BAD_REQUEST);
     }
 
-    const newAdmin = this.adminsRepository.createAdmin(createAdminDto);
+    const hashedPassword = await bcrypt.hash(password, this.hash);
+    const createAdminDto: CreateAdminDto = {
+      email,
+      password: hashedPassword,
+    };
 
-    this.logger.debug(`admin successfully created`);
+    const { raw } = await this.adminsRepository.createAdmin(createAdminDto);
 
-    return newAdmin;
+    this.logger.debug(`admin successfully created with id: ${raw[0].id}`);
+  }
+
+  async validatePassword(password: string, adminPassword: string) {
+    const isMatch = bcrypt.compareSync(password, adminPassword);
+
+    if (!isMatch) {
+      throw new BadRequestException('password incorrect');
+    }
+  }
+
+  async login({ email, password }: AdminLoginDto): Promise<TToken> {
+    const admin = await this.adminsRepository.findOneByEmail(email);
+
+    if (!admin) {
+      throw new BadRequestException('email incorrect');
+    }
+    await this.validatePassword(password, admin.password);
+
+    return await this.authService.signKey({ email });
   }
 }

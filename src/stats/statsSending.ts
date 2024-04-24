@@ -1,18 +1,21 @@
+import * as process from 'process';
+
+import * as dotenv from 'dotenv';
+
+import { Keyword } from '../keywords/entity/keywords.entity';
 import { PersonalInfo } from '../personalInfo/entity/personalInfo.entity';
 import { googleSheets } from '../utils/googleClient';
-import * as process from 'process';
-import * as dotenv from 'dotenv';
 
 dotenv.config();
 
-export const { SPREAD_SHEET_ID, SHEET_ID } = process.env;
+const { SPREAD_SHEET_ID, SHEET_ID } = process.env;
 
 const StatsSending = async (
   username: PersonalInfo['username'],
   incomingMessagesStats: number,
   newUsersCount: number,
   averageMessagesCount: number,
-  keywordsDiffArr: [],
+  keywordsDiffArr: Keyword[],
   time: string,
 ) => {
   try {
@@ -22,10 +25,10 @@ const StatsSending = async (
     const activityToInsert: { userEnteredValue: { stringValue: string } }[] = [];
     const countToInsert: { userEnteredValue: { numberValue: number } }[] = [];
 
-    keywordsDiffArr.forEach((item: { activity: string; count: number; keyword: string }) => {
+    keywordsDiffArr.forEach((item: Keyword) => {
       activityToInsert.push({
         userEnteredValue: {
-          stringValue: item.activity,
+          stringValue: `${item.activity}-${item.keyword}`,
         },
       });
 

@@ -1,6 +1,8 @@
 import { HttpException, HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 
 import { CreateTelegramConnectionDto } from './dto/createTelegramConnect.dto';
+import { CreateKeywordsDto } from '../keywords/dto/createKeywords.dto';
+import { KeywordsService } from '../keywords/keywords.service';
 import { UpdateApiInfoDto } from '../userSession/dto/updateApiInfo.dto';
 import { UpdateUserSessionInfoDto } from '../userSession/dto/updateUserSession.dto';
 import { userSessionStatus } from '../userSession/entity/userSession.entity';
@@ -20,7 +22,10 @@ const clientStartPromise: IClientStartPromises = {};
 export class TelegramConnectService implements OnModuleInit {
   private connectionStepFunctions: TSetupSteps;
   private readonly logger = new Logger(TelegramConnectService.name);
-  constructor(private userSessionService: UserSessionService) {}
+  constructor(
+    private userSessionService: UserSessionService,
+    private keywordsService: KeywordsService,
+  ) {}
 
   async firstConnectionStep({ apiId, apiHash, telegramId, username, phoneNumber }: IFirstStep) {
     this.logger.debug(`Run first connection step for ${username}`);
@@ -104,15 +109,22 @@ export class TelegramConnectService implements OnModuleInit {
     this.logger.debug(`Second connection step: successfully ended for ${username}`);
   }
 
-  async thirdConnectionStep({ keywords, telegramId, username }: IThirdStep) {
+  async thirdConnectionStep({ activity, keyword, telegramId, username }: IThirdStep) {
     this.logger.debug(`Run third connection step for ${username}`);
 
-    this.logger.debug(`Third connection step: keywords: ${keywords}, telegramId: ${telegramId}, ${username}`);
+    this.logger.debug(
+      `Third connection step: keywords: ${activity}: ${keyword}, telegramId: ${telegramId}, ${username}`,
+    );
 
-    const updateUserSessionInfoDto: UpdateUserSessionInfoDto = {
-      keywords,
+    const userSession = await this.userSessionService.getUserSessionByTelegramId(telegramId);
+
+    const createKeywordsDto: CreateKeywordsDto = {
+      activity,
+      keyword,
+      userSession,
     };
-    await this.userSessionService.updateUserSessionByTelegramId(telegramId, updateUserSessionInfoDto);
+
+    await this.keywordsService.createNewKeyword(userSession.id, createKeywordsDto);
     const client = clients[telegramId];
 
     this.logger.debug(`Third connection step: run emmiter for ${username}`);
@@ -145,9 +157,10 @@ export class TelegramConnectService implements OnModuleInit {
           telegramId,
           username,
         }),
-      [setupSteps.THIRD_STEP]: async ({ keywords, telegramId, username }: CreateTelegramConnectionDto) =>
+      [setupSteps.THIRD_STEP]: async ({ keyword, activity, telegramId, username }: CreateTelegramConnectionDto) =>
         this.thirdConnectionStep({
-          keywords,
+          keyword,
+          activity,
           telegramId,
           username,
         }),

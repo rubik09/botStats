@@ -22,8 +22,9 @@ const {
   INCOMING_MESSAGE,
   OUTGOING_MESSAGE,
   GROUP_ID,
-  CRON_TIME_NIGHT,
-  CRON_TIME_DAY,
+  HASH_LENGTH,
+  CLIENT_EMAIL,
+  PRIVATE_KEY,
 } = process.env;
 
 export default (): any =>
@@ -31,7 +32,7 @@ export default (): any =>
     API_PREFIX: '/api',
     API_VERSION: '/v1',
     SERVICE_NAME: pack.name,
-    HTTP_PORT: Number(HTTP_PORT),
+    HTTP_PORT: Number(HTTP_PORT) || 8000,
     LOG_LEVEL: LOG_LEVEL,
     SECRET_JWT: SECRET_JWT,
     BOT_TOKEN: BOT_TOKEN,
@@ -63,8 +64,11 @@ export default (): any =>
     GROUP_ID: {
       GROUP_ID: GROUP_ID,
     },
-    CRON: {
-      CRON_TIME_NIGHT: CRON_TIME_NIGHT,
-      CRON_TIME_DAY: CRON_TIME_DAY,
+    HASH: {
+      HASH_LENGTH: Number(HASH_LENGTH) || 10,
+    },
+    TABLE: {
+      CLIENT_EMAIL: CLIENT_EMAIL,
+      PRIVATE_KEY: PRIVATE_KEY,
     },
   }) as const;
