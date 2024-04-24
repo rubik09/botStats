@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, HttpException, HttpStatus, Post, UseGuards } from '@nestjs/common';
 
 import { CreateTelegramConnectionDto } from './dto/createTelegramConnect.dto';
 import { TelegramConnectService } from './telegramConnect.service';
@@ -12,5 +12,6 @@ export class TelegramConnectController {
   @UseGuards(JwtGuard)
   async connectToTelegram(@Body() createTelegramConnectionDto: CreateTelegramConnectionDto) {
     await this.telegramConnectService.connectToTelegram(createTelegramConnectionDto);
+    throw new HttpException('Шаг успешно завершён', HttpStatus.OK);
   }
 }

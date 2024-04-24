@@ -1,8 +1,8 @@
 import { Transform } from 'class-transformer';
 import { IsEnum, IsInt, IsString, Max, Min } from 'class-validator';
 
+import { Keyword } from '../../keywords/entity/keywords.entity';
 import { UserSession, userSessionStatus } from '../../userSession/entity/userSession.entity';
-import {Keyword} from "../../keywords/entity/keywords.entity";
 
 export class TelegramConnectDto {
   @IsInt()

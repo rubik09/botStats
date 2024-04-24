@@ -1,4 +1,5 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { DataSource } from 'typeorm';
 
 import { UpdateApiInfoDto } from './dto/updateApiInfo.dto';
 import { UpdateUserSessionInfoDto } from './dto/updateUserSession.dto';
@@ -10,7 +11,10 @@ import { CreatePersonalInfoDto } from '../personalInfo/dto/createPersonalInfo.dt
 export class UserSessionService {
   private readonly logger = new Logger(UserSessionService.name);
 
-  constructor(private userSessionRepository: UserSessionRepository) {}
+  constructor(
+    private userSessionRepository: UserSessionRepository,
+    private readonly dataSource: DataSource,
+  ) {}
 
   async getPersonalInfoByTelegramId(telegramId: UserSession['telegramId']): Promise<UserSession> {
     this.logger.log(`Trying to get personal info by telegramId: ${telegramId}`);
@@ -64,9 +68,9 @@ export class UserSessionService {
   async getActiveUserSessions(): Promise<UserSession[]> {
     this.logger.log(`Trying to get Active User Sessions`);
 
-    const activeSessions = this.userSessionRepository.getActiveUserSessions();
+    const [activeSessions, count] = await this.userSessionRepository.getActiveUserSessions();
 
-    this.logger.debug(`Active User Sessions successfully get`);
+    this.logger.debug(`${count} Active User Sessions successfully get`);
 
     return activeSessions;
   }
@@ -74,29 +78,26 @@ export class UserSessionService {
   async getAllUserSessions(): Promise<UserSession[]> {
     this.logger.log(`Trying to get all User Sessions`);
 
-    const activeSessions = this.userSessionRepository.getUserSessions();
+    const [activeSessions, count] = await this.userSessionRepository.getUserSessions();
 
-    this.logger.debug(`Active User Sessions successfully get `);
+    this.logger.debug(`${count} All User Sessions successfully get `);
 
     return activeSessions;
   }
 
-  async updateUserSessionById(
-    id: UserSession['id'],
-    updateUserSessionInfoDto: UpdateUserSessionInfoDto,
-  ) {
-    this.logger.log(`Trying to update user session by id: ${id}`);
+  async getUserSessionById(id: UserSession['id']): Promise<UserSession> {
+    this.logger.log(`Trying to get User Sessions by id: ${id}`);
 
-    const userSession = this.userSessionRepository.getUserSessionById(id);
+    const userSession = await this.userSessionRepository.getUserSessionById(id);
 
     if (!userSession) {
-      this.logger.error(`user session with id: ${id} not found`);
-      throw new HttpException(`user session with id: ${id} not found`, HttpStatus.NOT_FOUND);
+      this.logger.error(`session with id: ${id} not exist`);
+      throw new HttpException(`session with id: ${id} not exist`, HttpStatus.BAD_REQUEST);
     }
 
-    await this.userSessionRepository.updateUserSessionById(id, updateUserSessionInfoDto);
+    this.logger.debug(`User Sessions successfully get by id: ${id}`);
 
-    this.logger.debug(`user session successfully updated by id: ${id}`);
+    return userSession;
   }
 
   async updateUserSessionByTelegramId(
@@ -112,39 +113,15 @@ export class UserSessionService {
       throw new HttpException(`user session with telegramId: ${telegramId} not found`, HttpStatus.NOT_FOUND);
     }
 
-    await this.userSessionRepository.updateUserSessionByTelegramId(
+    const { affected } = await this.userSessionRepository.updateUserSessionByTelegramId(
       telegramId,
       updateUserSessionInfoDto,
     );
 
-    this.logger.debug(`user session successfully updated by telegramId: ${telegramId}`);
+    this.logger.debug(`${affected} user session successfully updated by telegramId: ${telegramId}`);
   }
 
-  async updateUserSessionByApiId(
-    apiId: UserSession['apiId'],
-    updateUserSessionInfoDto: UpdateUserSessionInfoDto,
-  ) {
-    this.logger.log(`Trying to update user session by apiId: ${apiId}`);
-
-    const userSession = await this.userSessionRepository.getUserSessionByApiId(apiId);
-
-    if (!userSession) {
-      this.logger.error(`user session with apiId: ${apiId} not found`);
-      throw new HttpException(`user session with apiId: ${apiId} not found`, HttpStatus.NOT_FOUND);
-    }
-
-    await this.userSessionRepository.updateUserSessionByApiId(
-      apiId,
-      updateUserSessionInfoDto,
-    );
-
-    this.logger.debug(`user session successfully updated by apiId: ${apiId}`);
-  }
-
-  async updateApiInfoByTelegramId(
-    telegramId: UserSession['telegramId'],
-    updateApiInfoDto: UpdateApiInfoDto,
-  ) {
+  async updateApiInfoByTelegramId(telegramId: UserSession['telegramId'], updateApiInfoDto: UpdateApiInfoDto) {
     this.logger.log(`Trying to update api info by telegramId: ${telegramId}`);
 
     const userSession = this.userSessionRepository.getUserSessionByTelegramId(telegramId);
@@ -154,26 +131,39 @@ export class UserSessionService {
       throw new HttpException(`user session with telegramId: ${telegramId} not found`, HttpStatus.NOT_FOUND);
     }
 
-    await this.userSessionRepository.updateApiInfoByTelegramId(telegramId, updateApiInfoDto);
+    const { affected } = await this.userSessionRepository.updateApiInfoByTelegramId(telegramId, updateApiInfoDto);
 
-    this.logger.debug(`api info successfully updated by telegramId: ${telegramId}`);
+    this.logger.debug(`${affected} api info successfully updated by telegramId: ${telegramId}`);
   }
 
-  async createUserSession(
+  async createUserSessionTransaction(
     telegramId: UserSession['telegramId'],
-    personalInfo: CreatePersonalInfoDto,
+    createPersonalInfoDto: CreatePersonalInfoDto,
   ) {
-    this.logger.log(`Trying to create user session by telegramId: ${telegramId}`);
+    this.logger.log(`Trying to create user session by telegramId: ${telegramId} and personal info with transaction`);
 
-    const userSession = await this.userSessionRepository.getUserSessionByTelegramId(telegramId);
+    const queryRunner = this.dataSource.createQueryRunner();
 
-    if (userSession) {
-      this.logger.error(`session with telegramId: ${telegramId} already exist`);
-      throw new HttpException(`session with telegramId: ${telegramId} already exist`, HttpStatus.BAD_REQUEST);
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      const { id } = await this.userSessionRepository.createUserSessionTransaction(
+        queryRunner,
+        createPersonalInfoDto,
+        telegramId,
+      );
+
+      this.logger.log(`Successfully created userSession transaction with id: ${id}`);
+
+      await queryRunner.commitTransaction();
+    } catch (err) {
+      this.logger.error(`error on transaction: ${err}`);
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
     }
 
-    const {id} = await this.userSessionRepository.createUserSession(telegramId, personalInfo);
-
-    this.logger.debug(`admin successfully created with id: ${id}`);
+    this.logger.debug(`user session successfully created with id: ${telegramId}`);
   }
 }

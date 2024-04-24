@@ -1,43 +1,27 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { InsertResult, Repository } from 'typeorm';
 
 import { CreateAdminDto } from './dto/createAdmin.dto';
-import { DeleteAdminDto } from './dto/deleteAdmin.dto';
-import { UpdateAdminDto } from './dto/updateAdmin.dto';
-import { Admins } from './entity/admins.entity';
-import { UserSession } from '../userSession/entity/userSession.entity';
+import { Admin } from './entity/admins.entity';
 
 @Injectable()
 export class AdminsRepository {
   constructor(
-    @InjectRepository(Admins)
-    private readonly adminsRepository: Repository<Admins>,
+    @InjectRepository(Admin)
+    private readonly adminsRepository: Repository<Admin>,
   ) {}
 
-  async createAdmin(createAdminDto: CreateAdminDto): Promise<Admins> {
-    return await this.adminsRepository.save(createAdminDto);
+  async createAdmin(createAdminDto: CreateAdminDto): Promise<InsertResult> {
+    return await this.adminsRepository
+      .createQueryBuilder('admins')
+      .insert()
+      .into(Admin)
+      .values(createAdminDto)
+      .execute();
   }
 
-  async findOneByEmail(email: Admins['email']): Promise<Admins> {
-    return await this.adminsRepository.findOne({
-      where: { email },
-    });
-  }
-
-  async findOneById(id: Admins['id']): Promise<Admins> {
-    return await this.adminsRepository.findOne({
-      where: { id },
-    });
-  }
-
-  async deleteAdminById(deleteAdminDto: DeleteAdminDto): Promise<number> {
-    const { affected } = await this.adminsRepository.delete(deleteAdminDto);
-    return affected;
-  }
-
-  async updateAdmin(id: UserSession['id'], updateAdminDto: UpdateAdminDto): Promise<number> {
-    const { affected } = await this.adminsRepository.update({ id }, updateAdminDto);
-    return affected;
+  async findOneByEmail(email: string): Promise<Admin> {
+    return await this.adminsRepository.createQueryBuilder('admins').where('admins.email = :email', { email }).getOne();
   }
 }

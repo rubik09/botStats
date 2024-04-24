@@ -1,7 +1,14 @@
+import * as process from 'process';
+
+import * as dotenv from 'dotenv';
+
+import { Keyword } from '../keywords/entity/keywords.entity';
 import { PersonalInfo } from '../personalInfo/entity/personalInfo.entity';
-import { sheetId, spreadSheetId } from '../utils/consts';
 import { googleSheets } from '../utils/googleClient';
-import {Keyword} from "../keywords/entity/keywords.entity";
+
+dotenv.config();
+
+const { SPREAD_SHEET_ID, SHEET_ID } = process.env;
 
 const StatsSending = async (
   username: PersonalInfo['username'],
@@ -21,7 +28,7 @@ const StatsSending = async (
     keywordsDiffArr.forEach((item: Keyword) => {
       activityToInsert.push({
         userEnteredValue: {
-          stringValue: item.activity,
+          stringValue: `${item.activity}-${item.keyword}`,
         },
       });
 
@@ -34,18 +41,18 @@ const StatsSending = async (
 
     const sheets = await googleSheets();
     const res = await sheets.spreadsheets.values.get({
-      spreadsheetId: spreadSheetId,
+      spreadsheetId: SPREAD_SHEET_ID,
       range: 'A1:P',
     });
     const lastFilledCell = res.data.values.length;
     await sheets.spreadsheets.batchUpdate({
-      spreadsheetId: spreadSheetId,
+      spreadsheetId: SPREAD_SHEET_ID,
       requestBody: {
         requests: [
           {
             updateCells: {
               range: {
-                sheetId: sheetId,
+                sheetId: Number(SHEET_ID),
                 startRowIndex: lastFilledCell,
                 endRowIndex: lastFilledCell + 2,
                 startColumnIndex: 0,

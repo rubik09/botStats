@@ -1,54 +1,52 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { InsertResult, Repository, UpdateResult } from 'typeorm';
 
-import { DeleteStatsDto } from './dto/deleteStats.dto';
 import { UpdateStatsDto } from './dto/updateStats.dto';
-import { Stats } from './entity/stats.entity';
+import { Stat } from './entity/stats.entity';
 
 @Injectable()
 export class StatsRepository {
   constructor(
-    @InjectRepository(Stats)
-    private readonly statsRepository: Repository<Stats>,
+    @InjectRepository(Stat)
+    private readonly statsRepository: Repository<Stat>,
   ) {}
 
-  async createStats(apiIdClient: Stats['apiIdClient']): Promise<Stats> {
-    return await this.statsRepository.save({ apiIdClient });
+  async createStats(apiIdClient: number): Promise<InsertResult> {
+    return await this.statsRepository.createQueryBuilder('stats').insert().into(Stat).values({ apiIdClient }).execute();
   }
 
-  async updateStatsByApiId(updateStatsDto: UpdateStatsDto, apiIdClient: Stats['apiIdClient']): Promise<number> {
-    const { affected } = await this.statsRepository.update({ apiIdClient }, updateStatsDto);
-    return affected;
+  async updateStatsByApiId(updateStatsDto: UpdateStatsDto, apiIdClient: number): Promise<UpdateResult> {
+    return await this.statsRepository
+      .createQueryBuilder('stats')
+      .update(Stat)
+      .set(updateStatsDto)
+      .where('stats.api_id_client = :apiIdClient', { apiIdClient })
+      .execute();
   }
 
-  async increaseIncomingMessagesCountToSessionByApiId(apiIdClient: Stats['apiIdClient']): Promise<number> {
-    const { affected } = await this.statsRepository.increment({ apiIdClient }, 'incomingMessagesCount', 1);
-    return affected;
+  async increaseIncomingMessagesCountToSessionByApiId(apiIdClient: number): Promise<UpdateResult> {
+    return await this.statsRepository
+      .createQueryBuilder('stats')
+      .update(Stat)
+      .set({ incomingMessagesCount: () => 'incomingMessagesCount + 1' })
+      .where('stats.api_id_client = :apiIdClient', { apiIdClient })
+      .execute();
   }
 
-  async increaseOutgoingMessagesCountToSessionByApiId(apiIdClient: Stats['apiIdClient']): Promise<number> {
-    const { affected } = await this.statsRepository.increment({ apiIdClient }, 'outgoingMessagesCount', 1);
-    return affected;
+  async increaseOutgoingMessagesCountToSessionByApiId(apiIdClient: number): Promise<UpdateResult> {
+    return await this.statsRepository
+      .createQueryBuilder('stats')
+      .update(Stat)
+      .set({ outgoingMessagesCount: () => 'outgoingMessagesCount + 1' })
+      .where('stats.api_id_client = :apiIdClient', { apiIdClient })
+      .execute();
   }
 
-  async getStatsByApiId(apiIdClient: Stats['apiIdClient']): Promise<Stats> {
-    return await this.statsRepository.findOne({ where: { apiIdClient } });
-  }
-
-  async getClientStatsByApiId(apiIdClient: Stats['apiIdClient']): Promise<Stats> {
-    return await this.statsRepository.findOne({ where: { apiIdClient } });
-  }
-
-  async getCountStatsByApiId(apiIdClient: Stats['apiIdClient']): Promise<Stats> {
-    return await this.statsRepository.findOne({
-      where: { apiIdClient },
-      select: ['usersCount'],
-    });
-  }
-
-  async deleteStatsByApiId(deleteStatsDto: DeleteStatsDto): Promise<number> {
-    const { affected } = await this.statsRepository.delete(deleteStatsDto);
-    return affected;
+  async getStatsByApiId(apiIdClient: number): Promise<Stat> {
+    return await this.statsRepository
+      .createQueryBuilder('stats')
+      .where('stats.api_id_client = :apiIdClient', { apiIdClient })
+      .getOne();
   }
 }

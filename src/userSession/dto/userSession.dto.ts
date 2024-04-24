@@ -1,6 +1,7 @@
 import { Transform } from 'class-transformer';
 import { IsEnum, IsInt, IsString, Max, Min } from 'class-validator';
 
+import { PersonalInfo } from '../../personalInfo/entity/personalInfo.entity';
 import { UserSession, userSessionStatus } from '../entity/userSession.entity';
 
 export class UserSessionDto {
@@ -29,5 +30,7 @@ export class UserSessionDto {
   @Max(99999999999)
   telegramId: UserSession['telegramId'];
 
-  personalInfo: UserSession['personalInfo'];
+  personalInfo: {
+    id: PersonalInfo['id'];
+  };
 }
