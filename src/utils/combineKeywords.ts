@@ -1,16 +1,13 @@
-import {Keyword} from "../keywords/entity/keywords.entity";
-import {TUniqueActivities} from "./types";
+import { TUniqueActivities } from './types';
+import { Keyword } from '../keywords/entity/keywords.entity';
 
 export const combineKeywords = (keywords: Keyword[]) => {
-    const uniqueActivities: TUniqueActivities = {};
-
-    keywords.forEach(keyword => {
-        if (!uniqueActivities[keyword.activity]) {
-            uniqueActivities[keyword.activity] = { ...keyword };
-        } else {
-            uniqueActivities[keyword.activity].count += keyword.count;
-        }
-    });
-
-    return Object.values(uniqueActivities);
-}
+  return Object.values(
+    keywords.reduce((uniqueActivities: TUniqueActivities, keyword: Keyword) => {
+      const { activity, count } = keyword;
+      uniqueActivities[activity] = uniqueActivities[activity] || { ...keyword };
+      uniqueActivities[activity].count += count;
+      return uniqueActivities;
+    }, {}),
+  );
+};

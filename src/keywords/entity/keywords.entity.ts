@@ -1,22 +1,16 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
-import {UserSession} from "../../userSession/entity/userSession.entity";
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+
+import { UserSession } from '../../userSession/entity/userSession.entity';
 
 @Entity({ name: 'keywords' })
 export class Keyword {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'varchar'})
+  @Column({ type: 'varchar', length: 20 })
   activity: string;
 
-  @Column({ type: 'jsonb'})
+  @Column({ type: 'jsonb' })
   keyword: string;
 
   @Column({ default: 0 })

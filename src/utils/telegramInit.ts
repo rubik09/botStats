@@ -5,7 +5,7 @@ import emitterSubject from './emitter';
 import { ITelegramInit } from './interfaces';
 import { UserSession } from '../userSession/entity/userSession.entity';
 
-export const clientsTelegram: Record<string, TelegramClient> = {};
+const clientsTelegram: Record<string, TelegramClient> = {};
 
 async function telegramInit({ logSession, apiId, apiHash, telegramId }: ITelegramInit) {
   const client = await createClient({ logSession, apiId, apiHash });

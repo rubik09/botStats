@@ -5,11 +5,11 @@ import { PersonalInfo } from './entity/personalInfo.entity';
 import { PersonalInfoController } from './personalInfo.controller';
 import { PersonalInfoRepository } from './personalInfo.repository';
 import { PersonalInfoService } from './personalInfo.service';
-import { UserSessionModule } from '../userSession/userSession.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([PersonalInfo]), UserSessionModule],
+  imports: [TypeOrmModule.forFeature([PersonalInfo])],
   providers: [PersonalInfoService, PersonalInfoRepository],
   controllers: [PersonalInfoController],
+  exports: [PersonalInfoService],
 })
 export class PersonalInfoModule {}

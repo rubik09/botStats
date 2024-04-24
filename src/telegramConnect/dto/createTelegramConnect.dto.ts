@@ -2,9 +2,9 @@ import { PartialType, PickType } from '@nestjs/mapped-types';
 import { IsNumber, IsOptional, IsString, Length, Max, Min } from 'class-validator';
 
 import { TelegramConnectDto } from './telegramConnect.dto';
+import { Keyword } from '../../keywords/entity/keywords.entity';
 import { PersonalInfo } from '../../personalInfo/entity/personalInfo.entity';
 import { setupSteps } from '../../utils/consts';
-import {Keyword} from "../../keywords/entity/keywords.entity";
 
 export class CreateTelegramConnectionDto extends PartialType(
   PickType(TelegramConnectDto, ['telegramId', 'apiId', 'apiHash']),

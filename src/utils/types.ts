@@ -1,6 +1,6 @@
 import { setupSteps } from './consts';
+import { Keyword } from '../keywords/entity/keywords.entity';
 import { CreateTelegramConnectionDto } from '../telegramConnect/dto/createTelegramConnect.dto';
-import {Keyword} from "../keywords/entity/keywords.entity";
 
 export type TSetupSteps = {
   [key in setupSteps]: (createTelegramConnectionDto: CreateTelegramConnectionDto) => Promise<void>;
@@ -9,3 +9,7 @@ export type TSetupSteps = {
 export type TUniqueActivities = {
   [key: string]: Keyword;
 };
+
+export type TToken = { token: string };
+
+export type TPayload = { email: string };

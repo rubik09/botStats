@@ -1,51 +1,45 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DeleteResult, InsertResult, Repository } from 'typeorm';
 
 import { CreateUserDto } from './dto/createUser.dto';
-import { DeleteUserDto } from './dto/deleteUser.dto';
-import { UpdateUserDto } from './dto/updateUser.dto';
-import { Users } from './entity/users.entity';
-import { UserSession } from '../userSession/entity/userSession.entity';
+import { FindByApiIdAndTgIdDto } from './dto/findByApiIdAndTgId.dto';
+import { User } from './entity/users.entity';
 
 @Injectable()
 export class UsersRepository {
   constructor(
-    @InjectRepository(Users)
-    private readonly usersRepository: Repository<Users>,
+    @InjectRepository(User)
+    private readonly usersRepository: Repository<User>,
   ) {}
 
-  async findUserByApiIdAndTelegramId(createUserDto: CreateUserDto): Promise<Users> {
-    return await this.usersRepository.findOne({
-      where: createUserDto,
-    });
+  async findUserByApiIdAndTelegramId({ apiIdClient, telegramId }: FindByApiIdAndTgIdDto): Promise<User> {
+    return await this.usersRepository
+      .createQueryBuilder('users')
+      .where('users.api_id_client = :apiIdClient AND users.telegram_id = :telegramId', {
+        apiIdClient,
+        telegramId,
+      })
+      .getOne();
   }
 
-  async createUser(createUserDto: CreateUserDto): Promise<Users> {
-    return await this.usersRepository.save(createUserDto);
+  async createUser(createUserDto: CreateUserDto): Promise<InsertResult> {
+    return await this.usersRepository.createQueryBuilder('users').insert().into(User).values(createUserDto).execute();
   }
 
-  async getCountUsersByApiId(apiIdClient: Users['apiIdClient']): Promise<number> {
-    return await this.usersRepository.count({ where: { apiIdClient } });
+  async getCountUsersByApiId(apiIdClient: number): Promise<number> {
+    return await this.usersRepository
+      .createQueryBuilder('users')
+      .where('users.api_id_client = :apiIdClient', { apiIdClient })
+      .getCount();
   }
 
-  async cleanTable(): Promise<number> {
-    const { affected } = await this.usersRepository.delete({});
-    return affected;
-  }
-
-  async cleanTableByApiId(apiIdClient: Users['apiIdClient']): Promise<number> {
-    const { affected } = await this.usersRepository.delete({ apiIdClient });
-    return affected;
-  }
-
-  async deleteUserByTelegramId(deleteUserDto: DeleteUserDto): Promise<number> {
-    const { affected } = await this.usersRepository.delete(deleteUserDto);
-    return affected;
-  }
-
-  async updateUser(id: UserSession['id'], updateUserDto: UpdateUserDto): Promise<number> {
-    const { affected } = await this.usersRepository.update({ id }, updateUserDto);
-    return affected;
+  async cleanTableByApiId(apiIdClient: number): Promise<DeleteResult> {
+    return await this.usersRepository
+      .createQueryBuilder('users')
+      .delete()
+      .from(User)
+      .where('users.api_id_client = :apiIdClient', { apiIdClient })
+      .execute();
   }
 }

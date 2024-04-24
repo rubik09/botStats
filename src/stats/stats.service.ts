@@ -1,30 +1,29 @@
-import { HttpException, HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import * as cron from 'node-cron';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { Cron } from '@nestjs/schedule';
 
 import { UpdateStatsDto } from './dto/updateStats.dto';
-import { Stats } from './entity/stats.entity';
+import { Stat } from './entity/stats.entity';
 import { StatsRepository } from './stats.repository';
 import statsSending from './statsSending';
+import { KeywordsService } from '../keywords/keywords.service';
 import { CreateUserDto } from '../users/dto/createUser.dto';
 import { UsersService } from '../users/users.service';
 import { UserSessionService } from '../userSession/userSession.service';
-import { cronTimezone, time } from '../utils/consts';
-import {KeywordsService} from "../keywords/keywords.service";
-import {combineKeywords} from "../utils/combineKeywords";
+import { combineKeywords } from '../utils/combineKeywords';
+import { cronTimeDay, cronTimeNight, cronTimezone, time } from '../utils/consts';
 
 @Injectable()
-export class StatsService implements OnModuleInit {
+export class StatsService {
   private readonly logger = new Logger(StatsService.name);
+
   constructor(
     private readonly statsRepository: StatsRepository,
     private readonly usersService: UsersService,
     private readonly userSessionService: UserSessionService,
-    private readonly configService: ConfigService,
     private readonly keywordsService: KeywordsService,
   ) {}
 
-  async getStatsByApiId(apiId: Stats['apiIdClient']): Promise<Stats> {
+  async getStatsByApiId(apiId: Stat['apiIdClient']): Promise<Stat> {
     this.logger.log(`Trying to get stats by apiId: ${apiId}`);
 
     const stats = await this.statsRepository.getStatsByApiId(apiId);
@@ -33,12 +32,12 @@ export class StatsService implements OnModuleInit {
       this.logger.error(`stats with apiId: ${apiId} not found`);
     }
 
-    this.logger.debug(`stats successfully get`);
+    this.logger.debug(`stats successfully get by apiId: ${apiId}`);
 
     return stats;
   }
 
-  async createStats(apiId: Stats['apiIdClient']): Promise<Stats> {
+  async createStats(apiId: Stat['apiIdClient']) {
     this.logger.log(`Trying to create stats by apiId: ${apiId}`);
 
     const stats = await this.statsRepository.getStatsByApiId(apiId);
@@ -48,14 +47,12 @@ export class StatsService implements OnModuleInit {
       throw new HttpException(`stats with apiId: ${apiId}  already exist`, HttpStatus.BAD_REQUEST);
     }
 
-    const newStats = await this.statsRepository.createStats(apiId);
+    const { raw } = await this.statsRepository.createStats(apiId);
 
-    this.logger.debug(`stats successfully created`);
-
-    return newStats;
+    this.logger.debug(`stats successfully created with id: ${raw[0].id}`);
   }
 
-  async updateStatsByApiId(updateStatsDto: UpdateStatsDto, apiId: Stats['apiIdClient']): Promise<number> {
+  async updateStatsByApiId(updateStatsDto: UpdateStatsDto, apiId: Stat['apiIdClient']) {
     this.logger.log(`Trying to update stats by apiId: ${apiId}`);
 
     const userSession = await this.getStatsByApiId(apiId);
@@ -65,31 +62,27 @@ export class StatsService implements OnModuleInit {
       throw new HttpException(`stats with apiId: ${apiId} not found`, HttpStatus.NOT_FOUND);
     }
 
-    const stats = await this.statsRepository.updateStatsByApiId(updateStatsDto, apiId);
+    const { affected } = await this.statsRepository.updateStatsByApiId(updateStatsDto, apiId);
 
-    this.logger.debug(`stats successfully updated`);
-
-    return stats;
+    this.logger.debug(`${affected} stats successfully updated by apiId: ${apiId}`);
   }
 
-  async increaseIncomingMessagesCountToSessionByApiId(apiId: Stats['apiIdClient']): Promise<number> {
+  async increaseIncomingMessagesCountToSessionByApiId(apiId: Stat['apiIdClient']) {
     this.logger.log(`Trying to increase incoming messages count by apiId: ${apiId}`);
 
-    const userSession = this.getStatsByApiId(apiId);
+    const userSession = await this.getStatsByApiId(apiId);
 
     if (!userSession) {
       this.logger.error(`stats with apiId: ${apiId} not found`);
       throw new HttpException(`stats with apiId: ${apiId} not found`, HttpStatus.NOT_FOUND);
     }
 
-    const stats = this.statsRepository.increaseIncomingMessagesCountToSessionByApiId(apiId);
+    const { affected } = await this.statsRepository.increaseIncomingMessagesCountToSessionByApiId(apiId);
 
-    this.logger.debug(`incoming messages count successfully increased`);
-
-    return stats;
+    this.logger.debug(`${affected} incoming messages count successfully increased by apiId: ${apiId}`);
   }
 
-  async increaseOutgoingMessagesCountToSessionByApiId(apiId: Stats['apiIdClient']): Promise<number> {
+  async increaseOutgoingMessagesCountToSessionByApiId(apiId: Stat['apiIdClient']) {
     this.logger.log(`Trying to increase outgoing messages count by apiId: ${apiId}`);
 
     const userSession = await this.getStatsByApiId(apiId);
@@ -99,14 +92,12 @@ export class StatsService implements OnModuleInit {
       throw new HttpException(`stats with apiId: ${apiId} not found`, HttpStatus.NOT_FOUND);
     }
 
-    const stats = await this.statsRepository.increaseOutgoingMessagesCountToSessionByApiId(apiId);
+    const { affected } = await this.statsRepository.increaseOutgoingMessagesCountToSessionByApiId(apiId);
 
-    this.logger.debug(`outgoing messages count successfully increased`);
-
-    return stats;
+    this.logger.debug(`${affected} outgoing messages count successfully increased by apiId: ${apiId}`);
   }
 
-  async incomingMessages(clientInfoStr: string): Promise<void> {
+  async incomingMessages(clientInfoStr: string) {
     this.logger.log(`Trying to add incoming message to stats`);
 
     this.logger.log(`parsing clientInfoStr`);
@@ -128,7 +119,7 @@ export class StatsService implements OnModuleInit {
 
     await this.increaseIncomingMessagesCountToSessionByApiId(apiId);
 
-    this.logger.debug(`incoming message successfully add to stats`);
+    this.logger.debug(`incoming message successfully add to stats by apiId: ${apiId}`);
   }
 
   async outgoingMessages(clientInfoStr: string) {
@@ -148,11 +139,18 @@ export class StatsService implements OnModuleInit {
 
     this.logger.debug({ username, apiId, date: new Date() });
 
+    const keywords = await this.keywordsService.getKeywordsByUserSessionId(id);
+
+    if (!keywords.length) return;
+
     const msgLowerCase = message.toLowerCase().trim();
 
-    const keywords = await this.keywordsService.getKeywordsByMessage(msgLowerCase, id);
+    for (const { keyword, id } of keywords) {
+      const keywordLowerCase = keyword.toLowerCase().trim();
+      const keywordIncludes = msgLowerCase.includes(keywordLowerCase);
 
-    if (keywords) await this.keywordsService.increaseKeywordCountById(keywords.id);
+      if (keywordIncludes) await this.keywordsService.increaseKeywordsCountById(id);
+    }
 
     this.logger.debug(`outgoing message successfully add to stats`);
   }
@@ -166,7 +164,7 @@ export class StatsService implements OnModuleInit {
       if (!statsArr) await this.createStats(apiId);
       const allUsers = await this.usersService.getCountUsersByApiId(apiId);
       const { incomingMessagesCount, outgoingMessagesCount } = await this.getStatsByApiId(apiId);
-      const keywords  = await this.keywordsService.getKeywordsByUserSessionId(id);
+      const keywords = await this.keywordsService.getKeywordsByUserSessionId(id);
       const { personalInfo } = await this.userSessionService.getPersonalInfoByApiId(apiId);
       const { username } = personalInfo;
       let averageMessagesCount = incomingMessagesCount / allUsers;
@@ -202,23 +200,13 @@ export class StatsService implements OnModuleInit {
     }
   }
 
-  onModuleInit(): any {
-    const { CRON_TIME_DAY, CRON_TIME_NIGHT } = this.configService.get('CRON');
+  @Cron(cronTimeDay, { timeZone: cronTimezone })
+  async handleCronDay() {
+    await this.PreSendCalculation(time.DAY);
+  }
 
-    cron.schedule(
-      CRON_TIME_DAY,
-      async () => {
-        await this.PreSendCalculation(time.DAY);
-      },
-      { scheduled: true, timezone: cronTimezone },
-    );
-
-    cron.schedule(
-      CRON_TIME_NIGHT,
-      async () => {
-        await this.PreSendCalculation(time.NIGHT);
-      },
-      { scheduled: true, timezone: cronTimezone },
-    );
+  @Cron(cronTimeNight, { timeZone: cronTimezone })
+  async handleCronNight() {
+    await this.PreSendCalculation(time.NIGHT);
   }
 }

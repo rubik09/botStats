@@ -1,5 +1,6 @@
-import {IsInt, IsString, Min, MinLength} from 'class-validator';
-import {Keyword} from "../entity/keywords.entity";
+import { IsInt, IsString, MaxLength, Min, MinLength } from 'class-validator';
+
+import { Keyword } from '../entity/keywords.entity';
 
 export class KeywordsDto {
   @IsInt()
@@ -7,10 +8,12 @@ export class KeywordsDto {
 
   @IsString()
   @MinLength(2)
+  @MaxLength(20)
   activity: Keyword['activity'];
 
   @IsString()
   @MinLength(1)
+  @MaxLength(20)
   keyword: Keyword['keyword'];
 
   @IsInt()
