@@ -1,13 +1,11 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
-import { DataSource, QueryRunner } from 'typeorm';
+import { DataSource } from 'typeorm';
 
-import { CreateUserSessionDto } from './dto/createUserSession.dto';
 import { UpdateApiInfoDto } from './dto/updateApiInfo.dto';
 import { UpdateUserSessionInfoDto } from './dto/updateUserSession.dto';
 import { UserSession } from './entity/userSession.entity';
 import { UserSessionRepository } from './userSession.repository';
 import { CreatePersonalInfoDto } from '../personalInfo/dto/createPersonalInfo.dto';
-import { PersonalInfoService } from '../personalInfo/personalInfo.service';
 
 @Injectable()
 export class UserSessionService {
@@ -15,7 +13,6 @@ export class UserSessionService {
 
   constructor(
     private userSessionRepository: UserSessionRepository,
-    private personalInfoService: PersonalInfoService,
     private readonly dataSource: DataSource,
   ) {}
 
@@ -140,30 +137,6 @@ export class UserSessionService {
   }
 
   async createUserSessionTransaction(
-    queryRunner: QueryRunner,
-    createUserSessionDto: CreateUserSessionDto,
-  ): Promise<UserSession> {
-    const { telegramId } = createUserSessionDto;
-    this.logger.log(`Trying to create personal info with transaction by telegramId: ${telegramId}`);
-
-    const userSession = await this.userSessionRepository.getUserSessionByTelegramId(telegramId);
-
-    if (userSession) {
-      this.logger.error(`userSession info with telegramId: ${telegramId}`);
-      throw new HttpException(`userSession info with telegramId: ${telegramId}`, HttpStatus.BAD_REQUEST);
-    }
-
-    const newUserSession = await this.userSessionRepository.createUserSessionTransaction(
-      queryRunner,
-      createUserSessionDto,
-    );
-
-    this.logger.debug(`userSession successfully created with id: ${newUserSession.id}`);
-
-    return newUserSession;
-  }
-
-  async createUserSessionAndPersonalInfoTransaction(
     telegramId: UserSession['telegramId'],
     createPersonalInfoDto: CreatePersonalInfoDto,
   ) {
@@ -175,16 +148,13 @@ export class UserSessionService {
     await queryRunner.startTransaction();
 
     try {
-      const { id } = await this.personalInfoService.createPersonalInfoTransaction(queryRunner, createPersonalInfoDto);
-
-      const createUserSessionDto: CreateUserSessionDto = {
+      const { id } = await this.userSessionRepository.createUserSessionTransaction(
+        queryRunner,
+        createPersonalInfoDto,
         telegramId,
-        personalInfo: {
-          id,
-        },
-      };
+      );
 
-      await this.createUserSessionTransaction(queryRunner, createUserSessionDto);
+      this.logger.log(`Successfully created userSession transaction with id: ${id}`);
 
       await queryRunner.commitTransaction();
     } catch (err) {

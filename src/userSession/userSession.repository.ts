@@ -1,11 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, UpdateResult } from 'typeorm';
+import { QueryRunner, Repository, UpdateResult } from 'typeorm';
 
 import { CreateUserSessionDto } from './dto/createUserSession.dto';
 import { UpdateApiInfoDto } from './dto/updateApiInfo.dto';
 import { UpdateUserSessionInfoDto } from './dto/updateUserSession.dto';
 import { UserSession, userSessionStatus } from './entity/userSession.entity';
+import { CreatePersonalInfoDto } from '../personalInfo/dto/createPersonalInfo.dto';
+import { PersonalInfo } from '../personalInfo/entity/personalInfo.entity';
 
 @Injectable()
 export class UserSessionRepository {
@@ -84,9 +86,18 @@ export class UserSessionRepository {
   }
 
   async createUserSessionTransaction(
-    queryRunner: any,
-    createUserSessionDto: CreateUserSessionDto,
+    queryRunner: QueryRunner,
+    createPersonalInfoDto: CreatePersonalInfoDto,
+    telegramId: number,
   ): Promise<UserSession> {
+    const { id } = await queryRunner.manager.save(PersonalInfo, createPersonalInfoDto);
+    const createUserSessionDto: CreateUserSessionDto = {
+      telegramId,
+      personalInfo: {
+        id,
+      },
+    };
+
     return await queryRunner.manager.save(UserSession, createUserSessionDto);
   }
 }

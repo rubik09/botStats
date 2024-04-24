@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 
-import { CreatePersonalInfoDto } from './dto/createPersonalInfo.dto';
 import { UpdatePersonalInfoDto } from './dto/updatePersonalInfo.dto';
 import { PersonalInfo } from './entity/personalInfo.entity';
 
@@ -32,30 +31,5 @@ export class PersonalInfoRepository {
       .delete()
       .where('id = :id', { id })
       .execute();
-  }
-
-  async createPersonalInfoTransaction(
-    queryRunner: any,
-    createPersonalInfoDto: CreatePersonalInfoDto,
-  ): Promise<PersonalInfo> {
-    return await queryRunner.manager.save(PersonalInfo, createPersonalInfoDto);
-  }
-
-  async findPersonalInfoByUsername(username: string): Promise<PersonalInfo> {
-    return await this.personalInfoRepository
-      .createQueryBuilder('personalInfo')
-      .where('personalInfo.username = :username', {
-        username,
-      })
-      .getOne();
-  }
-
-  async findPersonalInfoByPhone(phoneNumber: string): Promise<PersonalInfo> {
-    return await this.personalInfoRepository
-      .createQueryBuilder('personalInfo')
-      .where('personalInfo.phone_number = :phoneNumber', {
-        phoneNumber,
-      })
-      .getOne();
   }
 }
