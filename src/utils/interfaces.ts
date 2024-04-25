@@ -53,3 +53,9 @@ export interface ITelegramInit {
   apiHash: string;
   telegramId: number;
 }
+
+export interface CalculatedKeywords {
+  keyword: string;
+  activity: string;
+  count: number;
+}
