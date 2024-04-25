@@ -7,7 +7,6 @@ export class CreateCalculatedStatsDto extends PickType(CalculatedStatDto, [
   'incomingMessagesCount',
   'usersCount',
   'averageMessagesCount',
-  'keywords',
-  'createdAt',
+  'calculatedKeywords',
   'time',
 ]) {}

@@ -20,7 +20,7 @@ export class CalculatedStat {
   averageMessagesCount: number;
 
   @Column({ type: 'jsonb' })
-  keywords: CalculatedKeywords[];
+  calculatedKeywords: CalculatedKeywords[];
 
   @Column({ type: 'varchar', length: 40 })
   time: string;

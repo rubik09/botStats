@@ -1,4 +1,4 @@
-import { IsDateString, IsInt, IsNumber, IsString, Length, Min } from 'class-validator';
+import { IsInt, IsNumber, IsString, Length, Min } from 'class-validator';
 
 import { CalculatedStat } from '../entity/calculatedStats.entity';
 
@@ -18,15 +18,12 @@ export class CalculatedStatDto {
   @Min(0)
   usersCount: CalculatedStat['usersCount'];
 
-  @IsNumber()
+  @IsNumber({ maxDecimalPlaces: 2 })
   @Min(0)
   averageMessagesCount: CalculatedStat['averageMessagesCount'];
 
   @IsString()
-  keywords: CalculatedStat['keywords'];
-
-  @IsDateString()
-  createdAt: CalculatedStat['createdAt'];
+  calculatedKeywords: CalculatedStat['calculatedKeywords'];
 
   @IsString()
   time: CalculatedStat['time'];
