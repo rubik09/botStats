@@ -9,12 +9,32 @@ export class CalculatedStatsService {
   private readonly logger = new Logger(CalculatedStatsService.name);
   constructor(private calculatedStatsRepository: CalculatedStatsRepository) {}
 
-  async getAllCalculatedStats(): Promise<CalculatedStat[]> {
+  async getAllCalculatedStats(page: number, limit: number): Promise<CalculatedStat[]> {
     this.logger.log(`Trying to get all calculated stats`);
 
-    const [calculatedStats, count] = await this.calculatedStatsRepository.getAllCalculatedStats();
+    const offset = (page - 1) * limit;
+    const [calculatedStats, count] = await this.calculatedStatsRepository.getAllCalculatedStats(offset, limit);
 
     this.logger.debug(`${count} calculated stat successfully get `);
+
+    return calculatedStats;
+  }
+
+  async getCalculatedStatsByUsername(
+    username: CalculatedStat['username'],
+    page: number,
+    limit: number,
+  ): Promise<CalculatedStat[]> {
+    this.logger.log(`Trying to get all calculated stats by username: ${username}`);
+
+    const offset = (page - 1) * limit;
+    const [calculatedStats, count] = await this.calculatedStatsRepository.getCalculatedStatsByUsername(
+      username,
+      offset,
+      limit,
+    );
+
+    this.logger.debug(`${count} calculated stat successfully get by username: ${username}`);
 
     return calculatedStats;
   }

@@ -12,8 +12,25 @@ export class CalculatedStatsRepository {
     private readonly calculatedStatRepository: Repository<CalculatedStat>,
   ) {}
 
-  async getAllCalculatedStats(): Promise<[CalculatedStat[], number]> {
-    return await this.calculatedStatRepository.createQueryBuilder('calculatedStats').getManyAndCount();
+  async getAllCalculatedStats(offset: number, limit: number): Promise<[CalculatedStat[], number]> {
+    return await this.calculatedStatRepository
+      .createQueryBuilder('calculatedStats')
+      .limit(limit)
+      .offset(offset)
+      .getManyAndCount();
+  }
+
+  async getCalculatedStatsByUsername(
+    username: string,
+    offset: number,
+    limit: number,
+  ): Promise<[CalculatedStat[], number]> {
+    return await this.calculatedStatRepository
+      .createQueryBuilder('calculatedStats')
+      .limit(limit)
+      .offset(offset)
+      .where('calculatedStats.username = :username', { username })
+      .getManyAndCount();
   }
 
   async createCalculatedStats(createCalculatedStatsDto: CreateCalculatedStatsDto): Promise<InsertResult> {
