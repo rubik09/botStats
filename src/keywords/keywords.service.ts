@@ -87,4 +87,14 @@ export class KeywordsService {
 
     return keywords;
   }
+
+  async findOneKeywordInMsg(message: string, id: UserSession['id']): Promise<Keyword> {
+    this.logger.log(`Trying to find keyword by UserSessionId: ${id}`);
+
+    const keyword = await this.keywordsRepository.findOneKeywordInMsg(message, id);
+
+    this.logger.debug(`${keyword ? 'keyword ' : 'No keyword '}found by UserSessionId: ${id}`);
+
+    return keyword;
+  }
 }
