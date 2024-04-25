@@ -1,6 +1,6 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-import { Keyword } from '../../keywords/entity/keywords.entity';
+import { CalculatedKeywords } from '../../utils/interfaces';
 
 @Entity({ name: 'calculatedStats' })
 export class CalculatedStat {
@@ -20,14 +20,11 @@ export class CalculatedStat {
   averageMessagesCount: number;
 
   @Column({ type: 'jsonb' })
-  keywords: Keyword[];
+  keywords: CalculatedKeywords[];
 
   @Column({ type: 'varchar', length: 40 })
   time: string;
 
   @CreateDateColumn({ type: 'timestamp without time zone' })
   createdAt: Date;
-
-  @UpdateDateColumn({ type: 'timestamp without time zone' })
-  updatedAt: Date;
 }
