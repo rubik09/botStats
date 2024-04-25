@@ -10,10 +10,10 @@ export class CalculatedStat {
   @Column({ type: 'varchar', length: 32 })
   username: string;
 
-  @Column({ type: 'numeric' })
+  @Column()
   incomingMessagesCount: number;
 
-  @Column({ type: 'numeric' })
+  @Column()
   usersCount: number;
 
   @Column({ type: 'numeric' })
@@ -21,9 +21,6 @@ export class CalculatedStat {
 
   @Column({ type: 'jsonb' })
   keywords: Keyword[];
-
-  @Column({ type: 'date' })
-  date: string;
 
   @Column({ type: 'varchar', length: 40 })
   time: string;

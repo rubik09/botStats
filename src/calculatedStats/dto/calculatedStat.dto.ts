@@ -26,7 +26,7 @@ export class CalculatedStatDto {
   keywords: CalculatedStat['keywords'];
 
   @IsDateString()
-  date: CalculatedStat['date'];
+  createdAt: CalculatedStat['createdAt'];
 
   @IsString()
   time: CalculatedStat['time'];
