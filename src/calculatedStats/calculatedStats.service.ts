@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 
 import { CalculatedStatsRepository } from './calculatedStats.repository';
 import { CreateCalculatedStatsDto } from './dto/createCalculatedStats.dto';
+import { GetStatsByUsernameDto } from './dto/getStatsByUsernameDto';
 import { CalculatedStat } from './entity/calculatedStats.entity';
 
 @Injectable()
@@ -20,11 +21,7 @@ export class CalculatedStatsService {
     return calculatedStats;
   }
 
-  async getCalculatedStatsByUsername(
-    username: CalculatedStat['username'],
-    page: number,
-    limit: number,
-  ): Promise<CalculatedStat[]> {
+  async getCalculatedStatsByUsername({ username, page, limit }: GetStatsByUsernameDto): Promise<CalculatedStat[]> {
     this.logger.log(`Trying to get all calculated stats by username: ${username}`);
 
     const offset = (page - 1) * limit;

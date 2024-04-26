@@ -1,9 +1,9 @@
 import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 
 import { CalculatedStatsService } from './calculatedStats.service';
+import { GetStatsByUsernameDto } from './dto/getStatsByUsernameDto';
 import { CalculatedStat } from './entity/calculatedStats.entity';
 import { JwtGuard } from '../auth/jwtAuth.guard';
-import { baseLimit, basePage } from '../utils/consts';
 
 @Controller('calculatedStats')
 export class CalculatedStatsController {
@@ -12,8 +12,8 @@ export class CalculatedStatsController {
   @Get()
   @UseGuards(JwtGuard)
   async getAllCalculatedStats(
-    @Query('page') page = basePage,
-    @Query('limit') limit = baseLimit,
+    @Query('page') page: number,
+    @Query('limit') limit: number,
   ): Promise<CalculatedStat[]> {
     return this.calculatedStatsService.getAllCalculatedStats(page, limit);
   }
@@ -22,9 +22,14 @@ export class CalculatedStatsController {
   @UseGuards(JwtGuard)
   async getCalculatedStatsByUsername(
     @Param('username') username: CalculatedStat['username'],
-    @Query('page') page = basePage,
-    @Query('limit') limit = baseLimit,
+    @Query('page') page: number,
+    @Query('limit') limit: number,
   ): Promise<CalculatedStat[]> {
-    return this.calculatedStatsService.getCalculatedStatsByUsername(username, page, limit);
+    const getStatsByUsernameDto: GetStatsByUsernameDto = {
+      username,
+      page,
+      limit
+    }
+    return this.calculatedStatsService.getCalculatedStatsByUsername(getStatsByUsernameDto);
   }
 }

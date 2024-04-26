@@ -19,6 +19,3 @@ export const cronTimezone = 'Europe/Moscow';
 
 export const cronTimeDay = CRON_TIME_DAY;
 export const cronTimeNight = CRON_TIME_NIGHT;
-
-export const basePage = 1;
-export const baseLimit = 30;
