@@ -1,7 +1,6 @@
 import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 
 import { CalculatedStatsService } from './calculatedStats.service';
-import { GetStatsByUsernameDto } from './dto/getStatsByUsernameDto';
 import { CalculatedStat } from './entity/calculatedStats.entity';
 import { JwtGuard } from '../auth/jwtAuth.guard';
 
@@ -11,10 +10,7 @@ export class CalculatedStatsController {
 
   @Get()
   @UseGuards(JwtGuard)
-  async getAllCalculatedStats(
-    @Query('page') page: number,
-    @Query('limit') limit: number,
-  ): Promise<CalculatedStat[]> {
+  async getAllCalculatedStats(@Query('page') page: number, @Query('limit') limit: number): Promise<CalculatedStat[]> {
     return this.calculatedStatsService.getAllCalculatedStats(page, limit);
   }
 
@@ -25,11 +21,6 @@ export class CalculatedStatsController {
     @Query('page') page: number,
     @Query('limit') limit: number,
   ): Promise<CalculatedStat[]> {
-    const getStatsByUsernameDto: GetStatsByUsernameDto = {
-      username,
-      page,
-      limit
-    }
-    return this.calculatedStatsService.getCalculatedStatsByUsername(getStatsByUsernameDto);
+    return this.calculatedStatsService.getCalculatedStatsByUsername(username, page, limit);
   }
 }

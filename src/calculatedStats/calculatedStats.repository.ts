@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { InsertResult, Repository } from 'typeorm';
 
 import { CreateCalculatedStatsDto } from './dto/createCalculatedStats.dto';
+import { GetStatsByUsernameDto } from './dto/getStatsByUsernameDto';
 import { CalculatedStat } from './entity/calculatedStats.entity';
 
 @Injectable()
@@ -20,11 +21,11 @@ export class CalculatedStatsRepository {
       .getManyAndCount();
   }
 
-  async getCalculatedStatsByUsername(
-    username: string,
-    offset: number,
-    limit: number,
-  ): Promise<[CalculatedStat[], number]> {
+  async getCalculatedStatsByUsername({
+    limit,
+    offset,
+    username,
+  }: GetStatsByUsernameDto): Promise<[CalculatedStat[], number]> {
     return await this.calculatedStatRepository
       .createQueryBuilder('calculatedStats')
       .limit(limit)
