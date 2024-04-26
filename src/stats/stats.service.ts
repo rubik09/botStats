@@ -139,9 +139,9 @@ export class StatsService {
 
     this.logger.debug({ username, apiId, date: new Date() });
 
-    const keywordIncludes = await this.keywordsService.findKeywordByUserSessionIdAndMessage(message, id);
+    const findKeywordInMessage = await this.keywordsService.findKeywordByUserSessionIdAndMessage(message, id);
 
-    if (keywordIncludes) await this.keywordsService.increaseKeywordsCountById(keywordIncludes.id);
+    if (findKeywordInMessage) await this.keywordsService.increaseKeywordsCountById(findKeywordInMessage.id);
 
     this.logger.debug(`outgoing message successfully add to stats`);
   }
