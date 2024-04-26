@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { InsertResult, Repository } from 'typeorm';
 
 import { CreateCalculatedStatsDto } from './dto/createCalculatedStats.dto';
-import { GetStatsByUsernameDto } from './dto/getStatsByUsernameDto';
+import { GetStatsByUsernameDto } from './dto/getStatsByUsername.dto';
 import { CalculatedStat } from './entity/calculatedStats.entity';
 
 @Injectable()
