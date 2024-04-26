@@ -63,4 +63,12 @@ export class KeywordsRepository {
       .where('keywords.user_session_id = :userSessionId', { userSessionId })
       .getManyAndCount();
   }
+
+  async findKeywordByUserSessionIdAndMessage(message: string, userSessionId: number): Promise<Keyword> {
+    return await this.keywordsRepository
+      .createQueryBuilder('keywords')
+      .where('keywords.user_session_id = :userSessionId', { userSessionId })
+      .andWhere(":message ILike CONCAT('%', TRIM(BOTH '\"' FROM keywords.keyword::text), '%')", { message })
+      .getOne();
+  }
 }

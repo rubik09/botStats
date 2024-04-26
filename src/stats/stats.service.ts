@@ -139,18 +139,9 @@ export class StatsService {
 
     this.logger.debug({ username, apiId, date: new Date() });
 
-    const keywords = await this.keywordsService.getKeywordsByUserSessionId(id);
+    const findKeywordInMessage = await this.keywordsService.findKeywordByUserSessionIdAndMessage(message, id);
 
-    if (!keywords.length) return;
-
-    const msgLowerCase = message.toLowerCase().trim();
-
-    for (const { keyword, id } of keywords) {
-      const keywordLowerCase = keyword.toLowerCase().trim();
-      const keywordIncludes = msgLowerCase.includes(keywordLowerCase);
-
-      if (keywordIncludes) await this.keywordsService.increaseKeywordsCountById(id);
-    }
+    if (findKeywordInMessage) await this.keywordsService.increaseKeywordsCountById(findKeywordInMessage.id);
 
     this.logger.debug(`outgoing message successfully add to stats`);
   }
