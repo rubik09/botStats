@@ -64,7 +64,7 @@ export class KeywordsRepository {
       .getManyAndCount();
   }
 
-  async findKeywordByUserSessionId(message: string, userSessionId: number): Promise<Keyword> {
+  async findKeywordByUserSessionIdAndMessage(message: string, userSessionId: number): Promise<Keyword> {
     return await this.keywordsRepository
       .createQueryBuilder('keywords')
       .where('keywords.user_session_id = :userSessionId', { userSessionId })

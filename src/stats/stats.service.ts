@@ -139,7 +139,7 @@ export class StatsService {
 
     this.logger.debug({ username, apiId, date: new Date() });
 
-    const keywordIncludes = await this.keywordsService.findKeywordByUserSessionId(message, id);
+    const keywordIncludes = await this.keywordsService.findKeywordByUserSessionIdAndMessage(message, id);
 
     if (keywordIncludes) await this.keywordsService.increaseKeywordsCountById(keywordIncludes.id);
 

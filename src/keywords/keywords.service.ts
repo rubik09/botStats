@@ -88,10 +88,10 @@ export class KeywordsService {
     return keywords;
   }
 
-  async findKeywordByUserSessionId(message: string, id: UserSession['id']): Promise<Keyword> {
+  async findKeywordByUserSessionIdAndMessage(message: string, id: UserSession['id']): Promise<Keyword> {
     this.logger.log(`Trying to find keyword by UserSessionId: ${id}`);
 
-    const foundKeyword = await this.keywordsRepository.findKeywordByUserSessionId(message, id);
+    const foundKeyword = await this.keywordsRepository.findKeywordByUserSessionIdAndMessage(message, id);
 
     this.logger.debug(`${foundKeyword ? 'keyword ' : 'No keyword '}found by UserSessionId: ${id}`);
 
