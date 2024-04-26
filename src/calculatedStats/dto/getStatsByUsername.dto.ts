@@ -5,7 +5,7 @@ import { CalculatedStatDto } from './calculatedStat.dto';
 
 export class GetStatsByUsernameDto extends PickType(CalculatedStatDto, ['username']) {
   @IsNumber()
-  @Min(1)
+  @Min(0)
   offset: number;
 
   @IsNumber()
