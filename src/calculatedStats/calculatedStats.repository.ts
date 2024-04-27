@@ -16,6 +16,7 @@ export class CalculatedStatsRepository {
   async getAllCalculatedStats(offset: number, limit: number): Promise<[CalculatedStat[], number]> {
     return await this.calculatedStatRepository
       .createQueryBuilder('calculatedStats')
+      .orderBy('calculatedStats.created_at', 'DESC')
       .limit(limit)
       .offset(offset)
       .getManyAndCount();
@@ -28,6 +29,7 @@ export class CalculatedStatsRepository {
   }: GetStatsByUsernameDto): Promise<[CalculatedStat[], number]> {
     return await this.calculatedStatRepository
       .createQueryBuilder('calculatedStats')
+      .orderBy('calculatedStats.created_at', 'DESC')
       .limit(limit)
       .offset(offset)
       .where('calculatedStats.username = :username', { username })
