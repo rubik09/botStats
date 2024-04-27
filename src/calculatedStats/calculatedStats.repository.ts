@@ -18,6 +18,7 @@ export class CalculatedStatsRepository {
       .createQueryBuilder('calculatedStats')
       .limit(limit)
       .offset(offset)
+      .orderBy('calculatedStats.created_at', 'DESC')
       .getManyAndCount();
   }
 
@@ -31,6 +32,7 @@ export class CalculatedStatsRepository {
       .limit(limit)
       .offset(offset)
       .where('calculatedStats.username = :username', { username })
+      .orderBy('calculatedStats.created_at', 'DESC')
       .getManyAndCount();
   }
 
