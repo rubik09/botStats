@@ -170,8 +170,8 @@ export class StatsService {
         outgoingMessages: outgoingMessagesCount,
       });
 
-      const calculatedKeywords = combineKeywords(keywords).map(({ keyword, activity, count }) => ({
-        keyword,
+      const calculatedKeywords = combineKeywords(keywords).map(({ keywords, activity, count }) => ({
+        keywords,
         activity,
         count,
       }));

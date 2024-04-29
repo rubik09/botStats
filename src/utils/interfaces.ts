@@ -55,7 +55,7 @@ export interface ITelegramInit {
 }
 
 export interface CalculatedKeywords {
-  keyword: string;
+  keywords: { keyword: string; count: number }[];
   activity: string;
   count: number;
 }
