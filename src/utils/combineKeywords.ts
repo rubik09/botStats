@@ -6,11 +6,8 @@ export const combineKeywords = (keywords: Keyword[]) => {
     keywords.reduce((uniqueActivities: TUniqueActivities, keyword: Keyword) => {
       const { activity, count } = keyword;
       uniqueActivities[activity]
-        ? ((uniqueActivities[activity].count += count), uniqueActivities[activity].keywords.push(keyword))
-        : (uniqueActivities[activity] = {
-            ...keyword,
-            keywords: [keyword],
-          });
+        ? (uniqueActivities[activity].count += count)
+        : (uniqueActivities[activity] = { ...keyword });
       return uniqueActivities;
     }, {}),
   );

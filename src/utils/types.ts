@@ -7,12 +7,7 @@ export type TSetupSteps = {
 };
 
 export type TUniqueActivities = {
-  [key: string]: { activity: string; count: number; keywords: TKeyword[] };
-};
-
-export type TKeyword = {
-  keyword: string;
-  count: number;
+  [key: string]: Keyword;
 };
 
 export type TToken = { token: string };

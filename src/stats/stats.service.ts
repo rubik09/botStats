@@ -154,9 +154,13 @@ export class StatsService {
     const activeAccounts = await this.userSessionService.getActiveUserSessions();
 
     for (const account of activeAccounts) {
+      this.logger.log(`Creating stats for account with api_id: ${account.apiId}`);
       const { apiId, id } = account;
       const statsArr = await this.getStatsByApiId(apiId);
-      if (!statsArr) await this.createStats(apiId);
+      if (!statsArr) {
+        this.logger.log(`Stats not found for api_id: ${apiId}, creating new stats...`);
+        await this.createStats(apiId);
+      }
       const usersCount = await this.usersService.getCountUsersByApiId(apiId);
       const { incomingMessagesCount, outgoingMessagesCount } = await this.getStatsByApiId(apiId);
       const keywords = await this.keywordsService.getKeywordsByUserSessionId(id);
@@ -166,14 +170,13 @@ export class StatsService {
       if (incomingMessagesCount < 1 || usersCount < 1) averageMessagesCount = 0;
 
       this.logger.debug({
-        username: username,
+        username,
         api_id: apiId,
         incomingMessages: incomingMessagesCount,
         outgoingMessages: outgoingMessagesCount,
       });
 
-      const calculatedKeywords = combineKeywords(keywords).map(({ keywords, activity, count }) => ({
-        keywords,
+      const calculatedKeywords = combineKeywords(keywords).map(({ activity, count }) => ({
         activity,
         count,
       }));

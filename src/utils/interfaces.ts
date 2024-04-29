@@ -54,8 +54,9 @@ export interface ITelegramInit {
   telegramId: number;
 }
 
+//Если нам важно activity и count то предлагаю здесь убрать keyword и назвать примерно CalculatedActivityCount и потом изменить дальше по коду
 export interface CalculatedKeywords {
-  keywords: { keyword: string; count: number }[];
+  // keyword: string;
   activity: string;
   count: number;
 }
