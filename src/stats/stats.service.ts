@@ -149,6 +149,8 @@ export class StatsService {
   }
 
   async PreSendCalculation(timeMessage: string) {
+    this.logger.log(`Trying to create stats timeMessage: ${timeMessage}`);
+
     const activeAccounts = await this.userSessionService.getActiveUserSessions();
 
     for (const account of activeAccounts) {
@@ -198,6 +200,8 @@ export class StatsService {
       await this.usersService.cleanTableByApiId(apiId);
 
       await this.keywordsService.resetCountByUserSessionId(id);
+
+      this.logger.debug(`stats successfully created timeMessage: ${timeMessage}`);
     }
   }
 
