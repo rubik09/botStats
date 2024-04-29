@@ -10,5 +10,6 @@ import { CalculatedStat } from './entity/calculatedStats.entity';
   imports: [TypeOrmModule.forFeature([CalculatedStat])],
   providers: [CalculatedStatsService, CalculatedStatsRepository],
   controllers: [CalculatedStatsController],
+  exports: [CalculatedStatsService],
 })
 export class CalculatedStatsModule {}
