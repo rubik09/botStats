@@ -54,8 +54,7 @@ export interface ITelegramInit {
   telegramId: number;
 }
 
-export interface CalculatedKeywords {
-  keyword: string;
+export interface CalculatedActivityKeywords {
   activity: string;
   count: number;
 }
