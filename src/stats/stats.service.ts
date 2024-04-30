@@ -153,9 +153,8 @@ export class StatsService {
 
     const activeAccounts = await this.userSessionService.getActiveUserSessions();
 
-    for (const account of activeAccounts) {
-      this.logger.log(`Creating stats for account with api_id: ${account.apiId}`);
-      const { apiId, id } = account;
+    for (const { apiId, id } of activeAccounts) {
+      this.logger.log(`Creating stats for account with api_id: ${apiId}`);
       const statsArr = await this.getStatsByApiId(apiId);
       if (!statsArr) {
         this.logger.log(`Stats not found for api_id: ${apiId}, creating new stats...`);
