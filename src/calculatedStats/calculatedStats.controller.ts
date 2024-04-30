@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 
 import { CalculatedStatsService } from './calculatedStats.service';
 import { CalculatedStat } from './entity/calculatedStats.entity';
@@ -10,23 +10,15 @@ export class CalculatedStatsController {
 
   @Get()
   @UseGuards(JwtGuard)
-  async getAllCalculatedStats(@Query('page') page: number, @Query('limit') limit: number): Promise<CalculatedStat[]> {
-    return this.calculatedStatsService.getAllCalculatedStats(page, limit);
-  }
-
-  @Get('count')
-  @UseGuards(JwtGuard)
-  async getCountOfCalculatedStats(): Promise<number> {
-    return this.calculatedStatsService.getCountOfCalculatedStats();
-  }
-
-  @Get(':username')
-  @UseGuards(JwtGuard)
-  async getCalculatedStatsByUsername(
-    @Param('username') username: CalculatedStat['username'],
+  async getCalculatedStats(
     @Query('page') page: number,
     @Query('limit') limit: number,
-  ): Promise<CalculatedStat[]> {
-    return this.calculatedStatsService.getCalculatedStatsByUsername(username, page, limit);
+    @Query('username') username: CalculatedStat['username'],
+  ): Promise<{ calculatedStats: CalculatedStat[]; count: number }> {
+    const [calculatedStats, count] = await this.calculatedStatsService.getCalculatedStats(username, page, limit);
+    return {
+      calculatedStats,
+      count,
+    };
   }
 }

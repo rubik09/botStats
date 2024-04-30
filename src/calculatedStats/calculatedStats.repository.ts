@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { InsertResult, Repository } from 'typeorm';
 
 import { CreateCalculatedStatsDto } from './dto/createCalculatedStats.dto';
-import { GetStatsByUsernameDto } from './dto/getStatsByUsername.dto';
+import { GetStatsDto } from './dto/getStatsDto';
 import { CalculatedStat } from './entity/calculatedStats.entity';
 
 @Injectable()
@@ -13,26 +13,13 @@ export class CalculatedStatsRepository {
     private readonly calculatedStatRepository: Repository<CalculatedStat>,
   ) {}
 
-  async getAllCalculatedStats(offset: number, limit: number): Promise<[CalculatedStat[], number]> {
+  async getCalculatedStats({ limit, offset, username }: GetStatsDto): Promise<[CalculatedStat[], number]> {
     return await this.calculatedStatRepository
       .createQueryBuilder('calculatedStats')
       .limit(limit)
       .offset(offset)
       .orderBy('calculatedStats.created_at', 'DESC')
-      .getManyAndCount();
-  }
-
-  async getCalculatedStatsByUsername({
-    limit,
-    offset,
-    username,
-  }: GetStatsByUsernameDto): Promise<[CalculatedStat[], number]> {
-    return await this.calculatedStatRepository
-      .createQueryBuilder('calculatedStats')
-      .limit(limit)
-      .offset(offset)
-      .where('calculatedStats.username = :username', { username })
-      .orderBy('calculatedStats.created_at', 'DESC')
+      .where(username ? 'calculatedStats.username ILIKE :username' : '1=1', { username })
       .getManyAndCount();
   }
 
@@ -43,9 +30,5 @@ export class CalculatedStatsRepository {
       .into(CalculatedStat)
       .values(createCalculatedStatsDto)
       .execute();
-  }
-
-  async getCountOfCalculatedStats(): Promise<number> {
-    return await this.calculatedStatRepository.createQueryBuilder('calculatedStats').getCount();
   }
 }
