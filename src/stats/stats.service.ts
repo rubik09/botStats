@@ -4,7 +4,8 @@ import { Cron } from '@nestjs/schedule';
 import { UpdateStatsDto } from './dto/updateStats.dto';
 import { Stat } from './entity/stats.entity';
 import { StatsRepository } from './stats.repository';
-import statsSending from './statsSending';
+import { CalculatedStatsService } from '../calculatedStats/calculatedStats.service';
+import { CreateCalculatedStatsDto } from '../calculatedStats/dto/createCalculatedStats.dto';
 import { KeywordsService } from '../keywords/keywords.service';
 import { CreateUserDto } from '../users/dto/createUser.dto';
 import { UsersService } from '../users/users.service';
@@ -21,6 +22,7 @@ export class StatsService {
     private readonly usersService: UsersService,
     private readonly userSessionService: UserSessionService,
     private readonly keywordsService: KeywordsService,
+    private readonly calculatedStatsService: CalculatedStatsService,
   ) {}
 
   async getStatsByApiId(apiId: Stat['apiIdClient']): Promise<Stat> {
@@ -147,35 +149,47 @@ export class StatsService {
   }
 
   async PreSendCalculation(timeMessage: string) {
+    this.logger.log(`Trying to create stats timeMessage: ${timeMessage}`);
+
     const activeAccounts = await this.userSessionService.getActiveUserSessions();
 
-    for (const account of activeAccounts) {
-      const { apiId, id } = account;
+    for (const { apiId, id } of activeAccounts) {
+      this.logger.log(`Creating stats for account with api_id: ${apiId}`);
       const statsArr = await this.getStatsByApiId(apiId);
-      if (!statsArr) await this.createStats(apiId);
-      const allUsers = await this.usersService.getCountUsersByApiId(apiId);
+      if (!statsArr) {
+        this.logger.log(`Stats not found for api_id: ${apiId}, creating new stats...`);
+        await this.createStats(apiId);
+      }
+      const usersCount = await this.usersService.getCountUsersByApiId(apiId);
       const { incomingMessagesCount, outgoingMessagesCount } = await this.getStatsByApiId(apiId);
       const keywords = await this.keywordsService.getKeywordsByUserSessionId(id);
       const { personalInfo } = await this.userSessionService.getPersonalInfoByApiId(apiId);
       const { username } = personalInfo;
-      let averageMessagesCount = incomingMessagesCount / allUsers;
-      if (incomingMessagesCount < 1 || allUsers < 1) averageMessagesCount = 0;
+      let averageMessagesCount = incomingMessagesCount / usersCount;
+      if (incomingMessagesCount < 1 || usersCount < 1) averageMessagesCount = 0;
 
       this.logger.debug({
-        username: username,
+        username,
         api_id: apiId,
         incomingMessages: incomingMessagesCount,
         outgoingMessages: outgoingMessagesCount,
       });
 
-      await statsSending(
+      const calculatedActivityCount = combineKeywords(keywords).map(({ activity, count }) => ({
+        activity,
+        count,
+      }));
+
+      const createCalculatedStatsDto: CreateCalculatedStatsDto = {
         username,
         incomingMessagesCount,
-        allUsers,
-        Number(averageMessagesCount.toFixed(2)),
-        combineKeywords(keywords),
-        timeMessage,
-      );
+        usersCount,
+        averageMessagesCount: Number(averageMessagesCount.toFixed(2)),
+        calculatedKeywords: calculatedActivityCount,
+        time: timeMessage,
+      };
+
+      await this.calculatedStatsService.createCalculatedStats(createCalculatedStatsDto);
 
       const updateStatsDto: UpdateStatsDto = <UpdateStatsDto>{
         incomingMessagesCount: 0,
@@ -188,6 +202,8 @@ export class StatsService {
       await this.usersService.cleanTableByApiId(apiId);
 
       await this.keywordsService.resetCountByUserSessionId(id);
+
+      this.logger.debug(`stats successfully created timeMessage: ${timeMessage}`);
     }
   }
 
