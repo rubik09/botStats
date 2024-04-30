@@ -1,6 +1,6 @@
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-import { CalculatedKeywords } from '../../utils/interfaces';
+import { CalculatedActivityKeywords } from '../../utils/interfaces';
 
 @Entity({ name: 'calculatedStats' })
 export class CalculatedStat {
@@ -20,7 +20,7 @@ export class CalculatedStat {
   averageMessagesCount: number;
 
   @Column({ type: 'jsonb' })
-  calculatedKeywords: CalculatedKeywords[];
+  calculatedKeywords:  CalculatedActivityKeywords[];
 
   @Column({ type: 'varchar', length: 40 })
   time: string;

@@ -176,7 +176,7 @@ export class StatsService {
         outgoingMessages: outgoingMessagesCount,
       });
 
-      const calculatedKeywords = combineKeywords(keywords).map(({ activity, count }) => ({
+      const calculatedActivityCount = combineKeywords(keywords).map(({ activity, count }) => ({
         activity,
         count,
       }));
@@ -186,7 +186,7 @@ export class StatsService {
         incomingMessagesCount,
         usersCount,
         averageMessagesCount: Number(averageMessagesCount.toFixed(2)),
-        calculatedKeywords,
+        calculatedKeywords: calculatedActivityCount,
         time: timeMessage,
       };
 
