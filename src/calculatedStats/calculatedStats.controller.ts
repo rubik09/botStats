@@ -14,6 +14,12 @@ export class CalculatedStatsController {
     return this.calculatedStatsService.getAllCalculatedStats(page, limit);
   }
 
+  @Get('count')
+  @UseGuards(JwtGuard)
+  async getCountOfCalculatedStats(): Promise<number> {
+    return this.calculatedStatsService.getCountOfCalculatedStats();
+  }
+
   @Get(':username')
   @UseGuards(JwtGuard)
   async getCalculatedStatsByUsername(

@@ -209,11 +209,11 @@ export class StatsService {
 
   @Cron(cronTimeDay, { timeZone: cronTimezone })
   async handleCronDay() {
-    await this.PreSendCalculation(time.DAY);
+    await this.PreSendCalculation(time.PER_NIGHT);
   }
 
   @Cron(cronTimeNight, { timeZone: cronTimezone })
   async handleCronNight() {
-    await this.PreSendCalculation(time.NIGHT);
+    await this.PreSendCalculation(time.PER_DAY);
   }
 }
