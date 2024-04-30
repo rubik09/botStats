@@ -51,4 +51,14 @@ export class CalculatedStatsService {
 
     this.logger.debug(`calculated stats successfully created with id: ${raw[0].id}`);
   }
+
+  async getCountOfCalculatedStats(): Promise<number> {
+    this.logger.log(`Trying to get count of all calculated stats`);
+
+    const count = await this.calculatedStatsRepository.getCountOfCalculatedStats();
+
+    this.logger.debug(`${count} calculated stat successfully counted `);
+
+    return count;
+  }
 }

@@ -11,8 +11,8 @@ export const enum setupSteps {
 }
 
 export const time = {
-  DAY: '10:00-00:00 - day',
-  NIGHT: '00:00-10:00 - night',
+  PER_DAY: '10:00-00:00 - day',
+  PER_NIGHT: '00:00-10:00 - night',
 };
 
 export const cronTimezone = 'Europe/Moscow';

@@ -44,4 +44,8 @@ export class CalculatedStatsRepository {
       .values(createCalculatedStatsDto)
       .execute();
   }
+
+  async getCountOfCalculatedStats(): Promise<number> {
+    return await this.calculatedStatRepository.createQueryBuilder('calculatedStats').getCount();
+  }
 }
