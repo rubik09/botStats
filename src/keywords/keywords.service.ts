@@ -19,7 +19,6 @@ export class KeywordsService {
     this.logger.log(`Trying to create keyword by id: ${id}`);
 
     const userSession = await this.userSessionService.getUserSessionById(id);
-
     const existingKeyword = await this.keywordsRepository.findKeywordByUserSession(id, keyword);
 
     if (existingKeyword) {
@@ -28,7 +27,8 @@ export class KeywordsService {
     }
 
     const keywordDto: CreateKeywordsDto = {
-      ...{ keyword, activity },
+      keyword,
+      activity,
       userSession,
     };
 
@@ -52,27 +52,24 @@ export class KeywordsService {
     this.logger.debug(`${affected} keyword successfully deleted by id: ${id}`);
   }
 
-  async updateKeyword(id: Keyword['id'], updateKeywordsDto: UpdateKeywordsDto) {
+  async updateKeyword(id: Keyword['id'], { keyword, activity }: UpdateKeywordsDto) {
     this.logger.log(`Trying to update keyword by id: ${id}`);
 
-    const keyword = await this.keywordsRepository.getKeywordById(id);
+    const keywordById = await this.keywordsRepository.getKeywordById(id);
 
-    if (!keyword) {
+    if (!keywordById) {
       this.logger.error(`keyword with keywordId: ${id} not exist`);
       throw new HttpException(`keyword with keywordId: ${id} not exist`, HttpStatus.BAD_REQUEST);
     }
 
-    const { keyword: updateKeyword } = updateKeywordsDto;
-
-    const existingKeyword = await this.keywordsRepository.findKeywordByUserSession(
-      keyword.userSession.id,
-      updateKeyword,
-    );
+    const existingKeyword = await this.keywordsRepository.findKeywordByUserSession(keywordById.userSession.id, keyword);
 
     if (existingKeyword) {
-      this.logger.error(`keyword: ${updateKeyword} already exist`);
-      throw new HttpException(`keyword: ${updateKeyword} already exist`, HttpStatus.CONFLICT);
+      this.logger.error(`keyword: ${keyword} already exist`);
+      throw new HttpException(`keyword: ${keyword} already exist`, HttpStatus.CONFLICT);
     }
+
+    const updateKeywordsDto: UpdateKeywordsDto = { keyword, activity };
 
     const { affected } = await this.keywordsRepository.updateNewKeyword(id, updateKeywordsDto);
 
