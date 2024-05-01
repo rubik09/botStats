@@ -40,9 +40,9 @@ export class KeywordsService {
   async deleteKeyword(id: Keyword['id']) {
     this.logger.log(`Trying to delete keyword by id: ${id}`);
 
-    const keyword = await this.keywordsRepository.getKeywordById(id);
+    const keywordById = await this.keywordsRepository.getKeywordById(id);
 
-    if (!keyword) {
+    if (!keywordById) {
       this.logger.error(`keyword with keywordId: ${id} not exist`);
       throw new HttpException(`keyword with keywordId: ${id} not exist`, HttpStatus.BAD_REQUEST);
     }
@@ -69,9 +69,7 @@ export class KeywordsService {
       throw new HttpException(`keyword: ${keyword} already exist`, HttpStatus.CONFLICT);
     }
 
-    const updateKeywordsDto: UpdateKeywordsDto = { keyword, activity };
-
-    const { affected } = await this.keywordsRepository.updateNewKeyword(id, updateKeywordsDto);
+    const { affected } = await this.keywordsRepository.updateNewKeyword(id, { keyword, activity });
 
     this.logger.debug(`${affected} keyword successfully updated by id: ${id}`);
   }
