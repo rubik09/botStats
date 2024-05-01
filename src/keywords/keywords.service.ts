@@ -24,7 +24,7 @@ export class KeywordsService {
 
     if (existingKeyword) {
       this.logger.error(`keyword: ${keyword} already exist`);
-      throw new HttpException(`keyword: $keyword} already exist`, HttpStatus.CONFLICT);
+      throw new HttpException(`keyword: ${keyword} already exist`, HttpStatus.CONFLICT);
     }
 
     const keywordDto: CreateKeywordsDto = {
@@ -60,6 +60,18 @@ export class KeywordsService {
     if (!keyword) {
       this.logger.error(`keyword with keywordId: ${id} not exist`);
       throw new HttpException(`keyword with keywordId: ${id} not exist`, HttpStatus.BAD_REQUEST);
+    }
+
+    const { keyword: updateKeyword } = updateKeywordsDto;
+
+    const existingKeyword = await this.keywordsRepository.findKeywordByUserSession(
+      keyword.userSession.id,
+      updateKeyword,
+    );
+
+    if (existingKeyword) {
+      this.logger.error(`keyword: ${updateKeyword} already exist`);
+      throw new HttpException(`keyword: ${updateKeyword} already exist`, HttpStatus.CONFLICT);
     }
 
     const { affected } = await this.keywordsRepository.updateNewKeyword(id, updateKeywordsDto);
