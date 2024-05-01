@@ -24,7 +24,7 @@ export class KeywordsService {
 
     if (existingKeyword) {
       this.logger.error(`keyword: ${keyword} already exist`);
-      throw new HttpException(`keyword: $keyword} already exist`, HttpStatus.CONFLICT);
+      throw new HttpException(`keyword: ${keyword} already exist`, HttpStatus.CONFLICT);
     }
 
     const keywordDto: CreateKeywordsDto = {
@@ -52,7 +52,7 @@ export class KeywordsService {
     this.logger.debug(`${affected} keyword successfully deleted by id: ${id}`);
   }
 
-  async updateKeyword(id: Keyword['id'], updateKeywordsDto: UpdateKeywordsDto) {
+  async updateKeyword(id: Keyword['id'], { keyword : updateKeyword, activity }: UpdateKeywordsDto) {
     this.logger.log(`Trying to update keyword by id: ${id}`);
 
     const keyword = await this.keywordsRepository.getKeywordById(id);
@@ -62,7 +62,14 @@ export class KeywordsService {
       throw new HttpException(`keyword with keywordId: ${id} not exist`, HttpStatus.BAD_REQUEST);
     }
 
-    const { affected } = await this.keywordsRepository.updateNewKeyword(id, updateKeywordsDto);
+    const existingKeyword = await this.keywordsRepository.findKeywordByUserSession(keyword.userSession.id, updateKeyword);
+
+    if (existingKeyword) {
+      this.logger.error(`keyword: ${updateKeyword} already exist`);
+      throw new HttpException(`keyword: ${updateKeyword} already exist`, HttpStatus.CONFLICT);
+    }
+
+    const { affected } = await this.keywordsRepository.updateNewKeyword(id, updateKeyword, activity);
 
     this.logger.debug(`${affected} keyword successfully updated by id: ${id}`);
   }

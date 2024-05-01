@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, InsertResult, Repository, UpdateResult } from 'typeorm';
 
 import { CreateKeywordsDto } from './dto/createKeywords.dto';
-import { UpdateKeywordsDto } from './dto/updateKeywords.dto';
 import { Keyword } from './entity/keywords.entity';
 
 @Injectable()
@@ -22,11 +21,11 @@ export class KeywordsRepository {
       .execute();
   }
 
-  async updateNewKeyword(id: number, updateKeywordsDto: UpdateKeywordsDto): Promise<UpdateResult> {
+  async updateNewKeyword(id: number, keyword: string, activity: string): Promise<UpdateResult> {
     return await this.keywordsRepository
       .createQueryBuilder('keywords')
       .update(Keyword)
-      .set(updateKeywordsDto)
+      .set({ keyword, activity })
       .where('id = :id', { id })
       .execute();
   }
@@ -36,7 +35,11 @@ export class KeywordsRepository {
   }
 
   async getKeywordById(id: number): Promise<Keyword> {
-    return await this.keywordsRepository.createQueryBuilder('keywords').where('id = :id', { id }).getOne();
+    return await this.keywordsRepository
+      .createQueryBuilder('keywords')
+      .leftJoinAndSelect('keywords.userSession', 'userSession')
+      .where('keywords.id = :id', { id })
+      .getOne();
   }
 
   async resetCountByUserSessionId(id: number): Promise<UpdateResult> {
