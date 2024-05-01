@@ -22,6 +22,6 @@ export class Keyword {
   @UpdateDateColumn({ type: 'timestamp without time zone' })
   updatedAt: Date;
 
-  @ManyToOne(() => UserSession, (userSession) => userSession.id, { onDelete: 'CASCADE' })
+  @ManyToOne(() => UserSession, (userSession) => userSession.id, { onDelete: 'CASCADE', eager: true })
   userSession: number;
 }
