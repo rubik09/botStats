@@ -3,7 +3,7 @@ import { IsNumber, Min } from 'class-validator';
 
 import { CalculatedStatDto } from './calculatedStat.dto';
 
-export class GetStatsByUsernameDto extends PickType(CalculatedStatDto, ['username']) {
+export class GetStatsDto extends PickType(CalculatedStatDto, ['username']) {
   @IsNumber()
   @Min(0)
   offset: number;

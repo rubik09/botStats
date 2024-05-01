@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 
 import { CalculatedStatsRepository } from './calculatedStats.repository';
 import { CreateCalculatedStatsDto } from './dto/createCalculatedStats.dto';
-import { GetStatsByUsernameDto } from './dto/getStatsByUsername.dto';
+import { GetStatsDto } from './dto/getStatsDto';
 import { CalculatedStat } from './entity/calculatedStats.entity';
 
 @Injectable()
@@ -10,34 +10,22 @@ export class CalculatedStatsService {
   private readonly logger = new Logger(CalculatedStatsService.name);
   constructor(private calculatedStatsRepository: CalculatedStatsRepository) {}
 
-  async getAllCalculatedStats(page: number, limit: number): Promise<CalculatedStat[]> {
-    this.logger.log(`Trying to get all calculated stats`);
-
-    const offset = (page - 1) * limit;
-    const [calculatedStats, count] = await this.calculatedStatsRepository.getAllCalculatedStats(offset, limit);
-
-    this.logger.debug(`${count} calculated stat successfully get `);
-
-    return calculatedStats;
-  }
-
-  async getCalculatedStatsByUsername(
+  async getCalculatedStats(
     username: CalculatedStat['username'],
     page: number,
     limit: number,
-  ): Promise<CalculatedStat[]> {
+  ): Promise<[CalculatedStat[], number]> {
     this.logger.log(`Trying to get all calculated stats by username: ${username}`);
 
     const offset = (page - 1) * limit;
-    const getStatsByUsernameDto: GetStatsByUsernameDto = {
+    const getStatsDto: GetStatsDto = {
       username,
       limit,
       offset,
     };
-    const [calculatedStats, count] =
-      await this.calculatedStatsRepository.getCalculatedStatsByUsername(getStatsByUsernameDto);
+    const calculatedStats = await this.calculatedStatsRepository.getCalculatedStats(getStatsDto);
 
-    this.logger.debug(`${count} calculated stat successfully get by username: ${username}`);
+    this.logger.debug(`${calculatedStats[1]} calculated stat successfully get by username: ${username}`);
 
     return calculatedStats;
   }
@@ -50,15 +38,5 @@ export class CalculatedStatsService {
     const { raw } = await this.calculatedStatsRepository.createCalculatedStats(createCalculatedStatsDto);
 
     this.logger.debug(`calculated stats successfully created with id: ${raw[0].id}`);
-  }
-
-  async getCountOfCalculatedStats(): Promise<number> {
-    this.logger.log(`Trying to get count of all calculated stats`);
-
-    const count = await this.calculatedStatsRepository.getCountOfCalculatedStats();
-
-    this.logger.debug(`${count} calculated stat successfully counted `);
-
-    return count;
   }
 }

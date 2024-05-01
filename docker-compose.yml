@@ -19,7 +19,7 @@ services:
     ports:
       - "5433:5432"
     volumes:
-      - ~/appsB/postgres:/var/lib/postgresql/data
+      - ~/botStatsV2/postgres:/var/lib/postgresql/data
     env_file:
       - .env
 
@@ -46,4 +46,3 @@ networks:
     driver: bridge
   kafka-net:
     driver: bridge
-
