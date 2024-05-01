@@ -15,20 +15,20 @@ export class KeywordsService {
     private keywordsRepository: KeywordsRepository,
   ) {}
 
-  async createNewKeyword(id: UserSession['id'], { keyword, activity }: CreateKeywordsDto) {
+  async createNewKeyword(id: UserSession['id'], createKeywordsDto: CreateKeywordsDto) {
     this.logger.log(`Trying to create keyword by id: ${id}`);
 
     const userSession = await this.userSessionService.getUserSessionById(id);
 
-    const existingKeyword = await this.keywordsRepository.findKeywordByUserSession(id, keyword);
+    const existingKeyword = await this.keywordsRepository.findKeywordByUserSession(id, createKeywordsDto);
 
     if (existingKeyword) {
-      this.logger.error(`keyword: ${keyword} already exist`);
+      this.logger.error(`keyword: ${createKeywordsDto.keyword} already exist`);
       throw new HttpException(`keyword: $keyword} already exist`, HttpStatus.CONFLICT);
     }
 
     const keywordDto: CreateKeywordsDto = {
-      ...{ keyword, activity },
+      ...createKeywordsDto,
       userSession,
     };
 
