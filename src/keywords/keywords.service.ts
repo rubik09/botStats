@@ -26,13 +26,13 @@ export class KeywordsService {
       throw new HttpException(`keyword: ${keyword} already exist`, HttpStatus.CONFLICT);
     }
 
-    const keywordDto: CreateKeywordsDto = {
+    const createKeywordsDto: CreateKeywordsDto = {
       keyword,
       activity,
       userSession,
     };
 
-    const { raw } = await this.keywordsRepository.createNewKeyword(keywordDto);
+    const { raw } = await this.keywordsRepository.createNewKeyword(createKeywordsDto);
 
     this.logger.debug(`keyword successfully created with id: ${raw[0].id}`);
   }
