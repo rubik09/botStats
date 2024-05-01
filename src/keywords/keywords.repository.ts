@@ -72,11 +72,11 @@ export class KeywordsRepository {
       .getOne();
   }
 
-  async findKeywordByUserSession(userSessionId: number, createKeywordsDto: CreateKeywordsDto): Promise<Keyword> {
+  async findKeywordByUserSession(userSessionId: number, keyword: string): Promise<Keyword> {
     return await this.keywordsRepository
       .createQueryBuilder('keywords')
       .where('keywords.user_session_id = :userSessionId', { userSessionId })
-      .andWhere('keywords.keyword = :keyword', { keyword: `"${createKeywordsDto.keyword}"` })
+      .andWhere('keywords.keyword = :keyword', { keyword })
       .getOne();
   }
 }

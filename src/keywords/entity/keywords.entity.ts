@@ -23,5 +23,5 @@ export class Keyword {
   updatedAt: Date;
 
   @ManyToOne(() => UserSession, (userSession) => userSession.id, { onDelete: 'CASCADE' })
-  userSession: UserSession;
+  userSession: number;
 }
