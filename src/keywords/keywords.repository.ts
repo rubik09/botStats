@@ -36,7 +36,11 @@ export class KeywordsRepository {
   }
 
   async getKeywordById(id: number): Promise<Keyword> {
-    return await this.keywordsRepository.createQueryBuilder('keywords').where('id = :id', { id }).getOne();
+    return await this.keywordsRepository
+      .createQueryBuilder('keywords')
+      .leftJoinAndSelect('keywords.userSession', 'userSession')
+      .where('keywords.id = :id', { id })
+      .getOne();
   }
 
   async resetCountByUserSessionId(id: number): Promise<UpdateResult> {
