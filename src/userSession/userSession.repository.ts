@@ -40,12 +40,17 @@ export class UserSessionRepository {
   }
 
   async getUserSessionById(id: number): Promise<UserSession> {
-    return await this.userSessionRepository.createQueryBuilder('userSessions').where('id = :id', { id }).getOne();
+    return await this.userSessionRepository
+      .createQueryBuilder('userSessions')
+      .select('userSessions.id')
+      .where('id = :id', { id })
+      .getOne();
   }
 
   async getUserSessionByTelegramId(telegramId: number): Promise<UserSession> {
     return await this.userSessionRepository
       .createQueryBuilder('userSessions')
+      .select('userSessions.id')
       .where('userSessions.telegram_id = :telegramId', { telegramId })
       .getOne();
   }
@@ -53,6 +58,7 @@ export class UserSessionRepository {
   async getUserSessionByApiId(apiId: number): Promise<UserSession> {
     return await this.userSessionRepository
       .createQueryBuilder('userSessions')
+      .select('userSessions.id')
       .where('api_id = :apiId', { apiId })
       .getOne();
   }

@@ -38,7 +38,7 @@ export class KeywordsRepository {
   async getKeywordById(id: number): Promise<Keyword> {
     return await this.keywordsRepository
       .createQueryBuilder('keywords')
-      .leftJoinAndSelect('keywords.userSession', 'userSession')
+      .loadAllRelationIds()
       .where('keywords.id = :id', { id })
       .getOne();
   }

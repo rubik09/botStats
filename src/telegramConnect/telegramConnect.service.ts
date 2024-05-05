@@ -121,7 +121,7 @@ export class TelegramConnectService implements OnModuleInit {
     const createKeywordsDto: CreateKeywordsDto = {
       activity,
       keyword,
-      userSession,
+      userSession: userSession.id,
     };
 
     await this.keywordsService.createNewKeyword(userSession.id, createKeywordsDto);
