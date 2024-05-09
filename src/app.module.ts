@@ -3,7 +3,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { AdminsModule } from './admins/admins.module';
 import { AuthModule } from './auth/auth.module';
 import { CalculatedStatsModule } from './calculatedStats/calculatedStats.module';
 import config from './configuration/config';
@@ -25,7 +24,6 @@ import { UserSessionModule } from './userSession/userSession.module';
     }),
     ScheduleModule.forRoot(),
     HealthModule,
-    AdminsModule,
     UserSessionModule,
     StatsModule,
     UsersModule,
