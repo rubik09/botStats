@@ -37,7 +37,7 @@ export class AdminsService {
     return admin;
   }
 
-  async createAdmin({ email, password }: RegisterAdminDto) {
+  async createAdmin({ email, password, adminRoles }: RegisterAdminDto) {
     this.logger.log(`Trying to create admin with email: ${email}`);
 
     const admin = await this.adminsRepository.findOneByEmail(email);
@@ -51,6 +51,7 @@ export class AdminsService {
     const createAdminDto: CreateAdminDto = {
       email,
       password: hashedPassword,
+      adminRoles
     };
 
     const { raw } = await this.adminsRepository.createAdmin(createAdminDto);
@@ -68,12 +69,12 @@ export class AdminsService {
 
   async login({ email, password }: AdminLoginDto): Promise<TToken> {
     const admin = await this.adminsRepository.findOneByEmail(email);
-
+    console.log(admin);
     if (!admin) {
       throw new BadRequestException('email incorrect');
     }
     await this.validatePassword(password, admin.password);
 
-    return await this.authService.signKey({ email });
+    return await this.authService.signKey({ email, adminRoles: admin.adminRoles });
   }
 }
