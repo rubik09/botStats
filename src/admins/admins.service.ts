@@ -69,7 +69,6 @@ export class AdminsService {
 
   async login({ email, password }: AdminLoginDto): Promise<TToken> {
     const admin = await this.adminsRepository.findOneByEmail(email);
-    console.log(admin);
     if (!admin) {
       throw new BadRequestException('email incorrect');
     }
