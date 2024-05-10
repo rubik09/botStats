@@ -17,16 +17,13 @@ import { Keyword } from './entity/keywords.entity';
 import { KeywordsService } from './keywords.service';
 import { JwtGuard } from '../auth/jwtAuth.guard';
 import { UserSession } from '../userSession/entity/userSession.entity';
-import { Roles } from 'src/auth/roles.decorator';
-import { RolesGuard } from 'src/auth/roles.guard';
 
 @Controller('keywords')
 export class KeywordsController {
   constructor(private readonly keywordsService: KeywordsService) {}
 
   @Post(':id')
-  @Roles([0])
-  @UseGuards(JwtGuard, RolesGuard)
+  @UseGuards(JwtGuard)
   async addKeywordsByUserSessionId(@Param('id') id: UserSession['id'], @Body() createKeywordsDto: CreateKeywordsDto) {
     await this.keywordsService.createNewKeyword(id, createKeywordsDto);
     throw new HttpException('Ключевое слово успешно создано', HttpStatus.CREATED);

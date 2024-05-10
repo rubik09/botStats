@@ -10,7 +10,7 @@ export class AdminsController {
   constructor(private adminsService: AdminsService) {}
 
   @Post('/login')
-  async login(@Body() adminLoginDto: AdminLoginDto): Promise<TToken> {
+  async login(@Body() adminLoginDto: AdminLoginDto): Promise<{ token: string; adminRoles: number }> {
     return await this.adminsService.login(adminLoginDto);
   }
 
