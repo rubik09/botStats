@@ -13,6 +13,8 @@ export class AuthGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const authHeader = request.headers.auth;
 
+    console.log(authHeader === this.authHeaderSecret)
+
     return authHeader === this.authHeaderSecret;
   }
 }

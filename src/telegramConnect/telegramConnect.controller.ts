@@ -1,5 +1,5 @@
 import { Body, Controller, HttpException, HttpStatus, Post, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+import { AuthGuard } from '../auth/auth.guard';
 
 import { CreateTelegramConnectionDto } from './dto/createTelegramConnect.dto';
 import { TelegramConnectService } from './telegramConnect.service';

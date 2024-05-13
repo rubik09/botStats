@@ -4,6 +4,7 @@ import { UpdatePersonalInfoDto } from './dto/updatePersonalInfo.dto';
 import { PersonalInfo } from './entity/personalInfo.entity';
 import { PersonalInfoService } from './personalInfo.service';
 import { AuthGuard } from '../auth/auth.guard';
+
 @UseGuards(AuthGuard)
 @Controller('personalInfo')
 export class PersonalInfoController {

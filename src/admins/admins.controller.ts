@@ -6,8 +6,8 @@ import { AdminLoginDto } from './dto/adminLogin.dto';
 import { RegisterAdminDto } from './dto/registerAdmin.dto';
 import { AuthGuard } from '../auth/auth.guard';
 
-@UseGuards(AuthGuard)
 @Controller('admins')
+@UseGuards(AuthGuard)
 export class AdminsController {
   constructor(private adminsService: AdminsService) {}
 
