@@ -6,7 +6,7 @@ export class AuthGuard implements CanActivate {
   private authHeaderSecret: string;
 
   constructor(private readonly configService: ConfigService) {
-    this.authHeaderSecret = this.configService.getOrThrow('app-config.AUTH_HEADER_SECRET');
+    this.authHeaderSecret = this.configService.getOrThrow('AUTH_HEADER_SECRET');
   }
 
   canActivate(context: ExecutionContext): boolean {
