@@ -2,6 +2,7 @@ import { BadRequestException, HttpException, HttpStatus, Injectable, Logger } fr
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
 
+import { AdminRoles } from './admins.constants';
 import { AdminsRepository } from './admins.repository';
 import { AdminLoginDto } from './dto/adminLogin.dto';
 import { CreateAdminDto } from './dto/createAdmin.dto';
@@ -66,13 +67,17 @@ export class AdminsService {
     return isMatch;
   }
 
-  async login({ email, password }: AdminLoginDto): Promise<boolean> {
+  async login({ email, password }: AdminLoginDto): Promise<AdminRoles> {
     const admin = await this.adminsRepository.findOneByEmail(email);
     if (!admin) {
       throw new BadRequestException('email incorrect');
     }
     const isValidPassword = await this.validatePassword(password, admin.password);
 
-    return isValidPassword;
+    if (!isValidPassword) {
+      throw new BadRequestException('password incorrect');
+    }
+
+    return admin.adminRoles;
   }
 }
