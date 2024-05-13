@@ -9,9 +9,3 @@ export type TSetupSteps = {
 export type TUniqueActivities = {
   [key: string]: Keyword;
 };
-
-export type TToken = { token: string };
-
-export type TTokenRole = { token: string, adminRoles: number };
-
-export type TPayload = { email: string };

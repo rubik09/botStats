@@ -1,4 +1,4 @@
-import { IsEmail, IsInt, IsString, Length, IsOptional } from 'class-validator';
+import { IsEmail, IsInt, IsOptional, IsString, Length } from 'class-validator';
 
 import { Admin } from '../entity/admins.entity';
 

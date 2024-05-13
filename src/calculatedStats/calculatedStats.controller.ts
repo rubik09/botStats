@@ -2,14 +2,14 @@ import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 
 import { CalculatedStatsService } from './calculatedStats.service';
 import { CalculatedStat } from './entity/calculatedStats.entity';
-import { JwtGuard } from '../auth/jwtAuth.guard';
+import { AuthGuard } from '../auth/auth.guard';
 
+@UseGuards(AuthGuard)
 @Controller('calculatedStats')
 export class CalculatedStatsController {
   constructor(private readonly calculatedStatsService: CalculatedStatsService) {}
 
   @Get()
-  @UseGuards(JwtGuard)
   async getCalculatedStats(
     @Query('page') page: number,
     @Query('limit') limit: number,

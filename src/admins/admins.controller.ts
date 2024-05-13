@@ -1,16 +1,17 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 
 import { AdminsService } from './admins.service';
 import { AdminLoginDto } from './dto/adminLogin.dto';
 import { RegisterAdminDto } from './dto/registerAdmin.dto';
-import { TTokenRole } from '../utils/types';
+import { AuthGuard } from '../auth/auth.guard';
 
+@UseGuards(AuthGuard)
 @Controller('admins')
 export class AdminsController {
   constructor(private adminsService: AdminsService) {}
 
   @Post('/login')
-  async login(@Body() adminLoginDto: AdminLoginDto): Promise<TTokenRole> {
+  async login(@Body() adminLoginDto: AdminLoginDto): Promise<boolean> {
     return await this.adminsService.login(adminLoginDto);
   }
 
