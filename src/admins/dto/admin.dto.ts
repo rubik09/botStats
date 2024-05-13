@@ -14,5 +14,5 @@ export class AdminDto {
   password: Admin['password'];
 
   @IsOptional()
-  adminRoles?: Admin['adminRoles'];
+  role: Admin['role'];
 }
