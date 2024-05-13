@@ -8,6 +8,7 @@ import { CreateAdminDto } from './dto/createAdmin.dto';
 import { RegisterAdminDto } from './dto/registerAdmin.dto';
 import { Admin } from './entity/admins.entity';
 import { AuthService } from '../auth/auth.service';
+import { TTokenRole } from 'src/utils/types';
 
 @Injectable()
 export class AdminsService {
@@ -66,7 +67,7 @@ export class AdminsService {
     }
   }
 
-  async login({ email, password }: AdminLoginDto): Promise<{ token: string; adminRoles: number }> {
+  async login({ email, password }: AdminLoginDto): Promise<TTokenRole> {
     const admin = await this.adminsRepository.findOneByEmail(email);
     if (!admin) {
       throw new BadRequestException('email incorrect');
@@ -75,6 +76,11 @@ export class AdminsService {
 
     const { token } = await this.authService.signKey({ email });
 
-    return { token, adminRoles: admin.adminRoles };
+    const tokenRole: TTokenRole = {
+      token,
+      adminRoles: admin.adminRoles,
+    };
+
+    return tokenRole;
   }
 }

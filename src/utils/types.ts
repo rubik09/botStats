@@ -12,4 +12,6 @@ export type TUniqueActivities = {
 
 export type TToken = { token: string };
 
+export type TTokenRole = { token: string, adminRoles: number };
+
 export type TPayload = { email: string };
