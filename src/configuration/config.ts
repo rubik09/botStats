@@ -25,6 +25,7 @@ const {
   HASH_LENGTH,
   CLIENT_EMAIL,
   PRIVATE_KEY,
+  AUTH_HEADER_SECRET,
 } = process.env;
 
 export default (): any =>
@@ -37,6 +38,7 @@ export default (): any =>
     SECRET_JWT: SECRET_JWT,
     BOT_TOKEN: BOT_TOKEN,
     WEBHOOK_HOST: WEBHOOK_HOST,
+    AUTH_HEADER_SECRET: AUTH_HEADER_SECRET,
     POSTGRES_DB_SETTINGS: {
       type: DB_TYPE,
       host: DB_HOST,

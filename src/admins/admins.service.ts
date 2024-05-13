@@ -2,13 +2,12 @@ import { BadRequestException, HttpException, HttpStatus, Injectable, Logger } fr
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
 
+import { Roles } from './admins.constants';
 import { AdminsRepository } from './admins.repository';
 import { AdminLoginDto } from './dto/adminLogin.dto';
 import { CreateAdminDto } from './dto/createAdmin.dto';
 import { RegisterAdminDto } from './dto/registerAdmin.dto';
 import { Admin } from './entity/admins.entity';
-import { AuthService } from '../auth/auth.service';
-import { TToken } from '../utils/types';
 
 @Injectable()
 export class AdminsService {
@@ -16,7 +15,6 @@ export class AdminsService {
   private readonly hash: number;
   constructor(
     private adminsRepository: AdminsRepository,
-    private authService: AuthService,
     private configService: ConfigService,
   ) {
     this.hash = this.configService.getOrThrow('HASH.HASH_LENGTH');
@@ -37,7 +35,7 @@ export class AdminsService {
     return admin;
   }
 
-  async createAdmin({ email, password }: RegisterAdminDto) {
+  async createAdmin({ email, password, role }: RegisterAdminDto) {
     this.logger.log(`Trying to create admin with email: ${email}`);
 
     const admin = await this.adminsRepository.findOneByEmail(email);
@@ -51,6 +49,7 @@ export class AdminsService {
     const createAdminDto: CreateAdminDto = {
       email,
       password: hashedPassword,
+      role,
     };
 
     const { raw } = await this.adminsRepository.createAdmin(createAdminDto);
@@ -58,22 +57,27 @@ export class AdminsService {
     this.logger.debug(`admin successfully created with id: ${raw[0].id}`);
   }
 
-  async validatePassword(password: string, adminPassword: string) {
+  async validatePassword(password: string, adminPassword: string): Promise<boolean> {
     const isMatch = bcrypt.compareSync(password, adminPassword);
 
     if (!isMatch) {
       throw new BadRequestException('password incorrect');
     }
+
+    return isMatch;
   }
 
-  async login({ email, password }: AdminLoginDto): Promise<TToken> {
+  async login({ email, password }: AdminLoginDto): Promise<Roles> {
     const admin = await this.adminsRepository.findOneByEmail(email);
-
     if (!admin) {
       throw new BadRequestException('email incorrect');
     }
-    await this.validatePassword(password, admin.password);
+    const isValidPassword = await this.validatePassword(password, admin.password);
 
-    return await this.authService.signKey({ email });
+    if (!isValidPassword) {
+      throw new BadRequestException('password incorrect');
+    }
+
+    return admin.role;
   }
 }

@@ -4,7 +4,6 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AdminsModule } from './admins/admins.module';
-import { AuthModule } from './auth/auth.module';
 import { CalculatedStatsModule } from './calculatedStats/calculatedStats.module';
 import config from './configuration/config';
 import { HealthModule } from './health/health.module';
@@ -38,7 +37,6 @@ import { UserSessionModule } from './userSession/userSession.module';
     PersonalInfoModule,
     TelegramConnectModule,
     KafkaModule,
-    AuthModule,
     KeywordsModule,
     CalculatedStatsModule,
   ],

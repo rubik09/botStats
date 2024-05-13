@@ -1,23 +1,22 @@
 import { Body, Controller, Get, HttpException, HttpStatus, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '../auth/auth.guard';
 
 import { UpdateUserSessionInfoDto } from './dto/updateUserSession.dto';
 import { UserSession } from './entity/userSession.entity';
 import { UserSessionService } from './userSession.service';
-import { JwtGuard } from '../auth/jwtAuth.guard';
 import { CreatePersonalInfoDto } from '../personalInfo/dto/createPersonalInfo.dto';
 
+@UseGuards(AuthGuard)
 @Controller('sessions')
 export class UserSessionController {
   constructor(private readonly userSessionService: UserSessionService) {}
 
   @Get()
-  @UseGuards(JwtGuard)
   async getAllUserSessions(): Promise<UserSession[]> {
     return this.userSessionService.getAllUserSessions();
   }
 
   @Post(':id')
-  @UseGuards(JwtGuard)
   async createPersonalInfoAndUserSession(
     @Param('id') telegramId: UserSession['telegramId'],
     @Body() createPersonalInfoDto: CreatePersonalInfoDto,
@@ -27,7 +26,6 @@ export class UserSessionController {
   }
 
   @Patch(':id')
-  @UseGuards(JwtGuard)
   async updateUserSessionByTelegramId(
     @Param('id') telegramId: UserSession['telegramId'],
     @Body() body: UpdateUserSessionInfoDto,

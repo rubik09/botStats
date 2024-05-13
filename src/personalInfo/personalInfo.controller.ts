@@ -3,14 +3,14 @@ import { Body, Controller, Delete, HttpException, HttpStatus, Param, Patch, UseG
 import { UpdatePersonalInfoDto } from './dto/updatePersonalInfo.dto';
 import { PersonalInfo } from './entity/personalInfo.entity';
 import { PersonalInfoService } from './personalInfo.service';
-import { JwtGuard } from '../auth/jwtAuth.guard';
+import { AuthGuard } from '../auth/auth.guard';
 
+@UseGuards(AuthGuard)
 @Controller('personalInfo')
 export class PersonalInfoController {
   constructor(private readonly personalInfoService: PersonalInfoService) {}
 
   @Patch(':id')
-  @UseGuards(JwtGuard)
   async updatePersonalInfoByTelegramId(
     @Param('id') id: PersonalInfo['id'],
     @Body() updatePersonalInfoDto: UpdatePersonalInfoDto,
@@ -20,7 +20,6 @@ export class PersonalInfoController {
   }
 
   @Delete(':id')
-  @UseGuards(JwtGuard)
   async deletePersonalInfoById(@Param('id') id: PersonalInfo['id']) {
     await this.personalInfoService.deletePersonalInfoById(id);
     throw new HttpException('Персональная информация успешно удалена', HttpStatus.OK);
