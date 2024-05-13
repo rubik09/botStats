@@ -10,11 +10,8 @@ export class AuthGuard implements CanActivate {
   }
 
   canActivate(context: ExecutionContext): boolean {
-    const request = context.switchToHttp().getRequest();
-    const authHeader = request.headers.auth;
+    const { headers } = context.switchToHttp().getRequest();
 
-    console.log(authHeader === this.authHeaderSecret)
-
-    return authHeader === this.authHeaderSecret;
+    return headers.auth === this.authHeaderSecret;
   }
 }

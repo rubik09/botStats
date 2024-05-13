@@ -2,7 +2,7 @@ import { BadRequestException, HttpException, HttpStatus, Injectable, Logger } fr
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
 
-import { AdminRoles } from './admins.constants';
+import { Roles } from './admins.constants';
 import { AdminsRepository } from './admins.repository';
 import { AdminLoginDto } from './dto/adminLogin.dto';
 import { CreateAdminDto } from './dto/createAdmin.dto';
@@ -35,7 +35,7 @@ export class AdminsService {
     return admin;
   }
 
-  async createAdmin({ email, password, adminRoles }: RegisterAdminDto) {
+  async createAdmin({ email, password, role }: RegisterAdminDto) {
     this.logger.log(`Trying to create admin with email: ${email}`);
 
     const admin = await this.adminsRepository.findOneByEmail(email);
@@ -49,7 +49,7 @@ export class AdminsService {
     const createAdminDto: CreateAdminDto = {
       email,
       password: hashedPassword,
-      adminRoles,
+      role,
     };
 
     const { raw } = await this.adminsRepository.createAdmin(createAdminDto);
@@ -67,7 +67,7 @@ export class AdminsService {
     return isMatch;
   }
 
-  async login({ email, password }: AdminLoginDto): Promise<AdminRoles> {
+  async login({ email, password }: AdminLoginDto): Promise<Roles> {
     const admin = await this.adminsRepository.findOneByEmail(email);
     if (!admin) {
       throw new BadRequestException('email incorrect');
@@ -78,6 +78,6 @@ export class AdminsService {
       throw new BadRequestException('password incorrect');
     }
 
-    return admin.adminRoles;
+    return admin.role;
   }
 }

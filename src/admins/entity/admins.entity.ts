@@ -1,6 +1,6 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-import { AdminRoles } from '../admins.constants';
+import { Roles } from '../admins.constants';
 
 @Entity({ name: 'admins' })
 export class Admin {
@@ -13,6 +13,6 @@ export class Admin {
   @Column({ type: 'varchar', length: 240 })
   password: string;
 
-  @Column({ type: 'enum', enum: AdminRoles, default: AdminRoles.ADMIN })
-  adminRoles: AdminRoles;
+  @Column({ type: 'enum', enum: Roles, default: Roles.ADMIN })
+  role: Roles;
 }
