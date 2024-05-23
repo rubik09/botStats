@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 
 import { CalculatedStatsRepository } from './calculatedStats.repository';
 import { CreateCalculatedStatsDto } from './dto/createCalculatedStats.dto';
-import { GetStatsDto } from './dto/getStatsDto';
+import { GetStatsDto } from './dto/getStats.dto';
 import { CalculatedStat } from './entity/calculatedStats.entity';
 
 @Injectable()

@@ -6,6 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AdminsModule } from './admins/admins.module';
 import { CalculatedStatsModule } from './calculatedStats/calculatedStats.module';
 import config from './configuration/config';
+import { CronModule } from './cron/cron.module';
 import { HealthModule } from './health/health.module';
 import { KafkaModule } from './kafka/kafka.module';
 import { VerificationConsumer } from './kafka/verification.consumer';
@@ -39,6 +40,7 @@ import { UserSessionModule } from './userSession/userSession.module';
     KafkaModule,
     KeywordsModule,
     CalculatedStatsModule,
+    CronModule,
   ],
   providers: [VerificationConsumer],
 })
