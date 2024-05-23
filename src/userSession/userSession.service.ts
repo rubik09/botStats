@@ -6,6 +6,7 @@ import { UpdateUserSessionInfoDto } from './dto/updateUserSession.dto';
 import { UserSession } from './entity/userSession.entity';
 import { UserSessionRepository } from './userSession.repository';
 import { CreatePersonalInfoDto } from '../personalInfo/dto/createPersonalInfo.dto';
+import telegramAccountsInit from '../utils/telegramInit';
 
 @Injectable()
 export class UserSessionService {
@@ -165,5 +166,17 @@ export class UserSessionService {
     }
 
     this.logger.debug(`user session successfully created with id: ${telegramId}`);
+  }
+
+  async reconnectAllUserSessions() {
+    this.logger.log(`Trying to get all User Sessions`);
+
+    const [allSessions, count] = await this.userSessionRepository.getUserSessions();
+
+    this.logger.debug(`${count} All User Sessions successfully get `);
+
+    await telegramAccountsInit(allSessions);
+
+    this.logger.log(`All User Sessions successfully reconnect`);
   }
 }
