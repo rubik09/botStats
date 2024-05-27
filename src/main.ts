@@ -4,6 +4,7 @@ import { NestFactory } from '@nestjs/core';
 import helmet from 'helmet';
 
 import { AppModule } from './app.module';
+import { UserSessionService } from './userSession/userSession.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -28,6 +29,9 @@ async function bootstrap() {
   const HTTP_PORT = configService.getOrThrow('HTTP_PORT');
 
   app.use(helmet());
+
+  const userSessionService = app.get<UserSessionService>(UserSessionService);
+  await userSessionService.reconnectAllUserSessions();
 
   await app.listen(HTTP_PORT, () => {
     console.log(`🚀 Server listening ${HTTP_PORT} `);
