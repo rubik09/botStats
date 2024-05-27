@@ -19,3 +19,5 @@ export const cronTimezone = 'Europe/Moscow';
 
 export const cronTimeDay = CRON_TIME_DAY;
 export const cronTimeNight = CRON_TIME_NIGHT;
+
+export const MESSAGES_CONNECTION_CLOSED = ['The server closed the connection while sending', 'connection closed'];
