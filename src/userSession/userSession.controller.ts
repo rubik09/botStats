@@ -1,9 +1,9 @@
 import { Body, Controller, Get, HttpException, HttpStatus, Param, Patch, Post, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '../auth/auth.guard';
 
 import { UpdateUserSessionInfoDto } from './dto/updateUserSession.dto';
 import { UserSession } from './entity/userSession.entity';
 import { UserSessionService } from './userSession.service';
+import { AuthGuard } from '../auth/auth.guard';
 import { CreatePersonalInfoDto } from '../personalInfo/dto/createPersonalInfo.dto';
 
 @UseGuards(AuthGuard)

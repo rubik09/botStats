@@ -1,5 +1,4 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
-import { Cron } from '@nestjs/schedule';
 
 import { UpdateStatsDto } from './dto/updateStats.dto';
 import { Stat } from './entity/stats.entity';
@@ -11,7 +10,6 @@ import { CreateUserDto } from '../users/dto/createUser.dto';
 import { UsersService } from '../users/users.service';
 import { UserSessionService } from '../userSession/userSession.service';
 import { combineKeywords } from '../utils/combineKeywords';
-import { cronTimeDay, cronTimeNight, cronTimezone, time } from '../utils/consts';
 
 @Injectable()
 export class StatsService {
@@ -205,15 +203,5 @@ export class StatsService {
 
       this.logger.debug(`stats successfully created timeMessage: ${timeMessage}`);
     }
-  }
-
-  @Cron(cronTimeDay, { timeZone: cronTimezone })
-  async handleCronDay() {
-    await this.PreSendCalculation(time.PER_NIGHT);
-  }
-
-  @Cron(cronTimeNight, { timeZone: cronTimezone })
-  async handleCronNight() {
-    await this.PreSendCalculation(time.PER_DAY);
   }
 }
