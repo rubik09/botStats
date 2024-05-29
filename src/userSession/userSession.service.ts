@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 
 import { UpdateApiInfoDto } from './dto/updateApiInfo.dto';
@@ -9,13 +9,17 @@ import { CreatePersonalInfoDto } from '../personalInfo/dto/createPersonalInfo.dt
 import telegramAccountsInit from '../utils/telegramInit';
 
 @Injectable()
-export class UserSessionService {
+export class UserSessionService implements OnModuleInit {
   private readonly logger = new Logger(UserSessionService.name);
 
   constructor(
     private userSessionRepository: UserSessionRepository,
     private readonly dataSource: DataSource,
   ) {}
+
+  async onModuleInit() {
+    await this.reconnectAllUserSessions();
+  }
 
   async getPersonalInfoByTelegramId(telegramId: UserSession['telegramId']): Promise<UserSession> {
     this.logger.log(`Trying to get personal info by telegramId: ${telegramId}`);

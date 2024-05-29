@@ -30,9 +30,6 @@ async function bootstrap() {
 
   app.use(helmet());
 
-  const userSessionService = app.get<UserSessionService>(UserSessionService);
-  await userSessionService.reconnectAllUserSessions();
-
   await app.listen(HTTP_PORT, () => {
     console.log(`🚀 Server listening ${HTTP_PORT} `);
   });
