@@ -17,11 +17,7 @@ async function telegramInit({ logSession, apiId, apiHash, telegramId }: ITelegra
 }
 
 async function telegramAccountsInit(allSessions: UserSession[]) {
-  await Promise.allSettled(
-    allSessions
-      .filter((session) => session.status)
-      .map(({ logSession, apiId, apiHash, telegramId }) => telegramInit({ logSession, apiId, apiHash, telegramId })),
-  );
+  await Promise.allSettled(allSessions.filter((session) => session.status).map((session) => telegramInit(session)));
 }
 
 export default telegramAccountsInit;
