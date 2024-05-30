@@ -27,7 +27,7 @@ export class KeywordsService {
     }
 
     const createKeywordsDto: CreateKeywordsDto = {
-      keyword,
+      keyword: keyword.trim(),
       activity,
       userSession,
     };
@@ -69,7 +69,7 @@ export class KeywordsService {
       throw new HttpException(`keyword: ${keyword} already exist`, HttpStatus.CONFLICT);
     }
 
-    const { affected } = await this.keywordsRepository.updateNewKeyword(id, { keyword, activity });
+    const { affected } = await this.keywordsRepository.updateNewKeyword(id, { keyword: keyword.trim(), activity });
 
     this.logger.debug(`${affected} keyword successfully updated by id: ${id}`);
   }
@@ -105,7 +105,7 @@ export class KeywordsService {
   async findKeywordByUserSessionIdAndMessage(message: string, id: UserSession['id']): Promise<Keyword> {
     this.logger.log(`Trying to find keyword by UserSessionId: ${id}`);
 
-    const foundKeyword = await this.keywordsRepository.findKeywordByUserSessionIdAndMessage(message, id);
+    const foundKeyword = await this.keywordsRepository.findKeywordByUserSessionIdAndMessage(message.trim(), id);
 
     this.logger.debug(`${foundKeyword ? 'keyword ' : 'No keyword '}found by UserSessionId: ${id}`);
 
