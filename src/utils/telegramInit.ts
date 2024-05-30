@@ -7,7 +7,6 @@ import { UserSession } from '../userSession/entity/userSession.entity';
 const clientsTelegram: Record<string, TelegramClient> = {};
 
 async function telegramInit({ logSession, apiId, apiHash, telegramId }: UserSession) {
-  
   const client = await createClient({ logSession, apiId, apiHash });
 
   await client.checkAuthorization();
