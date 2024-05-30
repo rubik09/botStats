@@ -47,12 +47,6 @@ export interface ICreateClient {
   apiHash: string;
 }
 
-export interface ITelegramInit {
-  logSession: string;
-  apiId: number;
-  apiHash: string;
-  telegramId: number;
-}
 
 export interface CalculatedActivityKeywords {
   activity: string;
