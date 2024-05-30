@@ -47,7 +47,6 @@ export interface ICreateClient {
   apiHash: string;
 }
 
-
 export interface CalculatedActivityKeywords {
   activity: string;
   count: number;

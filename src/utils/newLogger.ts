@@ -1,7 +1,8 @@
-import { app } from 'src/main';
-import { UserSessionService } from 'src/userSession/userSession.service';
 import { Logger } from 'telegram';
+
 import { MESSAGES_CONNECTION_CLOSED } from './consts';
+import { app } from '../main';
+import { UserSessionService } from '../userSession/userSession.service';
 
 export default class NewLogger extends Logger {
   async info(message: string) {

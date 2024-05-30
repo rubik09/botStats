@@ -4,7 +4,6 @@ import { NestFactory } from '@nestjs/core';
 import helmet from 'helmet';
 
 import { AppModule } from './app.module';
-import { UserSessionService } from './userSession/userSession.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
