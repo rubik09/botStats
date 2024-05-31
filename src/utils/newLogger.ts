@@ -1,12 +1,19 @@
 import { Logger } from 'telegram';
-// import firstInit from './firstInit';
+
+import { MESSAGES_CONNECTION_CLOSED } from './consts';
+import { app } from '../main';
+import { UserSessionService } from '../userSession/userSession.service';
 
 export default class NewLogger extends Logger {
-  info(message: string) {
+  async info(message: string) {
     console.log(`\x1b[33m Info: ${message} \x1b[0m`);
 
-    if (message === 'The server closed the connection') {
-      // firstInit();
+    const isMessageExist = MESSAGES_CONNECTION_CLOSED.includes(message);
+
+    if (isMessageExist) {
+      const appInstance = await app;
+      const userSessionService = appInstance.get<UserSessionService>(UserSessionService);
+      userSessionService.reconnectAllUserSessions();
     }
   }
 }
