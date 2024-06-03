@@ -37,6 +37,8 @@ async function bootstrap() {
   await app.listen(HTTP_PORT, () => {
     console.log(`🚀 Server listening ${HTTP_PORT} `);
   });
+
+  return app;
 }
 
-bootstrap();
+export const app = bootstrap();

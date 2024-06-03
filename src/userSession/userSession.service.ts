@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 
 import { UpdateApiInfoDto } from './dto/updateApiInfo.dto';
@@ -6,15 +6,20 @@ import { UpdateUserSessionInfoDto } from './dto/updateUserSession.dto';
 import { UserSession } from './entity/userSession.entity';
 import { UserSessionRepository } from './userSession.repository';
 import { CreatePersonalInfoDto } from '../personalInfo/dto/createPersonalInfo.dto';
+import telegramAccountsInit from '../utils/telegramInit';
 
 @Injectable()
-export class UserSessionService {
+export class UserSessionService implements OnModuleInit {
   private readonly logger = new Logger(UserSessionService.name);
 
   constructor(
     private userSessionRepository: UserSessionRepository,
     private readonly dataSource: DataSource,
   ) {}
+
+  async onModuleInit() {
+    await this.reconnectAllUserSessions();
+  }
 
   async getPersonalInfoByTelegramId(telegramId: UserSession['telegramId']): Promise<UserSession> {
     this.logger.log(`Trying to get personal info by telegramId: ${telegramId}`);
@@ -165,5 +170,17 @@ export class UserSessionService {
     }
 
     this.logger.debug(`user session successfully created with id: ${telegramId}`);
+  }
+
+  async reconnectAllUserSessions() {
+    this.logger.log(`Trying to get all User Sessions`);
+
+    const [allSessions, count] = await this.userSessionRepository.getUserSessions();
+
+    this.logger.debug(`${count} All User Sessions successfully get `);
+
+    await telegramAccountsInit(allSessions);
+
+    this.logger.log(`All User Sessions successfully reconnect`);
   }
 }
