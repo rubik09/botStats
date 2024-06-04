@@ -23,6 +23,8 @@ services:
       - ~/botStatsV2/postgres:/var/lib/postgresql/data
     env_file:
       - .env
+    networks:
+      - bot-stats
 
   kafka:
     image: wurstmeister/kafka:latest
@@ -44,8 +46,66 @@ services:
     networks:
       - kafka-net
 
+  prometheus:
+    image: prom/prometheus:v2.37.9
+    container_name: prometheus
+    user: "root"
+    ports:
+      - "9090:9090"
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yaml'
+      - '--storage.tsdb.path=/prometheus/data'
+    volumes:
+      - ./src/configuration/prometheus.yaml:/etc/prometheus/prometheus.yaml:ro
+      - ./data:/prometheus/data
+    restart: always
+
+  grafana:
+    image: grafana/grafana-oss:latest
+    container_name: grafana
+    ports:
+      - '3000:3000'
+    volumes:
+      - grafana-data:/var/lib/grafana
+    restart: always
+
+  node_exporter:
+    image: quay.io/prometheus/node-exporter:v1.5.0
+    container_name: node_exporter
+    command: '--path.rootfs=/host'
+    pid: host
+    restart: always
+    volumes:
+      - /:/host:ro,rslave
+
+  loki:
+    image: grafana/loki:2.8.5
+    command: -config.file=/etc/loki/loki.yaml
+    ports:
+      - "3100:3100" # loki needs to be exposed so it receives logs
+    volumes:
+      - ./src/configuration/loki.yaml:/etc/loki/loki.yaml
+      - ./data/loki-data:/tmp/loki\
+
+  promtail:
+    image: grafana/promtail:2.9.0
+    volumes:
+      - ./src/configuration/promtail-config.yaml:/etc/promtail/config.yaml:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: -config.file=/etc/promtail/config.yaml
+    depends_on:
+      - loki
+
 networks:
   bot-stats:
     driver: bridge
   kafka-net:
     driver: bridge
+  monitoring:
+    driver: bridge
+
+volumes:
+  prometheus-data:
+    driver: local
+  grafana-data:
+    driver: local
