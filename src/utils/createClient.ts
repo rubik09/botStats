@@ -7,7 +7,9 @@ import NewLogger from './newLogger';
 export const createClient = async ({ logSession, apiId, apiHash }: ICreateClient) => {
   const stringSession = new StringSession(logSession);
   const client = new TelegramClient(stringSession, Number(apiId), apiHash, {
-    connectionRetries: 5,
+    connectionRetries: 25,
+    retryDelay: 5000,
+    requestRetries: 10,
     sequentialUpdates: true,
     baseLogger: new NewLogger(),
   });
