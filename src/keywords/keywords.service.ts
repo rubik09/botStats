@@ -64,9 +64,9 @@ export class KeywordsService {
 
     const existingKeyword = await this.keywordsRepository.findKeywordByUserSession(keywordById.userSession.id, keyword);
 
-    if (existingKeyword) {
-      this.logger.error(`keyword: ${keyword} already exist`);
-      throw new HttpException(`keyword: ${keyword} already exist`, HttpStatus.CONFLICT);
+    if (existingKeyword && existingKeyword.activity === activity) {
+      this.logger.error(`keyword: ${keyword} with ${activity} already exist`);
+      throw new HttpException(`keyword: ${keyword} with ${activity} already exist`, HttpStatus.CONFLICT);
     }
 
     const { affected } = await this.keywordsRepository.updateNewKeyword(id, { keyword: keyword.trim(), activity });
