@@ -10,6 +10,5 @@ export const MESSAGES_CONNECTION_CLOSED = ['The server closed the connection whi
 
 export const createClientConfig = {
   maxRetries: 5,
-  logChatId: '-4128642967',
   errorMessage: `Failed to connect after maxRetries attempts.`,
 };
