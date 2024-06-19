@@ -1,15 +1,12 @@
 import { Logger } from 'telegram';
 
+import botAlert from './botAlert';
 import { MESSAGES_CONNECTION_CLOSED } from './consts';
+import config from '../configuration/config';
 import { app } from '../main';
 import { UserSessionService } from '../userSession/userSession.service';
 
-import config from '../configuration/config';
-import * as TelegramBot from 'node-telegram-bot-api';
-
-const { CHAT_ID_ALERT, BOT_TOKEN_ALERT } = config();
-
-const botAlert = new TelegramBot(BOT_TOKEN_ALERT);
+const { CHAT_ID_ALERT } = config();
 
 export default class NewLogger extends Logger {
   async info(message: string) {
@@ -19,7 +16,6 @@ export default class NewLogger extends Logger {
 
     if (isMessageExist) {
       await botAlert.sendMessage(CHAT_ID_ALERT, message);
-
       const appInstance = await app;
       const userSessionService = appInstance.get<UserSessionService>(UserSessionService);
       userSessionService.reconnectAllUserSessions();
