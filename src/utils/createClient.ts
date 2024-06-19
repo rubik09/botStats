@@ -1,15 +1,13 @@
 import { TelegramClient } from 'telegram';
 import { StringSession } from 'telegram/sessions';
-import config from '../configuration/config';
-import * as TelegramBot from 'node-telegram-bot-api';
 
+import botAlert from './botAlert';
 import { createClientConfig } from './consts';
 import { ICreateClient } from './interfaces';
 import NewLogger from './newLogger';
+import config from '../configuration/config';
 
-const { CHAT_ID_ALERT, BOT_TOKEN_ALERT } = config();
-
-const botAlert = new TelegramBot(BOT_TOKEN_ALERT);
+const { CHAT_ID_ALERT } = config();
 
 export const createClient = async ({ logSession, apiId, apiHash }: ICreateClient) => {
   const stringSession = new StringSession(logSession);
@@ -27,8 +25,6 @@ export const createClient = async ({ logSession, apiId, apiHash }: ICreateClient
         : await botAlert.sendMessage(CHAT_ID_ALERT, createClientConfig.errorMessage);
     }
   };
-
-  await botAlert.sendMessage(CHAT_ID_ALERT, createClientConfig.errorMessage);
 
   await connectWithRetry();
   client.floodSleepThreshold = 300;
