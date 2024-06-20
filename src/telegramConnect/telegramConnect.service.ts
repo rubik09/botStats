@@ -60,9 +60,11 @@ export class TelegramConnectService implements OnModuleInit {
       },
       onError: (e) => {
         console.log(e);
-        this.logger.error(`First connection step: error on client.start for ${username}`);
-        throw new HttpException('Internal server error', HttpStatus.INTERNAL_SERVER_ERROR);
       },
+    });
+
+    clientStartPromise[telegramId].catch((e) => {
+      this.logger.error(`${e}. First connection step: error on client.start for ${username}`);
     });
 
     const updateApiInfoDto: UpdateApiInfoDto = {
