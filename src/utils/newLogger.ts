@@ -1,12 +1,8 @@
 import { Logger } from 'telegram';
 
-import botAlert from './botAlert';
 import { MESSAGES_CONNECTION_CLOSED } from './consts';
-import config from '../configuration/config';
 import { app } from '../main';
 import { UserSessionService } from '../userSession/userSession.service';
-
-const { CHAT_ID_ALERT } = config();
 
 export default class NewLogger extends Logger {
   async info(message: string) {
@@ -15,10 +11,9 @@ export default class NewLogger extends Logger {
     const isMessageExist = MESSAGES_CONNECTION_CLOSED.includes(message);
 
     if (isMessageExist) {
-      await botAlert.sendMessage(CHAT_ID_ALERT, message);
       const appInstance = await app;
       const userSessionService = appInstance.get<UserSessionService>(UserSessionService);
-      userSessionService.reconnectAllUserSessions();
+      await userSessionService.reconnectAllUserSessions();
     }
   }
 }
