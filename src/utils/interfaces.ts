@@ -4,10 +4,6 @@ export interface IClients {
   [userId: number]: TelegramClient;
 }
 
-export interface IClientStartPromises {
-  [userId: number]: Promise<void>;
-}
-
 export interface IPromises {
   [userId: number]: {
     resolve: (value: IPromiseValue) => void;

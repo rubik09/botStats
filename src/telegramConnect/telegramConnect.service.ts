@@ -10,13 +10,12 @@ import { UserSessionService } from '../userSession/userSession.service';
 import { setupSteps } from '../utils/consts';
 import { createClient } from '../utils/createClient';
 import emitterSubject from '../utils/emitter';
-import { IClientStartPromises, IClients, IFirstStep, IPromises, ISecondStep, IThirdStep } from '../utils/interfaces';
+import { IClients, IFirstStep, IPromises, ISecondStep, IThirdStep } from '../utils/interfaces';
 import generatePromise from '../utils/TelegramPromiseGeneration';
 import { TSetupSteps } from '../utils/types';
 
 const clients: IClients = {};
 const promises: IPromises = {};
-const clientStartPromise: IClientStartPromises = {};
 
 @Injectable()
 export class TelegramConnectService implements OnModuleInit {
@@ -46,35 +45,36 @@ export class TelegramConnectService implements OnModuleInit {
 
     this.logger.debug(`First connection step: generating promises and wait code with password for ${username}`);
 
-    clientStartPromise[telegramId] = client.start({
-      phoneNumber: phoneNumber,
-      password: async () => {
-        const password = await promises[telegramId].promise;
-        promises[telegramId] = generatePromise();
-        return password.accountPassword;
-      },
-      phoneCode: async () => {
-        const codeProm = await promises[telegramId].promise;
-        promises[telegramId] = generatePromise();
-        return codeProm.phoneCode;
-      },
-      onError: (e) => {
-        console.log(e);
-      },
-    });
+    try {
+      await client.start({
+        phoneNumber: phoneNumber,
+        password: async () => {
+          const password = await promises[telegramId].promise;
+          promises[telegramId] = generatePromise();
+          return password.accountPassword;
+        },
+        phoneCode: async () => {
+          const codeProm = await promises[telegramId].promise;
+          promises[telegramId] = generatePromise();
+          return codeProm.phoneCode;
+        },
+        onError: (e) => {
+          console.log(e);
+        },
+      });
 
-    clientStartPromise[telegramId].catch((e) => {
-      this.logger.error(`${e}. First connection step: error on client.start for ${username}`);
-    });
+      const updateApiInfoDto: UpdateApiInfoDto = {
+        apiId,
+        apiHash,
+      };
 
-    const updateApiInfoDto: UpdateApiInfoDto = {
-      apiId,
-      apiHash,
-    };
+      await this.userSessionService.updateApiInfoByTelegramId(telegramId, updateApiInfoDto);
 
-    await this.userSessionService.updateApiInfoByTelegramId(telegramId, updateApiInfoDto);
-
-    this.logger.debug(`First connection step: successfully ended for ${username}`);
+      this.logger.debug(`First connection step: successfully ended for ${username}`);
+    } catch (e) {
+      this.logger.error(`${e} for ${username}`);
+      throw new HttpException('Internal server error', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   async secondConnectionStep({ accountPassword, code, telegramId, username }: ISecondStep) {
@@ -97,7 +97,6 @@ export class TelegramConnectService implements OnModuleInit {
 
     const client = clients[telegramId];
     const logSession = String(client.session.save());
-    await clientStartPromise[telegramId];
 
     this.logger.debug(`Second connection step: save log session for ${username}`);
 
