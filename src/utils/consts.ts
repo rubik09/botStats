@@ -6,4 +6,4 @@ export const enum setupSteps {
 
 export const cronTimezone = 'Europe/Moscow';
 
-export const MESSAGES_CONNECTION_CLOSED = ['The server closed the connection while sending', 'connection closed'];
+export const MESSAGES_CONNECTION_CLOSED = ['The server closed the connection while sending'];

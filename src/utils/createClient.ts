@@ -21,7 +21,5 @@ export const createClient = async ({ logSession, apiId, apiHash }: ICreateClient
     }
 
     return client;
-  } catch (e) {
-    console.log(e.message);
-  }
+  } catch (e) {}
 };
