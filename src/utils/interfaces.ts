@@ -51,3 +51,8 @@ export interface CalculatedActivityKeywords {
   activity: string;
   count: number;
 }
+
+export interface ITelegramMessage {
+  chat_id: number;
+  text: string;
+}

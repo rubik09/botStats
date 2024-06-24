@@ -3,10 +3,12 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { firstValueFrom } from 'rxjs';
 
+import { TELEGRAM_BOT_API_URL } from '../utils/consts';
+import { ITelegramMessage } from '../utils/interfaces';
+
 @Injectable()
 export class BotAlertProvider {
   private readonly botToken: string;
-  private readonly telegramBotApiUrl = 'https://api.telegram.org/bot';
 
   constructor(
     private configService: ConfigService,
@@ -16,11 +18,13 @@ export class BotAlertProvider {
   }
 
   async sendMessage(chatId: number, message: string) {
-    const data = {
+    const telegramMessage: ITelegramMessage = {
       chat_id: chatId,
       text: message,
     };
 
-    await firstValueFrom(this.httpClient.post(`${this.telegramBotApiUrl}${this.botToken}/sendMessage`, data));
+    const url = `${TELEGRAM_BOT_API_URL}${this.botToken}/sendMessage`;
+
+    await firstValueFrom(this.httpClient.post(url, telegramMessage));
   }
 }

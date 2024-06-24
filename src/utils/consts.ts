@@ -13,3 +13,5 @@ export const createCLientConfig = {
   SEQUENTIAL_UPDATES: true,
   FLOOD_SLEEP_THRESHOLD: 300,
 };
+
+export const TELEGRAM_BOT_API_URL = 'https://api.telegram.org/bot';
