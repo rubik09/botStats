@@ -190,20 +190,15 @@ export class UserSessionService implements OnModuleInit {
 
     const results = await telegramAccountsInit(allSessions);
 
-    await Promise.all(
-      results.map((result, index) => {
-        if (result.status === 'fulfilled') {
-          this.logger.debug(`Session  with telegramId: ${allSessions[index].telegramId} reconnected successfully`);
-        } else {
-          this.bot.sendMessage(
-            this.chatId,
-            `Failed to reconnect Session with telegramId: ${allSessions[index].telegramId}`,
-          );
-          this.logger.error(`Failed to reconnect Session with telegramId: ${allSessions[index].telegramId}}`);
-        }
-      }),
-    );
-
-    this.logger.debug(`All User Sessions successfully reconnect`);
+    results.forEach((result, index) => {
+      if (result.status !== 'fulfilled') {
+        this.bot.sendMessage(
+          this.chatId,
+          `Failed to reconnect Session with telegramId: ${allSessions[index].telegramId}`,
+        );
+        this.logger.error(`Failed to reconnect Session with telegramId: ${allSessions[index].telegramId}}`);
+      }
+    }),
+      this.logger.debug(`User Sessions reconnect ended`);
   }
 }
