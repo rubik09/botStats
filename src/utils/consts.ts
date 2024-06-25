@@ -8,10 +8,10 @@ export const cronTimezone = 'Europe/Moscow';
 
 export const MESSAGES_CONNECTION_CLOSED = ['The server closed the connection while sending'];
 
-export const createCLientConfig = {
-  CONNECTION_RETRIES: 5,
-  SEQUENTIAL_UPDATES: true,
-  FLOOD_SLEEP_THRESHOLD: 300,
-};
-
 export const TELEGRAM_BOT_API_URL = 'https://api.telegram.org/bot';
+
+export const CREATE_CLIENT_CONFIG = {
+  connectionRetries: 5,
+  sequentialUpdates: true,
+  floodSleepThreshold: 300,
+};

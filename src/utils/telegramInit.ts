@@ -20,12 +20,4 @@ async function telegramInit({ logSession, apiId, apiHash, telegramId }: UserSess
   emitterSubject.next({ eventName: 'newClient', data: client });
 }
 
-async function telegramAccountsInit(allSessions: UserSession[]): Promise<PromiseSettledResult<void>[]> {
-  const results = await Promise.allSettled(
-    allSessions.filter((session) => session.status).map((session) => telegramInit(session)),
-  );
-
-  return results;
-}
-
-export default telegramAccountsInit;
+export default telegramInit;

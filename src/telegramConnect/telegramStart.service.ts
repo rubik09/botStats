@@ -6,7 +6,7 @@ import { NewMessage } from 'telegram/events';
 import { ProducerService } from '../kafka/producer.service';
 import { UserSessionService } from '../userSession/userSession.service';
 import emitterSubject from '../utils/emitter';
-import telegramAccountsInit from '../utils/telegramInit';
+import telegramAccountsInit from '../utils/telegramAccountsInit';
 
 @Injectable()
 export class TelegramStartService implements OnModuleInit {
