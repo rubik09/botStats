@@ -1,8 +1,8 @@
 import { HttpException, HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
 import { CreateTelegramConnectionDto } from './dto/createTelegramConnect.dto';
 import { BotAlertService } from '../botAlert/botAlert.service';
-import config from '../configuration/config';
 import { CreateKeywordsDto } from '../keywords/dto/createKeywords.dto';
 import { KeywordsService } from '../keywords/keywords.service';
 import { UpdateApiInfoDto } from '../userSession/dto/updateApiInfo.dto';
@@ -19,17 +19,21 @@ import { TSetupSteps } from '../utils/types';
 const clients: IClients = {};
 const promises: IPromises = {};
 const clientStartPromise: IClientStartPromises = {};
-const { CHAT_ID_ALERT } = config();
 
 @Injectable()
 export class TelegramConnectService implements OnModuleInit {
   private connectionStepFunctions: TSetupSteps;
   private readonly logger = new Logger(TelegramConnectService.name);
+  private readonly chatId: number;
+
   constructor(
     private userSessionService: UserSessionService,
     private keywordsService: KeywordsService,
     private bot: BotAlertService,
-  ) {}
+    private configService: ConfigService,
+  ) {
+    this.chatId = this.configService.get('CHAT_ID_ALERT');
+  }
 
   async firstConnectionStep({ apiId, apiHash, telegramId, username, phoneNumber }: IFirstStep) {
     this.logger.debug(`Run first connection step for ${username}`);
@@ -44,7 +48,7 @@ export class TelegramConnectService implements OnModuleInit {
 
     if (!client) {
       this.bot.sendMessage(
-        CHAT_ID_ALERT,
+        this.chatId,
         `Problem  client for creating ${username} with apiId: ${apiId}, apiHash ${apiHash}`,
       );
       this.logger.error(`First connection step: error on client.start for ${username}`);
