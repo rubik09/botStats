@@ -1,5 +1,4 @@
 import { HttpException, HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { DataSource } from 'typeorm';
 
 import { UpdateApiInfoDto } from './dto/updateApiInfo.dto';
@@ -7,8 +6,11 @@ import { UpdateUserSessionInfoDto } from './dto/updateUserSession.dto';
 import { UserSession } from './entity/userSession.entity';
 import { UserSessionRepository } from './userSession.repository';
 import { BotAlertService } from '../botAlert/botAlert.service';
+import config from '../configuration/config';
 import { CreatePersonalInfoDto } from '../personalInfo/dto/createPersonalInfo.dto';
-import telegramInit from '../utils/telegramInit';
+import telegramAccountsInit from '../utils/telegramInit';
+
+const { CHAT_ID_ALERT } = config();
 
 @Injectable()
 export class UserSessionService implements OnModuleInit {
@@ -18,7 +20,6 @@ export class UserSessionService implements OnModuleInit {
     private userSessionRepository: UserSessionRepository,
     private bot: BotAlertService,
     private readonly dataSource: DataSource,
-    private configService: ConfigService,
   ) {}
 
   async onModuleInit() {
@@ -185,17 +186,22 @@ export class UserSessionService implements OnModuleInit {
 
     this.logger.log(`Trying to reconnect all User Sessions`);
 
-    const CHAT_ID_ALERT = this.configService.get('CHAT_ID_ALERT');
+    const results = await telegramAccountsInit(allSessions);
 
-    for (const session of allSessions) {
-      try {
-        await telegramInit(session);
-      } catch (error) {
-        this.logger.error(`Failed to reconnect Session with telegramId: ${session.telegramId}}`);
-        this.bot.sendMessage(CHAT_ID_ALERT, `Failed to reconnect Session with telegramId: ${session.telegramId}`);
-      }
-    }
+    await Promise.all(
+      results.map((result, index) => {
+        if (result.status === 'fulfilled') {
+          this.logger.debug(`Session  with telegramId: ${allSessions[index].telegramId} reconnected successfully`);
+        } else {
+          this.bot.sendMessage(
+            CHAT_ID_ALERT,
+            `Failed to reconnect Session with telegramId: ${allSessions[index].telegramId}`,
+          );
+          this.logger.error(`Failed to reconnect Session with telegramId: ${allSessions[index].telegramId}}`);
+        }
+      }),
+    );
 
-    this.logger.debug(`User Sessions reconnect ended`);
+    this.logger.debug(`All User Sessions successfully reconnect`);
   }
 }
