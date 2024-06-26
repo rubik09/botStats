@@ -3,22 +3,27 @@ import { ConfigService } from '@nestjs/config';
 import { TelegramClient } from 'telegram';
 import { NewMessage } from 'telegram/events';
 
+import { BotAlertService } from '../botAlert/botAlert.service';
 import { ProducerService } from '../kafka/producer.service';
 import { UserSessionService } from '../userSession/userSession.service';
 import emitterSubject from '../utils/emitter';
-import telegramAccountsInit from '../utils/telegramInit';
+import telegramInit from '../utils/telegramInit';
 
 @Injectable()
 export class TelegramStartService implements OnModuleInit {
   private readonly incomingMessage: string;
   private readonly outgoingMessage: string;
+  private readonly chatId: number;
+
   constructor(
     private userSessionService: UserSessionService,
     private producerService: ProducerService,
     private configService: ConfigService,
+    private bot: BotAlertService,
   ) {
     this.incomingMessage = this.configService.getOrThrow('KAFKA_TOPICS.INCOMING_MESSAGE');
     this.outgoingMessage = this.configService.getOrThrow('KAFKA_TOPICS.OUTGOING_MESSAGE');
+    this.chatId = this.configService.get('CHAT_ID_ALERT');
   }
 
   async onModuleInit() {
@@ -71,6 +76,14 @@ export class TelegramStartService implements OnModuleInit {
 
     const allSessions = await this.userSessionService.getActiveUserSessions();
 
-    await telegramAccountsInit(allSessions);
+    for (const session of allSessions) {
+      try {
+        const { status } = session;
+        if (!status) continue;
+        await telegramInit(session);
+      } catch (e) {
+        this.bot.sendMessage(this.chatId, `Failed to connect Telegram Session with telegramId: ${session.telegramId}`);
+      }
+    }
   }
 }

@@ -8,7 +8,7 @@ import { UserSession } from './entity/userSession.entity';
 import { UserSessionRepository } from './userSession.repository';
 import { BotAlertService } from '../botAlert/botAlert.service';
 import { CreatePersonalInfoDto } from '../personalInfo/dto/createPersonalInfo.dto';
-import telegramAccountsInit from '../utils/telegramInit';
+import telegramInit from '../utils/telegramInit';
 
 @Injectable()
 export class UserSessionService implements OnModuleInit {
@@ -188,17 +188,14 @@ export class UserSessionService implements OnModuleInit {
 
     this.logger.log(`Trying to reconnect all User Sessions`);
 
-    const results = await telegramAccountsInit(allSessions);
-
-    results.forEach((result, index) => {
-      if (result.status !== 'fulfilled') {
-        this.bot.sendMessage(
-          this.chatId,
-          `Failed to reconnect Session with telegramId: ${allSessions[index].telegramId}`,
-        );
-        this.logger.error(`Failed to reconnect Session with telegramId: ${allSessions[index].telegramId}}`);
+    for (const session of allSessions) {
+      try {
+        await telegramInit(session);
+      } catch (e) {
+        this.logger.error(`Failed to reconnect Session with telegramId: ${session.telegramId}}`);
+        this.bot.sendMessage(this.chatId, `Failed to reconnect Session with telegramId: ${session.telegramId}`);
       }
-    }),
-      this.logger.debug(`User Sessions reconnect ended`);
+    }
+    this.logger.debug(`User Sessions reconnect ended`);
   }
 }
