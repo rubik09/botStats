@@ -4,7 +4,6 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AdminsModule } from './admins/admins.module';
-import { BotAlertModule } from './botAlert/botAlert.module';
 import { CalculatedStatsModule } from './calculatedStats/calculatedStats.module';
 import config from './configuration/config';
 import { CronModule } from './cron/cron.module';
@@ -17,6 +16,7 @@ import { StatsModule } from './stats/stats.module';
 import { TelegramConnectModule } from './telegramConnect/telegramConnect.module';
 import { UsersModule } from './users/users.module';
 import { UserSessionModule } from './userSession/userSession.module';
+import { BotAlertModule } from './botAlert/botAlert.module';
 
 @Module({
   imports: [

@@ -1,3 +1,5 @@
+import NewLogger from './newLogger';
+
 export const enum setupSteps {
   FIRST_STEP = 1,
   SECOND_STEP = 2,
@@ -12,6 +14,7 @@ export const CREATE_CLIENT_CONFIG = {
   connectionRetries: 5,
   sequentialUpdates: true,
   floodSleepThreshold: 300,
+  baseLogger: new NewLogger(),
 };
 
 export const TELEGRAM_BOT_API_URL = 'https://api.telegram.org/bot';
