@@ -1,21 +1,28 @@
 import { HttpException, HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { DataSource } from 'typeorm';
 
 import { UpdateApiInfoDto } from './dto/updateApiInfo.dto';
 import { UpdateUserSessionInfoDto } from './dto/updateUserSession.dto';
 import { UserSession } from './entity/userSession.entity';
 import { UserSessionRepository } from './userSession.repository';
+import { BotAlertService } from '../botAlert/botAlert.service';
 import { CreatePersonalInfoDto } from '../personalInfo/dto/createPersonalInfo.dto';
-import telegramAccountsInit from '../utils/telegramInit';
+import telegramInit from '../utils/telegramInit';
 
 @Injectable()
 export class UserSessionService implements OnModuleInit {
   private readonly logger = new Logger(UserSessionService.name);
+  private readonly chatId: number;
 
   constructor(
     private userSessionRepository: UserSessionRepository,
+    private bot: BotAlertService,
     private readonly dataSource: DataSource,
-  ) {}
+    private configService: ConfigService,
+  ) {
+    this.chatId = this.configService.get('CHAT_ID_ALERT');
+  }
 
   async onModuleInit() {
     await this.reconnectAllUserSessions();
@@ -179,8 +186,16 @@ export class UserSessionService implements OnModuleInit {
 
     this.logger.debug(`${count} All User Sessions successfully get `);
 
-    await telegramAccountsInit(allSessions);
+    this.logger.log(`Trying to reconnect all User Sessions`);
 
-    this.logger.log(`All User Sessions successfully reconnect`);
+    for (const session of allSessions) {
+      try {
+        await telegramInit(session);
+      } catch (e) {
+        this.logger.error(`Failed to reconnect Session with telegramId: ${session.telegramId}}`);
+        this.bot.sendMessage(this.chatId, `Failed to reconnect Session with telegramId: ${session.telegramId}`);
+      }
+    }
+    this.logger.debug(`User Sessions reconnect ended`);
   }
 }

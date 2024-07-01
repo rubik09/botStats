@@ -16,6 +16,7 @@ import { StatsModule } from './stats/stats.module';
 import { TelegramConnectModule } from './telegramConnect/telegramConnect.module';
 import { UsersModule } from './users/users.module';
 import { UserSessionModule } from './userSession/userSession.module';
+import { BotAlertModule } from './botAlert/botAlert.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { UserSessionModule } from './userSession/userSession.module';
     KeywordsModule,
     CalculatedStatsModule,
     CronModule,
+    BotAlertModule,
   ],
   providers: [VerificationConsumer],
 })

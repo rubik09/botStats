@@ -26,6 +26,8 @@ const {
   CLIENT_EMAIL,
   PRIVATE_KEY,
   AUTH_HEADER_SECRET,
+  BOT_TOKEN_ALERT,
+  CHAT_ID_ALERT,
 } = process.env;
 
 export default (): any =>
@@ -37,8 +39,10 @@ export default (): any =>
     LOG_LEVEL: LOG_LEVEL,
     SECRET_JWT: SECRET_JWT,
     BOT_TOKEN: BOT_TOKEN,
+    BOT_TOKEN_ALERT: BOT_TOKEN_ALERT,
     WEBHOOK_HOST: WEBHOOK_HOST,
     AUTH_HEADER_SECRET: AUTH_HEADER_SECRET,
+    CHAT_ID_ALERT: Number(CHAT_ID_ALERT),
     POSTGRES_DB_SETTINGS: {
       type: DB_TYPE,
       host: DB_HOST,

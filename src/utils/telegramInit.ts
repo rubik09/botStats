@@ -9,14 +9,15 @@ const clientsTelegram: Record<string, TelegramClient> = {};
 async function telegramInit({ logSession, apiId, apiHash, telegramId }: UserSession) {
   const client = await createClient({ logSession, apiId, apiHash });
 
-  await client.checkAuthorization();
+  const isAuthorization = await client.checkAuthorization();
+
+  if (!isAuthorization) {
+    throw new Error(`User not authorized with telegramId: ${telegramId}`);
+  }
+
   clientsTelegram[telegramId] = client;
 
   emitterSubject.next({ eventName: 'newClient', data: client });
 }
 
-async function telegramAccountsInit(allSessions: UserSession[]) {
-  await Promise.allSettled(allSessions.filter((session) => session.status).map((session) => telegramInit(session)));
-}
-
-export default telegramAccountsInit;
+export default telegramInit;

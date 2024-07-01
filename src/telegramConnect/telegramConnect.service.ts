@@ -1,6 +1,8 @@
 import { HttpException, HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
 import { CreateTelegramConnectionDto } from './dto/createTelegramConnect.dto';
+import { BotAlertService } from '../botAlert/botAlert.service';
 import { CreateKeywordsDto } from '../keywords/dto/createKeywords.dto';
 import { KeywordsService } from '../keywords/keywords.service';
 import { UpdateApiInfoDto } from '../userSession/dto/updateApiInfo.dto';
@@ -21,10 +23,16 @@ const promises: IPromises = {};
 export class TelegramConnectService implements OnModuleInit {
   private connectionStepFunctions: TSetupSteps;
   private readonly logger = new Logger(TelegramConnectService.name);
+  private readonly chatId: number;
+
   constructor(
     private userSessionService: UserSessionService,
     private keywordsService: KeywordsService,
-  ) {}
+    private bot: BotAlertService,
+    private configService: ConfigService,
+  ) {
+    this.chatId = this.configService.get('CHAT_ID_ALERT');
+  }
 
   async firstConnectionStep({ apiId, apiHash, telegramId, username, phoneNumber }: IFirstStep) {
     this.logger.debug(`Run first connection step for ${username}`);
@@ -36,6 +44,15 @@ export class TelegramConnectService implements OnModuleInit {
     this.logger.log(`First connection step: creating client for ${username}`);
 
     const client = await createClient({ logSession: '', apiId, apiHash });
+
+    if (!client) {
+      this.bot.sendMessage(
+        this.chatId,
+        `Problem  client for creating ${username} with apiId: ${apiId}, apiHash ${apiHash}`,
+      );
+      this.logger.error(`First connection step: error on client.start for ${username}`);
+      throw new HttpException('Internal server error', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 
     clients[telegramId] = client;
 
