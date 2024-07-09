@@ -37,6 +37,8 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - kafka-net
+    depends_on:
+      - zookeeper
 
   zookeeper:
     image: wurstmeister/zookeeper:latest
