@@ -25,7 +25,7 @@ export class UserSessionService implements OnModuleInit {
   }
 
   async onModuleInit() {
-    await this.reconnectAllUserSessions();
+    await this.reconnectActiveUserSessions();
   }
 
   async getPersonalInfoByTelegramId(telegramId: UserSession['telegramId']): Promise<UserSession> {
@@ -179,19 +179,17 @@ export class UserSessionService implements OnModuleInit {
     this.logger.debug(`user session successfully created with id: ${telegramId}`);
   }
 
-  async reconnectAllUserSessions() {
-    this.logger.log(`Trying to get all User Sessions`);
+  async reconnectActiveUserSessions() {
+    this.logger.log(`Trying to get Active User Sessions`);
 
-    const [allSessions, count] = await this.userSessionRepository.getUserSessions();
+    const [activeSessions, count] = await this.userSessionRepository.getActiveUserSessions();
 
-    this.logger.debug(`${count} All User Sessions successfully get `);
+    this.logger.debug(`${count} Active User Sessions successfully get`);
 
-    this.logger.log(`Trying to reconnect all User Sessions`);
+    this.logger.log(`Trying to reconnect User Sessions`);
 
-    for (const session of allSessions) {
+    for (const session of activeSessions) {
       try {
-        const { status } = session;
-        if (status === 'disabled') continue;
         await telegramInit(session);
       } catch (e) {
         this.logger.error(

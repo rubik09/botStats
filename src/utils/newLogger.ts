@@ -13,7 +13,7 @@ export default class NewLogger extends Logger {
     if (isMessageExist) {
       const appInstance = await app;
       const userSessionService = appInstance.get<UserSessionService>(UserSessionService);
-      await userSessionService.reconnectAllUserSessions();
+      await userSessionService.reconnectActiveUserSessions();
     }
   }
 }
