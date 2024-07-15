@@ -190,10 +190,17 @@ export class UserSessionService implements OnModuleInit {
 
     for (const session of allSessions) {
       try {
+        const { status } = session;
+        if (status === 'disabled') continue;
         await telegramInit(session);
       } catch (e) {
-        this.logger.error(`Failed to reconnect Session with telegramId: ${session.telegramId}}`);
-        this.bot.sendMessage(this.chatId, `Failed to reconnect Session with telegramId: ${session.telegramId}`);
+        this.logger.error(
+          `Failed to reconnect Session with username ${session.personalInfo.username} and telegramId: ${session.telegramId}}`,
+        );
+        this.bot.sendMessage(
+          this.chatId,
+          `Failed to reconnect Session with username ${session.personalInfo.username} and telegramId: ${session.telegramId}`,
+        );
       }
     }
     this.logger.debug(`User Sessions reconnect ended`);
