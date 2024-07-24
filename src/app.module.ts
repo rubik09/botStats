@@ -2,6 +2,7 @@ import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/c
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 
 import { AdminsModule } from './admins/admins.module';
 import { CalculatedStatsModule } from './calculatedStats/calculatedStats.module';
@@ -43,6 +44,11 @@ import { UserSessionModule } from './userSession/userSession.module';
     CalculatedStatsModule,
     CronModule,
     BotAlertModule,
+    PrometheusModule.register({
+      defaultMetrics: {
+        enabled: false,
+      },
+    }),
   ],
   providers: [VerificationConsumer],
 })
