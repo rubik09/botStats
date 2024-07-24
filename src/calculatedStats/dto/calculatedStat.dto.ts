@@ -1,4 +1,4 @@
-import { IsInt, IsNumber, IsString, Length, Min } from 'class-validator';
+import { IsInt, IsISO8601, IsNumber, IsString, Length, Min } from 'class-validator';
 
 import { CalculatedStat } from '../entity/calculatedStats.entity';
 
@@ -27,4 +27,7 @@ export class CalculatedStatDto {
 
   @IsString()
   time: CalculatedStat['time'];
+
+  @IsISO8601()
+  createdAt: CalculatedStat['createdAt'];
 }

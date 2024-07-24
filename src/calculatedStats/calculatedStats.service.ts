@@ -14,6 +14,8 @@ export class CalculatedStatsService {
     username: CalculatedStat['username'],
     page: number,
     limit: number,
+    from: GetStatsDto['from'],
+    to: GetStatsDto['to'],
   ): Promise<[CalculatedStat[], number]> {
     this.logger.log(`Trying to get all calculated stats by username: ${username}`);
 
@@ -22,6 +24,8 @@ export class CalculatedStatsService {
       username,
       limit,
       offset,
+      from,
+      to,
     };
     const calculatedStats = await this.calculatedStatsRepository.getCalculatedStats(getStatsDto);
 
