@@ -19,7 +19,7 @@ import { UserSessionModule } from '../userSession/userSession.module';
     StatsRepository,
     makeCounterProvider({
       name: MetricNames.DB_REQUEST_STATS_TOTAL,
-      help: MetricHelp.DB_REQUEST_STATS_TOTAL,
+      help: MetricHelp.DB_REQUEST_STATS_TOTAL_HELP,
       labelNames: [MetricLabels.METHOD],
     }),
   ],

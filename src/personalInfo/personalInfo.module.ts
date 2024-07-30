@@ -15,7 +15,7 @@ import { MetricHelp, MetricLabels, MetricNames } from '../metrics/metrics.consta
     PersonalInfoRepository,
     makeCounterProvider({
       name: MetricNames.DB_REQUEST_PERSONAL_INFO_TOTAL,
-      help: MetricHelp.DB_REQUEST_PERSONAL_INFO_TOTAL,
+      help: MetricHelp.DB_REQUEST_PERSONAL_INFO_TOTAL_HELP,
       labelNames: [MetricLabels.METHOD],
     }),
   ],

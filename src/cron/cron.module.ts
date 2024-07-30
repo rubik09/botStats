@@ -16,7 +16,7 @@ import { StatsModule } from '../stats/stats.module';
     CronRepository,
     makeCounterProvider({
       name: MetricNames.DB_REQUEST_CRON_TOTAL,
-      help: MetricHelp.DB_REQUEST_CRON_TOTAL,
+      help: MetricHelp.DB_REQUEST_CRON_TOTAL_HELP,
       labelNames: [MetricLabels.METHOD],
     }),
   ],

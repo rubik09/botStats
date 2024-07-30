@@ -6,7 +6,7 @@ import { InsertResult, Repository } from 'typeorm';
 
 import { CreateAdminDto } from './dto/createAdmin.dto';
 import { Admin } from './entity/admins.entity';
-import { MetricNames } from '../metrics/metrics.constant';
+import { AdminMethodNames, MetricLabels, MetricNames } from '../metrics/metrics.constant';
 
 @Injectable()
 export class AdminsRepository {
@@ -17,7 +17,7 @@ export class AdminsRepository {
   ) {}
 
   async createAdmin(createAdminDto: CreateAdminDto): Promise<InsertResult> {
-    this.dbRequestTotal.inc({ method: 'createAdmin' });
+    this.dbRequestTotal.inc({ [MetricLabels.METHOD]: AdminMethodNames.CREATE_ADMIN });
     return await this.adminsRepository
       .createQueryBuilder('admins')
       .insert()
@@ -27,7 +27,7 @@ export class AdminsRepository {
   }
 
   async findOneByEmail(email: string): Promise<Admin> {
-    this.dbRequestTotal.inc({ method: 'findOneByEmail' });
+    this.dbRequestTotal.inc({ [MetricLabels.METHOD]: AdminMethodNames.FIND_ONE_BY_EMAIL });
     return await this.adminsRepository.createQueryBuilder('admins').where('admins.email = :email', { email }).getOne();
   }
 }

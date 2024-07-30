@@ -15,7 +15,7 @@ import { MetricHelp, MetricLabels, MetricNames } from '../metrics/metrics.consta
     AdminsRepository,
     makeCounterProvider({
       name: MetricNames.DB_REQUEST_ADMINS_TOTAL,
-      help: MetricHelp.DB_REQUEST_ADMINS_TOTAL,
+      help: MetricHelp.DB_REQUEST_ADMINS_TOTAL_HELP,
       labelNames: [MetricLabels.METHOD],
     }),
   ],

@@ -15,7 +15,7 @@ import { MetricHelp, MetricLabels, MetricNames } from '../metrics/metrics.consta
     CalculatedStatsRepository,
     makeCounterProvider({
       name: MetricNames.DB_REQUEST_CALCULATED_STATS_TOTAL,
-      help: MetricHelp.DB_REQUEST_CALCULATED_STATS_TOTAL,
+      help: MetricHelp.DB_REQUEST_CALCULATED_STATS_TOTAL_HELP,
       labelNames: [MetricLabels.METHOD],
     }),
   ],

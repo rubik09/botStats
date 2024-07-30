@@ -6,7 +6,7 @@ import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 
 import { UpdatePersonalInfoDto } from './dto/updatePersonalInfo.dto';
 import { PersonalInfo } from './entity/personalInfo.entity';
-import { MetricNames } from '../metrics/metrics.constant';
+import { MetricLabels, MetricNames, PersonalInfoMethodNames } from '../metrics/metrics.constant';
 
 @Injectable()
 export class PersonalInfoRepository {
@@ -17,7 +17,7 @@ export class PersonalInfoRepository {
   ) {}
 
   async updatePersonalInfo(id: number, updatePersonalInfoDto: UpdatePersonalInfoDto): Promise<UpdateResult> {
-    this.dbRequestTotal.inc({ method: 'updatePersonalInfo' });
+    this.dbRequestTotal.inc({ [MetricLabels.METHOD]: PersonalInfoMethodNames.UPDATE_PERSONAL_INFO });
     return await this.personalInfoRepository
       .createQueryBuilder('personalInfo')
       .update(PersonalInfo)
@@ -27,12 +27,12 @@ export class PersonalInfoRepository {
   }
 
   async getByUserId(id: number): Promise<PersonalInfo> {
-    this.dbRequestTotal.inc({ method: 'getByUserId' });
+    this.dbRequestTotal.inc({ [MetricLabels.METHOD]: PersonalInfoMethodNames.GET_BY_USER_ID });
     return await this.personalInfoRepository.createQueryBuilder('personalInfo').where('id = :id', { id }).getOne();
   }
 
   async deletePersonalInfoById(id: number): Promise<DeleteResult> {
-    this.dbRequestTotal.inc({ method: 'deletePersonalInfoById' });
+    this.dbRequestTotal.inc({ [MetricLabels.METHOD]: PersonalInfoMethodNames.DELETE_PERSONAL_INFO_BY_ID });
     return await this.personalInfoRepository
       .createQueryBuilder('personalInfo')
       .delete()

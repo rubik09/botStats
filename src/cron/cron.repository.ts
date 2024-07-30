@@ -7,7 +7,7 @@ import { DeleteResult, InsertResult, Repository, UpdateResult } from 'typeorm';
 import { CreateCronJobDto } from './dto/createCronJob.dto';
 import { UpdateCronJobDto } from './dto/updateCronJob.dto';
 import { CronEntity } from './entity/cron.entity';
-import { MetricNames } from '../metrics/metrics.constant';
+import { CronMethodNames, MetricLabels, MetricNames } from '../metrics/metrics.constant';
 
 @Injectable()
 export class CronRepository {
@@ -18,26 +18,26 @@ export class CronRepository {
   ) {}
 
   async getCronJobs(): Promise<[CronEntity[], number]> {
-    this.dbRequestTotal.inc({ method: 'getCronJobs' });
+    this.dbRequestTotal.inc({ [MetricLabels.METHOD]: CronMethodNames.GET_CRON_JOBS });
     return await this.cronEntityRepository.createQueryBuilder('cron').getManyAndCount();
   }
 
   async getCronJobByNameAndTime(name: string, time: string): Promise<CronEntity> {
-    this.dbRequestTotal.inc({ method: 'getCronJobByNameAndTime' });
+    this.dbRequestTotal.inc({ [MetricLabels.METHOD]: CronMethodNames.GET_CRON_JOB_BY_NAME_AND_TIME });
     return await this.cronEntityRepository
       .createQueryBuilder('cron')
       .where('name = :name', { name })
-      .where('time = :time', { time })
+      .andWhere('time = :time', { time })
       .getOne();
   }
 
   async getCronJobById(id: number): Promise<CronEntity> {
-    this.dbRequestTotal.inc({ method: 'getCronJobById' });
+    this.dbRequestTotal.inc({ [MetricLabels.METHOD]: CronMethodNames.GET_CRON_JOB_BY_ID });
     return await this.cronEntityRepository.createQueryBuilder('cron').where('id = :id', { id }).getOne();
   }
 
   async createCronJob(createCronJobDto: CreateCronJobDto): Promise<InsertResult> {
-    this.dbRequestTotal.inc({ method: 'createCronJob' });
+    this.dbRequestTotal.inc({ [MetricLabels.METHOD]: CronMethodNames.CREATE_CRON_JOB });
     return await this.cronEntityRepository
       .createQueryBuilder('cron')
       .insert()
@@ -47,7 +47,7 @@ export class CronRepository {
   }
 
   async updateCronJob(id: number, updateCronJobDto: UpdateCronJobDto): Promise<UpdateResult> {
-    this.dbRequestTotal.inc({ method: 'updateCronJob' });
+    this.dbRequestTotal.inc({ [MetricLabels.METHOD]: CronMethodNames.UPDATE_CRON_JOB });
     return await this.cronEntityRepository
       .createQueryBuilder('cron')
       .update(CronEntity)
@@ -57,7 +57,7 @@ export class CronRepository {
   }
 
   async deleteCronJob(id: number): Promise<DeleteResult> {
-    this.dbRequestTotal.inc({ method: 'deleteCronJob' });
+    this.dbRequestTotal.inc({ [MetricLabels.METHOD]: CronMethodNames.DELETE_CRON_JOB });
     return await this.cronEntityRepository.createQueryBuilder('cron').delete().where('id = :id', { id }).execute();
   }
 }

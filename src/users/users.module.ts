@@ -15,7 +15,7 @@ import { MetricHelp, MetricLabels, MetricNames } from '../metrics/metrics.consta
     UsersRepository,
     makeCounterProvider({
       name: MetricNames.DB_REQUEST_USERS_TOTAL,
-      help: MetricHelp.DB_REQUEST_USERS_TOTAL,
+      help: MetricHelp.DB_REQUEST_USERS_TOTAL_HELP,
       labelNames: [MetricLabels.METHOD],
     }),
   ],

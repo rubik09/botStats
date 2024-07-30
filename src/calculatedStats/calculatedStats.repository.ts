@@ -7,7 +7,7 @@ import { InsertResult, Repository } from 'typeorm';
 import { CreateCalculatedStatsDto } from './dto/createCalculatedStats.dto';
 import { GetStatsDto } from './dto/getStats.dto';
 import { CalculatedStat } from './entity/calculatedStats.entity';
-import { MetricNames } from '../metrics/metrics.constant';
+import { CalculatedStatMethodNames, MetricLabels, MetricNames } from '../metrics/metrics.constant';
 
 @Injectable()
 export class CalculatedStatsRepository {
@@ -18,7 +18,7 @@ export class CalculatedStatsRepository {
   ) {}
 
   async getCalculatedStats({ limit, offset, username }: GetStatsDto): Promise<[CalculatedStat[], number]> {
-    this.dbRequestTotal.inc({ method: 'getCalculatedStats' });
+    this.dbRequestTotal.inc({ [MetricLabels.METHOD]: CalculatedStatMethodNames.GET_CALCULATED_STATS });
     return await this.calculatedStatRepository
       .createQueryBuilder('calculatedStats')
       .limit(limit)
@@ -29,7 +29,7 @@ export class CalculatedStatsRepository {
   }
 
   async createCalculatedStats(createCalculatedStatsDto: CreateCalculatedStatsDto): Promise<InsertResult> {
-    this.dbRequestTotal.inc({ method: 'createCalculatedStats' });
+    this.dbRequestTotal.inc({ [MetricLabels.METHOD]: CalculatedStatMethodNames.CREATE_CALCULATED_STATS });
     return await this.calculatedStatRepository
       .createQueryBuilder('calculatedStats')
       .insert()

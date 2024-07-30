@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { makeCounterProvider, makeGaugeProvider } from '@willsoto/nestjs-prometheus';
+import { makeCounterProvider } from '@willsoto/nestjs-prometheus';
 
 import { Keyword } from './entity/keywords.entity';
 import { KeywordsController } from './keywords.controller';
@@ -16,7 +16,7 @@ import { UserSessionModule } from '../userSession/userSession.module';
     KeywordsRepository,
     makeCounterProvider({
       name: MetricNames.DB_REQUEST_KEYWORDS_TOTAL,
-      help: MetricHelp.DB_REQUEST_KEYWORDS_TOTAL,
+      help: MetricHelp.DB_REQUEST_KEYWORDS_TOTAL_HELP,
       labelNames: [MetricLabels.METHOD],
     }),
   ],

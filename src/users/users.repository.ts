@@ -7,7 +7,7 @@ import { DeleteResult, InsertResult, Repository } from 'typeorm';
 import { CreateUserDto } from './dto/createUser.dto';
 import { FindByApiIdAndTgIdDto } from './dto/findByApiIdAndTgId.dto';
 import { User } from './entity/users.entity';
-import { MetricNames } from '../metrics/metrics.constant';
+import { MetricLabels, MetricNames, UserMethodNames } from '../metrics/metrics.constant';
 
 @Injectable()
 export class UsersRepository {
@@ -18,7 +18,7 @@ export class UsersRepository {
   ) {}
 
   async findUserByApiIdAndTelegramId({ apiIdClient, telegramId }: FindByApiIdAndTgIdDto): Promise<User> {
-    this.dbRequestTotal.inc({ method: 'findUserByApiIdAndTelegramId' });
+    this.dbRequestTotal.inc({ [MetricLabels.METHOD]: UserMethodNames.FIND_USER_BY_API_ID_AND_TELEGRAM_ID });
     return await this.usersRepository
       .createQueryBuilder('users')
       .where('users.api_id_client = :apiIdClient AND users.telegram_id = :telegramId', {
@@ -29,12 +29,12 @@ export class UsersRepository {
   }
 
   async createUser(createUserDto: CreateUserDto): Promise<InsertResult> {
-    this.dbRequestTotal.inc({ method: 'createUser' });
+    this.dbRequestTotal.inc({ [MetricLabels.METHOD]: UserMethodNames.CREATE_USER });
     return await this.usersRepository.createQueryBuilder('users').insert().into(User).values(createUserDto).execute();
   }
 
   async getCountUsersByApiId(apiIdClient: number): Promise<number> {
-    this.dbRequestTotal.inc({ method: 'getCountUsersByApiId' });
+    this.dbRequestTotal.inc({ [MetricLabels.METHOD]: UserMethodNames.GET_COUNT_USERS_BY_API_ID });
     return await this.usersRepository
       .createQueryBuilder('users')
       .where('users.api_id_client = :apiIdClient', { apiIdClient })
@@ -42,7 +42,7 @@ export class UsersRepository {
   }
 
   async cleanTableByApiId(apiIdClient: number): Promise<DeleteResult> {
-    this.dbRequestTotal.inc({ method: 'cleanTableByApiId' });
+    this.dbRequestTotal.inc({ [MetricLabels.METHOD]: UserMethodNames.CLEAN_TABLE_BY_API_ID });
     return await this.usersRepository
       .createQueryBuilder('users')
       .delete()

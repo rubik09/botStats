@@ -17,7 +17,7 @@ import { PersonalInfoModule } from '../personalInfo/personalInfo.module';
     UserSessionRepository,
     makeCounterProvider({
       name: MetricNames.DB_REQUEST_USER_SESSION_TOTAL,
-      help: MetricHelp.DB_REQUEST_USER_SESSION_TOTAL,
+      help: MetricHelp.DB_REQUEST_USER_SESSION_TOTAL_HELP,
       labelNames: [MetricLabels.METHOD],
     }),
   ],

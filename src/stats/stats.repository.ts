@@ -6,7 +6,7 @@ import { InsertResult, Repository, UpdateResult } from 'typeorm';
 
 import { UpdateStatsDto } from './dto/updateStats.dto';
 import { Stat } from './entity/stats.entity';
-import { MetricNames } from '../metrics/metrics.constant';
+import { MetricLabels, MetricNames, StatsMethodNames } from '../metrics/metrics.constant';
 
 @Injectable()
 export class StatsRepository {
@@ -17,12 +17,12 @@ export class StatsRepository {
   ) {}
 
   async createStats(apiIdClient: number): Promise<InsertResult> {
-    this.dbRequestTotal.inc({ method: 'createStats' });
+    this.dbRequestTotal.inc({ [MetricLabels.METHOD]: StatsMethodNames.CREATE_STATS });
     return await this.statsRepository.createQueryBuilder('stats').insert().into(Stat).values({ apiIdClient }).execute();
   }
 
   async updateStatsByApiId(updateStatsDto: UpdateStatsDto, apiIdClient: number): Promise<UpdateResult> {
-    this.dbRequestTotal.inc({ method: 'updateStatsByApiId' });
+    this.dbRequestTotal.inc({ [MetricLabels.METHOD]: StatsMethodNames.UPDATE_STATS_BY_API_ID });
     return await this.statsRepository
       .createQueryBuilder('stats')
       .update(Stat)
@@ -32,7 +32,7 @@ export class StatsRepository {
   }
 
   async increaseIncomingMessagesCountToSessionByApiId(apiIdClient: number): Promise<UpdateResult> {
-    this.dbRequestTotal.inc({ method: 'increaseIncomingMessagesCountToSessionByApiId' });
+    this.dbRequestTotal.inc({ [MetricLabels.METHOD]: StatsMethodNames.INCREASE_INCOMING_MESSAGES_COUNT });
     return await this.statsRepository
       .createQueryBuilder('stats')
       .update(Stat)
@@ -42,7 +42,7 @@ export class StatsRepository {
   }
 
   async increaseOutgoingMessagesCountToSessionByApiId(apiIdClient: number): Promise<UpdateResult> {
-    this.dbRequestTotal.inc({ method: 'increaseOutgoingMessagesCountToSessionByApiId' });
+    this.dbRequestTotal.inc({ [MetricLabels.METHOD]: StatsMethodNames.INCREASE_OUTGOING_MESSAGES_COUNT });
     return await this.statsRepository
       .createQueryBuilder('stats')
       .update(Stat)
@@ -52,7 +52,7 @@ export class StatsRepository {
   }
 
   async getStatsByApiId(apiIdClient: number): Promise<Stat> {
-    this.dbRequestTotal.inc({ method: 'getStatsByApiId' });
+    this.dbRequestTotal.inc({ [MetricLabels.METHOD]: StatsMethodNames.GET_STATS_BY_API_ID });
     return await this.statsRepository
       .createQueryBuilder('stats')
       .where('stats.api_id_client = :apiIdClient', { apiIdClient })

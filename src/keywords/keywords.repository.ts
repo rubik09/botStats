@@ -7,8 +7,7 @@ import { DeleteResult, InsertResult, Repository, UpdateResult } from 'typeorm';
 import { CreateKeywordsDto } from './dto/createKeywords.dto';
 import { UpdateKeywordsDto } from './dto/updateKeywords.dto';
 import { Keyword } from './entity/keywords.entity';
-import { MetricNames } from '../metrics/metrics.constant';
-
+import { KeywordMethodNames, MetricNames } from '../metrics/metrics.constant';
 @Injectable()
 export class KeywordsRepository {
   constructor(
@@ -18,7 +17,7 @@ export class KeywordsRepository {
   ) {}
 
   async createNewKeyword(createKeywordsDto: CreateKeywordsDto): Promise<InsertResult> {
-    this.dbRequestTotal.inc({ method: 'createNewKeyword' });
+    this.dbRequestTotal.inc({ method: KeywordMethodNames.CREATE_NEW_KEYWORD });
     return await this.keywordsRepository
       .createQueryBuilder('keywords')
       .insert()
@@ -28,7 +27,7 @@ export class KeywordsRepository {
   }
 
   async updateNewKeyword(id: number, updateKeywordsDto: UpdateKeywordsDto): Promise<UpdateResult> {
-    this.dbRequestTotal.inc({ method: 'updateNewKeyword' });
+    this.dbRequestTotal.inc({ method: KeywordMethodNames.UPDATE_NEW_KEYWORD });
     return await this.keywordsRepository
       .createQueryBuilder('keywords')
       .update(Keyword)
@@ -38,12 +37,12 @@ export class KeywordsRepository {
   }
 
   async deleteKeyword(id: number): Promise<DeleteResult> {
-    this.dbRequestTotal.inc({ method: 'deleteKeyword' });
+    this.dbRequestTotal.inc({ method: KeywordMethodNames.DELETE_KEYWORD });
     return await this.keywordsRepository.createQueryBuilder('keywords').delete().where('id = :id', { id }).execute();
   }
 
   async getKeywordById(id: number): Promise<Keyword> {
-    this.dbRequestTotal.inc({ method: 'getKeywordById' });
+    this.dbRequestTotal.inc({ method: KeywordMethodNames.GET_KEYWORD_BY_ID });
     return await this.keywordsRepository
       .createQueryBuilder('keywords')
       .leftJoinAndSelect('keywords.userSession', 'userSession')
@@ -52,7 +51,7 @@ export class KeywordsRepository {
   }
 
   async resetCountByUserSessionId(id: number): Promise<UpdateResult> {
-    this.dbRequestTotal.inc({ method: 'resetCountByUserSessionId' });
+    this.dbRequestTotal.inc({ method: KeywordMethodNames.RESET_COUNT_BY_USER_SESSION_ID });
     return await this.keywordsRepository
       .createQueryBuilder('keywords')
       .update(Keyword)
@@ -62,7 +61,7 @@ export class KeywordsRepository {
   }
 
   async increaseKeywordCountById(id: number): Promise<UpdateResult> {
-    this.dbRequestTotal.inc({ method: 'increaseKeywordCountById' });
+    this.dbRequestTotal.inc({ method: KeywordMethodNames.INCREASE_KEYWORD_COUNT_BY_ID });
     return await this.keywordsRepository
       .createQueryBuilder('keywords')
       .update(Keyword)
@@ -72,7 +71,7 @@ export class KeywordsRepository {
   }
 
   async getKeywordsByUserSessionId(userSessionId: number): Promise<[Keyword[], number]> {
-    this.dbRequestTotal.inc({ method: 'getKeywordsByUserSessionId' });
+    this.dbRequestTotal.inc({ method: KeywordMethodNames.GET_KEYWORDS_BY_USER_SESSION_ID });
     return await this.keywordsRepository
       .createQueryBuilder('keywords')
       .where('keywords.user_session_id = :userSessionId', { userSessionId })
@@ -80,7 +79,7 @@ export class KeywordsRepository {
   }
 
   async findKeywordByUserSessionIdAndMessage(message: string, userSessionId: number): Promise<Keyword> {
-    this.dbRequestTotal.inc({ method: 'findKeywordByUserSessionIdAndMessage' });
+    this.dbRequestTotal.inc({ method: KeywordMethodNames.FIND_KEYWORD_BY_USER_SESSION_ID_AND_MESSAGE });
     return await this.keywordsRepository
       .createQueryBuilder('keywords')
       .where('keywords.user_session_id = :userSessionId', { userSessionId })
@@ -89,7 +88,7 @@ export class KeywordsRepository {
   }
 
   async findKeywordByUserSession(userSessionId: number, keyword: string): Promise<Keyword> {
-    this.dbRequestTotal.inc({ method: 'findKeywordByUserSession' });
+    this.dbRequestTotal.inc({ method: KeywordMethodNames.FIND_KEYWORD_BY_USER_SESSION });
     return await this.keywordsRepository
       .createQueryBuilder('keywords')
       .where('keywords.user_session_id = :userSessionId', { userSessionId })
