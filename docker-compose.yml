@@ -61,6 +61,8 @@ services:
       - ./src/configuration/prometheus.yaml:/etc/prometheus/prometheus.yaml:ro
       - ./data:/prometheus/data
     restart: always
+    networks:
+      - bot-stats
 
   grafana:
     image: grafana/grafana-oss:latest
@@ -70,6 +72,8 @@ services:
     volumes:
       - grafana-data:/var/lib/grafana
     restart: always
+    networks:
+      - bot-stats
 
   node_exporter:
     image: quay.io/prometheus/node-exporter:v1.5.0
@@ -79,6 +83,8 @@ services:
     restart: always
     volumes:
       - /:/host:ro,rslave
+    networks:
+      - bot-stats
 
   loki:
     image: grafana/loki:2.8.5
@@ -88,6 +94,8 @@ services:
     volumes:
       - ./src/configuration/loki.yaml:/etc/loki/loki.yaml
       - ./data/loki-data:/tmp/loki\
+    networks:
+      - bot-stats
 
   promtail:
     image: grafana/promtail:2.9.0
@@ -97,6 +105,8 @@ services:
     command: -config.file=/etc/promtail/config.yaml
     depends_on:
       - loki
+    networks:
+      - bot-stats
 
 networks:
   bot-stats:
