@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { makeCounterProvider } from '@willsoto/nestjs-prometheus';
+import { makeCounterProvider, makeHistogramProvider } from '@willsoto/nestjs-prometheus';
 
 import { User } from './entity/users.entity';
 import { UsersController } from './users.controller';
@@ -17,6 +17,12 @@ import { MetricHelp, MetricLabels, MetricNames } from '../metrics/metrics.consta
       name: MetricNames.DB_REQUEST_USERS_TOTAL,
       help: MetricHelp.DB_REQUEST_USERS_TOTAL_HELP,
       labelNames: [MetricLabels.METHOD],
+    }),
+    makeHistogramProvider({
+      name: MetricNames.DB_REQUEST_USERS_DURATION,
+      help: MetricHelp.DURATION_DB_REQUEST_USERS_HELP,
+      labelNames: [MetricLabels.METHOD, MetricLabels.STATUS],
+      buckets: [0.1, 0.5, 1, 3, 5, 10],
     }),
   ],
   controllers: [UsersController],
