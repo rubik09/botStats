@@ -4,14 +4,15 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AdminsModule } from './admins/admins.module';
-import { BotAlertModule } from './botAlert/botAlert.module';
 import { CalculatedStatsModule } from './calculatedStats/calculatedStats.module';
 import config from './configuration/config';
 import { CronModule } from './cron/cron.module';
+import { BotAlertModule } from './botAlert/botAlert.module';
 import { HealthModule } from './health/health.module';
 import { KafkaModule } from './kafka/kafka.module';
 import { VerificationConsumer } from './kafka/verification.consumer';
 import { KeywordsModule } from './keywords/keywords.module';
+import { MetricsModule } from './metrics/metrics.module';
 import { PersonalInfoModule } from './personalInfo/personalInfo.module';
 import { StatsModule } from './stats/stats.module';
 import { TelegramConnectModule } from './telegramConnect/telegramConnect.module';
@@ -43,6 +44,7 @@ import { UserSessionModule } from './userSession/userSession.module';
     CalculatedStatsModule,
     CronModule,
     BotAlertModule,
+    MetricsModule,
   ],
   providers: [VerificationConsumer],
 })
