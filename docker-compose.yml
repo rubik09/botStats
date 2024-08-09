@@ -61,6 +61,8 @@ services:
       - ./src/configuration/prometheus.yaml:/etc/prometheus/prometheus.yaml:ro
       - ./data:/prometheus/data
     restart: always
+    networks:
+      - bot-stats
 
   grafana:
     image: grafana/grafana-oss:latest
@@ -70,6 +72,8 @@ services:
     volumes:
       - grafana-data:/var/lib/grafana
     restart: always
+    networks:
+      - bot-stats
 
   node_exporter:
     image: quay.io/prometheus/node-exporter:v1.5.0
