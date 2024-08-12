@@ -16,22 +16,31 @@ export class MetricsInterceptor implements NestInterceptor {
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const now = Date.now();
-    const request = context.switchToHttp().getRequest();
-    const method = request.method;
-    const route = request.route ? request.route.path : 'unknown';
+    const { method, route } = context.switchToHttp().getRequest();
+    const routePath = route ? route.path : 'unknown';
 
     return next.handle().pipe(
-      tap(() => {
-        const responseTimeInMs = Date.now() - now;
-        const statusCode = context.switchToHttp().getResponse().statusCode;
-        this.httpRequestDurationSeconds.labels(method, route, statusCode.toString()).observe(responseTimeInMs / 1000);
-      }),
+      tap(() => this.recordMetrics(context, method, routePath, now)),
       catchError((error) => {
-        const responseTimeInMs = Date.now() - now;
-        const statusCode = error instanceof HttpException ? error.getStatus() : 500;
-        this.httpRequestDurationSeconds.labels(method, route, statusCode.toString()).observe(responseTimeInMs / 1000);
+        this.recordMetrics(context, method, routePath, now, error);
         return throwError(() => error);
       }),
     );
+  }
+
+  private recordMetrics(
+    context: ExecutionContext,
+    method: string,
+    route: string,
+    startTime: number,
+    error?: any,
+  ): void {
+    const responseTimeInMs = Date.now() - startTime;
+    const { statusCode } =
+      error instanceof HttpException
+        ? { statusCode: error.getStatus() }
+        : { statusCode: context.switchToHttp().getResponse().statusCode };
+
+    this.httpRequestDurationSeconds.labels(method, route, statusCode.toString()).observe(responseTimeInMs / 1000);
   }
 }
