@@ -7,13 +7,14 @@ import { DeleteResult, InsertResult, Repository, UpdateResult } from 'typeorm';
 import { CreateCronJobDto } from './dto/createCronJob.dto';
 import { UpdateCronJobDto } from './dto/updateCronJob.dto';
 import { CronEntity } from './entity/cron.entity';
-import { CronMethodNames, MetricNames, Status } from '../metrics/metrics.constant';
+import { CounterMetricsConfig, CronMethodNames, HistogramMetricsConfig, Status } from '../metrics/metrics.constant';
 
 @Injectable()
 export class CronRepository {
   constructor(
-    @InjectMetric(MetricNames.DB_REQUEST_CRON_TOTAL) private dbRequestTotal: Counter<string>,
-    @InjectMetric(MetricNames.DB_REQUEST_CRON_DURATION) private readonly dbRequestDuration: Histogram<string>,
+    @InjectMetric(CounterMetricsConfig.DB_REQUEST_CRON_TOTAL.name) private dbRequestTotal: Counter<string>,
+    @InjectMetric(HistogramMetricsConfig.DB_REQUEST_CRON_DURATION.name)
+    private readonly dbRequestDuration: Histogram<string>,
     @InjectRepository(CronEntity)
     private readonly cronEntityRepository: Repository<CronEntity>,
   ) {}

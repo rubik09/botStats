@@ -6,7 +6,7 @@ import { Keyword } from './entity/keywords.entity';
 import { KeywordsController } from './keywords.controller';
 import { KeywordsRepository } from './keywords.repository';
 import { KeywordsService } from './keywords.service';
-import { MetricHelp, MetricLabels, MetricNames } from '../metrics/metrics.constant';
+import { CounterMetricsConfig, HistogramMetricsConfig } from '../metrics/metrics.constant';
 import { UserSessionModule } from '../userSession/userSession.module';
 
 @Module({
@@ -14,17 +14,8 @@ import { UserSessionModule } from '../userSession/userSession.module';
   providers: [
     KeywordsService,
     KeywordsRepository,
-    makeCounterProvider({
-      name: MetricNames.DB_REQUEST_KEYWORDS_TOTAL,
-      help: MetricHelp.DB_REQUEST_KEYWORDS_TOTAL_HELP,
-      labelNames: [MetricLabels.METHOD],
-    }),
-    makeHistogramProvider({
-      name: MetricNames.DB_REQUEST_KEYWORDS_DURATION,
-      help: MetricHelp.DURATION_DB_REQUEST_KEYWORDS_HELP,
-      labelNames: [MetricLabels.METHOD, MetricLabels.STATUS],
-      buckets: [0.1, 0.5, 1, 3, 5, 10],
-    }),
+    makeCounterProvider(CounterMetricsConfig.DB_REQUEST_KEYWORDS_TOTAL),
+    makeHistogramProvider(HistogramMetricsConfig.DB_REQUEST_KEYWORDS_DURATION),
   ],
   exports: [KeywordsService],
   controllers: [KeywordsController],

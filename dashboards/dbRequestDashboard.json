@@ -18,7 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 7,
+  "id": 8,
   "links": [],
   "panels": [
     {
@@ -113,7 +113,7 @@
           "expr": "rate(db_request_stats_duration_sum[5m])\r\n/\r\nrate(db_request_stats_duration_count[5m])",
           "format": "heatmap",
           "instant": false,
-          "legendFormat": "{{method}}",
+          "legendFormat": "{{method}} {{status}}",
           "range": true,
           "refId": "A"
         }
@@ -313,7 +313,7 @@
           "expr": "rate(db_request_userSession_duration_sum[5m])\r\n/\r\nrate(db_request_userSession_duration_count[5m])",
           "format": "heatmap",
           "instant": false,
-          "legendFormat": "{{method}}",
+          "legendFormat": "{{method}} {{status}}",
           "range": true,
           "refId": "A"
         }
@@ -513,7 +513,7 @@
           "expr": "rate(db_request_cron_duration_sum[5m])\r\n/\r\nrate(db_request_cron_duration_count[5m])",
           "format": "heatmap",
           "instant": false,
-          "legendFormat": "{{method}}",
+          "legendFormat": "{{method}} {{status}}",
           "range": true,
           "refId": "A"
         }
@@ -668,8 +668,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -713,7 +712,7 @@
           "expr": "rate(db_request_calculatedStats_duration_sum[5m])\r\n/\r\nrate(db_request_calculatedStats_duration_count[5m])",
           "format": "heatmap",
           "instant": false,
-          "legendFormat": "{{method}}",
+          "legendFormat": "{{method}} {{status}}",
           "range": true,
           "refId": "A"
         }
@@ -768,8 +767,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -912,7 +910,7 @@
           "expr": "rate(db_request_users_duration_sum[5m])\r\n/\r\nrate(db_request_users_duration_count[5m])",
           "format": "heatmap",
           "instant": false,
-          "legendFormat": "{{method}}",
+          "legendFormat": "{{method}} {{status}}",
           "range": true,
           "refId": "A"
         }
@@ -1109,7 +1107,7 @@
           "expr": "rate(db_request_personalInfo_duration_sum[5m])\r\n/\r\nrate(db_request_personalInfo_duration_count[5m])",
           "format": "heatmap",
           "instant": false,
-          "legendFormat": "{{method}}",
+          "legendFormat": "{{method}} {{status}}",
           "range": true,
           "refId": "A"
         }
@@ -1307,7 +1305,7 @@
           "expr": "rate(db_request_admins_duration_sum[5m])\r\n/\r\nrate(db_request_admins_duration_count[5m])",
           "format": "heatmap",
           "instant": false,
-          "legendFormat": "{{method}}",
+          "legendFormat": "{{method}} {{status}}",
           "range": true,
           "refId": "A"
         }
@@ -1506,7 +1504,7 @@
           "format": "heatmap",
           "instant": false,
           "interval": "",
-          "legendFormat": "{{method}}",
+          "legendFormat": "{{method}} {{status}}",
           "range": true,
           "refId": "A"
         }
@@ -1630,6 +1628,6 @@
   "timezone": "browser",
   "title": "Requests dashboard",
   "uid": "bdthkkvux1j40b",
-  "version": 15,
+  "version": 2,
   "weekStart": ""
 }

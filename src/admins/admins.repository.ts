@@ -6,13 +6,14 @@ import { InsertResult, Repository } from 'typeorm';
 
 import { CreateAdminDto } from './dto/createAdmin.dto';
 import { Admin } from './entity/admins.entity';
-import { AdminMethodNames, MetricNames, Status } from '../metrics/metrics.constant';
+import { AdminMethodNames, CounterMetricsConfig, HistogramMetricsConfig, Status } from '../metrics/metrics.constant';
 
 @Injectable()
 export class AdminsRepository {
   constructor(
-    @InjectMetric(MetricNames.DB_REQUEST_ADMINS_TOTAL) private dbRequestTotal: Counter<string>,
-    @InjectMetric(MetricNames.DB_REQUEST_ADMINS_DURATION) private readonly dbRequestDuration: Histogram<string>,
+    @InjectMetric(CounterMetricsConfig.DB_REQUEST_ADMINS_TOTAL.name) private dbRequestTotal: Counter<string>,
+    @InjectMetric(HistogramMetricsConfig.DB_REQUEST_ADMINS_DURATION.name)
+    private readonly dbRequestDuration: Histogram<string>,
     @InjectRepository(Admin)
     private readonly adminsRepository: Repository<Admin>,
   ) {}

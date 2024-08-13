@@ -6,13 +6,13 @@ import { InsertResult, Repository, UpdateResult } from 'typeorm';
 
 import { UpdateStatsDto } from './dto/updateStats.dto';
 import { Stat } from './entity/stats.entity';
-import { MetricNames, StatsMethodNames, Status } from '../metrics/metrics.constant';
+import { CounterMetricsConfig, HistogramMetricsConfig, StatsMethodNames, Status } from '../metrics/metrics.constant';
 
 @Injectable()
 export class StatsRepository {
   constructor(
-    @InjectMetric(MetricNames.DB_REQUEST_STATS_TOTAL) private dbRequestTotal: Counter<string>,
-    @InjectMetric(MetricNames.DB_REQUEST_STATS_DURATION) private dbRequestDuration: Histogram<string>,
+    @InjectMetric(CounterMetricsConfig.DB_REQUEST_STATS_TOTAL.name) private dbRequestTotal: Counter<string>,
+    @InjectMetric(HistogramMetricsConfig.DB_REQUEST_STATS_DURATION.name) private dbRequestDuration: Histogram<string>,
     @InjectRepository(Stat)
     private readonly statsRepository: Repository<Stat>,
   ) {}

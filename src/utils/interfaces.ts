@@ -1,3 +1,4 @@
+import { ExecutionContext } from '@nestjs/common';
 import { TelegramClient } from 'telegram';
 
 export interface IClients {
@@ -51,4 +52,21 @@ export interface CalculatedActivityKeywords {
 export interface ITelegramMessage {
   chat_id: number;
   text: string;
+}
+
+export interface IMetricsRecordParams {
+  context: ExecutionContext;
+  method: string;
+  route: string;
+  startTime: number;
+}
+
+export interface ICounterMetricConfig {
+  name: string;
+  help: string;
+  labelNames: string[];
+}
+
+export interface IHistogramMetricConfig extends ICounterMetricConfig {
+  buckets: number[];
 }

@@ -6,13 +6,19 @@ import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 
 import { UpdatePersonalInfoDto } from './dto/updatePersonalInfo.dto';
 import { PersonalInfo } from './entity/personalInfo.entity';
-import { MetricNames, PersonalInfoMethodNames, Status } from '../metrics/metrics.constant';
+import {
+  CounterMetricsConfig,
+  HistogramMetricsConfig,
+  PersonalInfoMethodNames,
+  Status,
+} from '../metrics/metrics.constant';
 
 @Injectable()
 export class PersonalInfoRepository {
   constructor(
-    @InjectMetric(MetricNames.DB_REQUEST_PERSONAL_INFO_TOTAL) private dbRequestTotal: Counter<string>,
-    @InjectMetric(MetricNames.DB_REQUEST_PERSONAL_INFO_DURATION) private readonly dbRequestDuration: Histogram<string>,
+    @InjectMetric(CounterMetricsConfig.DB_REQUEST_PERSONAL_INFO_TOTAL.name) private dbRequestTotal: Counter<string>,
+    @InjectMetric(HistogramMetricsConfig.DB_REQUEST_PERSONAL_INFO_DURATION.name)
+    private readonly dbRequestDuration: Histogram<string>,
     @InjectRepository(PersonalInfo)
     private readonly personalInfoRepository: Repository<PersonalInfo>,
   ) {}

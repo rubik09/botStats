@@ -8,15 +8,21 @@ import { CreateUserSessionDto } from './dto/createUserSession.dto';
 import { UpdateApiInfoDto } from './dto/updateApiInfo.dto';
 import { UpdateUserSessionInfoDto } from './dto/updateUserSession.dto';
 import { UserSession, userSessionStatus } from './entity/userSession.entity';
-import { MetricNames, Status, UserSessionMethodNames } from '../metrics/metrics.constant';
+import {
+  CounterMetricsConfig,
+  HistogramMetricsConfig,
+  Status,
+  UserSessionMethodNames,
+} from '../metrics/metrics.constant';
 import { CreatePersonalInfoDto } from '../personalInfo/dto/createPersonalInfo.dto';
 import { PersonalInfo } from '../personalInfo/entity/personalInfo.entity';
 
 @Injectable()
 export class UserSessionRepository {
   constructor(
-    @InjectMetric(MetricNames.DB_REQUEST_USER_SESSION_TOTAL) private dbRequestTotal: Counter<string>,
-    @InjectMetric(MetricNames.DB_REQUEST_USER_SESSION_DURATION) private dbRequestDuration: Histogram<string>,
+    @InjectMetric(CounterMetricsConfig.DB_REQUEST_USER_SESSION_TOTAL.name) private dbRequestTotal: Counter<string>,
+    @InjectMetric(HistogramMetricsConfig.DB_REQUEST_USER_SESSION_DURATION.name)
+    private dbRequestDuration: Histogram<string>,
     @InjectRepository(UserSession)
     private readonly userSessionRepository: Repository<UserSession>,
   ) {}

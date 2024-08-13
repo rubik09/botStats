@@ -7,13 +7,13 @@ import { DeleteResult, InsertResult, Repository } from 'typeorm';
 import { CreateUserDto } from './dto/createUser.dto';
 import { FindByApiIdAndTgIdDto } from './dto/findByApiIdAndTgId.dto';
 import { User } from './entity/users.entity';
-import { MetricNames, Status, UserMethodNames } from '../metrics/metrics.constant';
+import { CounterMetricsConfig, HistogramMetricsConfig, Status, UserMethodNames } from '../metrics/metrics.constant';
 
 @Injectable()
 export class UsersRepository {
   constructor(
-    @InjectMetric(MetricNames.DB_REQUEST_USERS_TOTAL) private dbRequestTotal: Counter<string>,
-    @InjectMetric(MetricNames.DB_REQUEST_USERS_DURATION) private dbRequestDuration: Histogram<string>,
+    @InjectMetric(CounterMetricsConfig.DB_REQUEST_USERS_TOTAL.name) private dbRequestTotal: Counter<string>,
+    @InjectMetric(HistogramMetricsConfig.DB_REQUEST_USERS_DURATION.name) private dbRequestDuration: Histogram<string>,
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
   ) {}

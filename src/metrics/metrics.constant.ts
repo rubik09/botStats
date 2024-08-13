@@ -1,63 +1,111 @@
-export enum MetricNames {
-  DB_REQUEST_KEYWORDS_TOTAL = 'db_request_keywords_total',
-  DB_REQUEST_KEYWORDS_DURATION = 'db_request_keywords_duration',
+import { HistogramConfiguration } from 'prom-client';
 
-  DB_REQUEST_PERSONAL_INFO_TOTAL = 'db_request_personalInfo_total',
-  DB_REQUEST_PERSONAL_INFO_DURATION = 'db_request_personalInfo_duration',
+import { ICounterMetricConfig, IHistogramMetricConfig } from '../utils/interfaces';
 
-  DB_REQUEST_ADMINS_TOTAL = 'db_request_admins_total',
-  DB_REQUEST_ADMINS_DURATION = 'db_request_admins_duration',
+export const HTTP_REQUEST_DURATION_SECONDS: HistogramConfiguration<string> = {
+  name: 'http_request_duration_seconds',
+  help: 'Duration of HTTP requests in seconds',
+  labelNames: ['method', 'route', 'status_code'],
+  buckets: [0.1, 0.5, 1, 3, 5, 10],
+};
 
-  DB_REQUEST_CALCULATED_STATS_TOTAL = 'db_request_calculatedStats_total',
-  DB_REQUEST_CALCULATED_STATS_DURATION = 'db_request_calculatedStats_duration',
+export const CounterMetricsConfig: Record<string, ICounterMetricConfig> = {
+  DB_REQUEST_KEYWORDS_TOTAL: {
+    name: 'db_request_keywords_total',
+    help: 'Total number of database requests for keywords',
+    labelNames: ['method'],
+  },
+  DB_REQUEST_USER_SESSION_TOTAL: {
+    name: 'db_request_userSession_total',
+    help: 'Total number of database requests for user sessions',
+    labelNames: ['method'],
+  },
+  DB_REQUEST_ADMINS_TOTAL: {
+    name: 'db_request_admins_total',
+    help: 'Total number of database requests for admins',
+    labelNames: ['method'],
+  },
+  DB_REQUEST_CALCULATED_STATS_TOTAL: {
+    name: 'db_request_calculatedStats_total',
+    help: 'Total number of database requests for calculated stats',
+    labelNames: ['method'],
+  },
+  DB_REQUEST_CRON_TOTAL: {
+    name: 'db_request_cron_total',
+    help: 'Total number of database requests for cron',
+    labelNames: ['method'],
+  },
+  DB_REQUEST_PERSONAL_INFO_TOTAL: {
+    name: 'db_request_personalInfo_total',
+    help: 'Total number of database requests for personal info',
+    labelNames: ['method'],
+  },
+  DB_REQUEST_STATS_TOTAL: {
+    name: 'db_request_stats_total',
+    help: 'Total number of database requests for stats',
+    labelNames: ['method'],
+  },
+  DB_REQUEST_USERS_TOTAL: {
+    name: 'db_request_users_total',
+    help: 'Total number of database requests for users',
+    labelNames: ['method'],
+  },
+};
 
-  DB_REQUEST_CRON_TOTAL = 'db_request_cron_total',
-  DB_REQUEST_CRON_DURATION = 'db_request_cron_duration',
-
-  DB_REQUEST_STATS_TOTAL = 'db_request_stats_total',
-  DB_REQUEST_STATS_DURATION = 'db_request_stats_duration',
-
-  DB_REQUEST_USERS_TOTAL = 'db_request_users_total',
-  DB_REQUEST_USERS_DURATION = 'db_request_users_duration',
-
-  DB_REQUEST_USER_SESSION_TOTAL = 'db_request_userSession_total',
-  DB_REQUEST_USER_SESSION_DURATION = 'db_request_userSession_duration',
-}
-
-export enum MetricLabels {
-  METHOD = 'method',
-  STATUS = 'status',
-}
+export const HistogramMetricsConfig: Record<string, IHistogramMetricConfig> = {
+  DB_REQUEST_KEYWORDS_DURATION: {
+    name: 'db_request_keywords_duration',
+    help: 'Duration of database requests for keywords in seconds',
+    labelNames: ['method', 'status'],
+    buckets: [0.1, 0.5, 1, 3, 5, 10],
+  },
+  DB_REQUEST_USER_SESSION_DURATION: {
+    name: 'db_request_userSession_duration',
+    help: 'Duration of database requests for user sessions in seconds',
+    labelNames: ['method', 'status'],
+    buckets: [0.1, 0.5, 1, 3, 5, 10],
+  },
+  DB_REQUEST_ADMINS_DURATION: {
+    name: 'db_request_admins_duration',
+    help: 'Duration of database requests for admins in seconds',
+    labelNames: ['method', 'status'],
+    buckets: [0.1, 0.5, 1, 3, 5, 10],
+  },
+  DB_REQUEST_CALCULATED_STATS_DURATION: {
+    name: 'db_request_calculatedStats_duration',
+    help: 'Duration of database requests for calculated stats in seconds',
+    labelNames: ['method', 'status'],
+    buckets: [0.1, 0.5, 1, 3, 5, 10],
+  },
+  DB_REQUEST_CRON_DURATION: {
+    name: 'db_request_cron_duration',
+    help: 'Duration of database requests for cron in seconds',
+    labelNames: ['method', 'status'],
+    buckets: [0.1, 0.5, 1, 3, 5, 10],
+  },
+  DB_REQUEST_PERSONAL_INFO_DURATION: {
+    name: 'db_request_personalInfo_duration',
+    help: 'Duration of database requests for personal info in seconds',
+    labelNames: ['method', 'status'],
+    buckets: [0.1, 0.5, 1, 3, 5, 10],
+  },
+  DB_REQUEST_STATS_DURATION: {
+    name: 'db_request_stats_duration',
+    help: 'Duration of database requests for stats in seconds',
+    labelNames: ['method', 'status'],
+    buckets: [0.1, 0.5, 1, 3, 5, 10],
+  },
+  DB_REQUEST_USERS_DURATION: {
+    name: 'db_request_users_duration',
+    help: 'Duration of database requests for users in seconds',
+    labelNames: ['method', 'status'],
+    buckets: [0.1, 0.5, 1, 3, 5, 10],
+  },
+};
 
 export enum Status {
   ERROR = 'error',
   SUCCESS = 'success',
-}
-
-export enum MetricHelp {
-  DB_REQUEST_KEYWORDS_TOTAL_HELP = 'Total number of database requests for keywords',
-  DURATION_DB_REQUEST_KEYWORDS_HELP = 'Duration of database requests for keywords in seconds',
-
-  DB_REQUEST_PERSONAL_INFO_TOTAL_HELP = 'Total number of database requests for personalInfo',
-  DURATION_DB_REQUEST_PERSONAL_INFO_HELP = 'Duration of database requests for personalInfo in seconds',
-
-  DB_REQUEST_ADMINS_TOTAL_HELP = 'Total number of database requests for admins',
-  DURATION_DB_REQUEST_ADMINS_HELP = 'Duration of database requests for admins in seconds',
-
-  DB_REQUEST_CALCULATED_STATS_TOTAL_HELP = 'Total number of database requests for calculated stats',
-  DURATION_DB_REQUEST_CALCULATED_STATS_HELP = 'Duration of database requests for calculated stats in seconds',
-
-  DB_REQUEST_CRON_TOTAL_HELP = 'Total number of database requests for cron jobs',
-  DURATION_DB_REQUEST_CRON_HELP = 'Duration of database requests for cron in seconds',
-
-  DB_REQUEST_STATS_TOTAL_HELP = 'Total number of database requests for stats',
-  DURATION_DB_REQUEST_STATS_HELP = 'Duration of database requests for stats in seconds',
-
-  DB_REQUEST_USERS_TOTAL_HELP = 'Total number of database requests for users',
-  DURATION_DB_REQUEST_USERS_HELP = 'Duration of database requests for users in seconds',
-
-  DB_REQUEST_USER_SESSION_TOTAL_HELP = 'Total number of database requests for user sessions',
-  DURATION_DB_REQUEST_USER_SESSION_HELP = 'Duration of database requests for user sessions in seconds',
 }
 
 export enum KeywordMethodNames {

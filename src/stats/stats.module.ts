@@ -8,7 +8,7 @@ import { StatsRepository } from './stats.repository';
 import { StatsService } from './stats.service';
 import { CalculatedStatsModule } from '../calculatedStats/calculatedStats.module';
 import { KeywordsModule } from '../keywords/keywords.module';
-import { MetricHelp, MetricLabels, MetricNames } from '../metrics/metrics.constant';
+import { CounterMetricsConfig, HistogramMetricsConfig } from '../metrics/metrics.constant';
 import { UsersModule } from '../users/users.module';
 import { UserSessionModule } from '../userSession/userSession.module';
 
@@ -17,17 +17,8 @@ import { UserSessionModule } from '../userSession/userSession.module';
   providers: [
     StatsService,
     StatsRepository,
-    makeCounterProvider({
-      name: MetricNames.DB_REQUEST_STATS_TOTAL,
-      help: MetricHelp.DB_REQUEST_STATS_TOTAL_HELP,
-      labelNames: [MetricLabels.METHOD],
-    }),
-    makeHistogramProvider({
-      name: MetricNames.DB_REQUEST_STATS_DURATION,
-      help: MetricHelp.DURATION_DB_REQUEST_STATS_HELP,
-      labelNames: [MetricLabels.METHOD, MetricLabels.STATUS],
-      buckets: [0.1, 0.5, 1, 3, 5, 10],
-    }),
+    makeCounterProvider(CounterMetricsConfig.DB_REQUEST_STATS_TOTAL),
+    makeHistogramProvider(HistogramMetricsConfig.DB_REQUEST_STATS_DURATION),
   ],
   controllers: [StatsController],
   exports: [StatsService],

@@ -7,13 +7,14 @@ import { DeleteResult, InsertResult, Repository, UpdateResult } from 'typeorm';
 import { CreateKeywordsDto } from './dto/createKeywords.dto';
 import { UpdateKeywordsDto } from './dto/updateKeywords.dto';
 import { Keyword } from './entity/keywords.entity';
-import { KeywordMethodNames, MetricNames, Status } from '../metrics/metrics.constant';
+import { CounterMetricsConfig, HistogramMetricsConfig, KeywordMethodNames, Status } from '../metrics/metrics.constant';
 
 @Injectable()
 export class KeywordsRepository {
   constructor(
-    @InjectMetric(MetricNames.DB_REQUEST_KEYWORDS_TOTAL) private readonly dbRequestTotal: Counter<string>,
-    @InjectMetric(MetricNames.DB_REQUEST_KEYWORDS_DURATION) private readonly dbRequestDuration: Histogram<string>,
+    @InjectMetric(CounterMetricsConfig.DB_REQUEST_KEYWORDS_TOTAL.name) private readonly dbRequestTotal: Counter<string>,
+    @InjectMetric(HistogramMetricsConfig.DB_REQUEST_KEYWORDS_DURATION.name)
+    private readonly dbRequestDuration: Histogram<string>,
     @InjectRepository(Keyword)
     private readonly keywordsRepository: Repository<Keyword>,
   ) {}
