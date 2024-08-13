@@ -4,6 +4,7 @@ import { Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 
 import { HTTP_REQUEST_DURATION_SECONDS } from './metrics.constant';
+import { IMetricsRecordParams } from 'src/utils/interfaces';
 
 @Injectable()
 export class MetricsInterceptor implements NestInterceptor {
@@ -15,26 +16,22 @@ export class MetricsInterceptor implements NestInterceptor {
   }
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-    const now = Date.now();
+    const startTime = Date.now();
     const { method, route } = context.switchToHttp().getRequest();
     const routePath = route ? route.path : 'unknown';
 
+    const metricsParams: IMetricsRecordParams = { context, method, route: routePath, startTime };
+
     return next.handle().pipe(
-      tap(() => this.recordMetrics(context, method, routePath, now)),
+      tap(() => this.recordMetrics(metricsParams)),
       catchError((error) => {
-        this.recordMetrics(context, method, routePath, now, error);
+        this.recordMetrics(metricsParams, error);
         return throwError(() => error);
       }),
     );
   }
 
-  private recordMetrics(
-    context: ExecutionContext,
-    method: string,
-    route: string,
-    startTime: number,
-    error?: any,
-  ): void {
+  private recordMetrics({ context, method, route, startTime }: IMetricsRecordParams, error?: any): void {
     const responseTimeInMs = Date.now() - startTime;
     const { statusCode } =
       error instanceof HttpException
