@@ -4,7 +4,7 @@ import { Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 
 import { HTTP_REQUEST_DURATION_SECONDS } from './metrics.constant';
-import { IMetricsRecordParams } from 'src/utils/interfaces';
+import { IMetricsRecordParams } from '../utils/interfaces';
 
 @Injectable()
 export class MetricsInterceptor implements NestInterceptor {
