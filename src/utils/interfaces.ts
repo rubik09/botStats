@@ -60,3 +60,13 @@ export interface IMetricsRecordParams {
   route: string;
   startTime: number;
 }
+
+export interface ICounterMetricConfig {
+  name: string;
+  help: string;
+  labelNames: string[];
+}
+
+export interface IHistogramMetricConfig extends ICounterMetricConfig {
+  buckets: number[];
+}
