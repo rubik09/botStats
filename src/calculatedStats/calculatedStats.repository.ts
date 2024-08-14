@@ -13,13 +13,23 @@ export class CalculatedStatsRepository {
     private readonly calculatedStatRepository: Repository<CalculatedStat>,
   ) {}
 
-  async getCalculatedStats({ limit, offset, username }: GetStatsDto): Promise<[CalculatedStat[], number]> {
+  async getCalculatedStats({ limit, offset, username, from, to }: GetStatsDto): Promise<[CalculatedStat[], number]> {
     return await this.calculatedStatRepository
       .createQueryBuilder('calculatedStats')
       .limit(limit)
       .offset(offset)
       .orderBy('calculatedStats.created_at', 'DESC')
-      .where(username ? 'calculatedStats.username ILIKE :username' : '1=1', { username })
+      .where((qb) => {
+        if(username) {
+          qb.where('calculatedStats.username ILIKE :username', { username });
+        }
+        if (from) {
+          qb.andWhere('calculatedStats.created_at >= :from', { from });
+        }
+        if (to) {
+          qb.andWhere('calculatedStats.created_at <= :to', { to });
+        }
+      })
       .getManyAndCount();
   }
 
